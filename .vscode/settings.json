@@ -1,0 +1,13 @@
+{
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.useAliasesForRenames": false,
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.paths": true,
+  "typescript.suggest.completeFunctionCalls": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "files.associations": {
+    "*.ts": "typescript"
+  }
+}

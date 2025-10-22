@@ -1,0 +1,38 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <img src="assets/logo.png" alt="Morpho CRM" class="mx-auto h-10 w-auto" />
+    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-black dark:text-black-light">Login to Morpho CRM</h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-medium text-black dark:text-primary-light">Email address</label>
+        <div class="mt-2">
+          <input id="email" type="email" formControlName="username" required autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <label for="password" class="block text-sm font-medium text-black dark:text-primary-light">Password</label>
+          <div class="text-sm">
+            <a routerLink="/forgot-password" class="font-semibold text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">Forgot password?</a>
+          </div>
+        </div>
+        <div class="mt-2">
+          <input id="password" type="password" formControlName="password" required autocomplete="current-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-primary-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:bg-primary-light dark:shadow-none dark:hover:bg-primary dark:focus-visible:outline-primary-light">Login</button>
+      </div>
+    </form>
+
+    <p class="mt-10 text-center text-sm text-gray-500 dark:text-gray-400">
+      Don't have an account?
+      <a routerLink="/register" class="font-semibold text-primary hover:text-primary-dark dark:text-primary-light dark:hover:text-primary">Register here</a>
+    </p>
+  </div>
+</div>
