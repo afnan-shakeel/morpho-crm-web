@@ -1,0 +1,220 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export interface MenuItem {
+  title: string;
+  icon: string;
+  link: string;
+  isActive: boolean;
+  subMenu?: SubMenuItem[];
+}
+
+export interface SubMenuItem {
+  title: string;
+  link: string;
+  isActive: boolean;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MenuService {
+  private menuItemsSubject = new BehaviorSubject<MenuItem[]>([
+    {
+      title: 'Dashboard',
+      icon: 'home',
+      link: '/dashboard',
+      isActive: true
+    },
+    {
+      title: 'Leads',
+      icon: 'leads',
+      link: '/leads',
+      isActive: false
+    },
+    {
+      title: 'Sample',
+      icon: 'sample',
+      link: '/sample',
+      isActive: false,
+      subMenu: [
+        {
+          title: 'List',
+          link: '/sample/list',
+          isActive: false
+        },
+        {
+          title: 'Create',
+          link: '/sample/create',
+          isActive: false
+        }
+      ]
+    },
+    {
+      title: 'Sample II',
+      icon: 'sample II',
+      link: '/sample ii',
+      isActive: false,
+      subMenu: [
+        {
+          title: 'List',
+          link: '/sample-ii/list',
+          isActive: false
+        },
+        {
+          title: 'Create',
+          link: '/sample-ii/create',
+          isActive: false
+        }
+      ]
+    },
+    {
+      title: 'Settings',
+      icon: 'settings',
+      link: '/settings',
+      isActive: false
+    }
+  ]);
+
+  constructor() { }
+
+  /**
+   * Get menu items as an observable
+   */
+  getMenuItems(): Observable<MenuItem[]> {
+    return this.menuItemsSubject.asObservable();
+  }
+
+  /**
+   * Get current menu items value
+   */
+  getCurrentMenuItems(): MenuItem[] {
+    return this.menuItemsSubject.value;
+  }
+
+  /**
+   * Activate a menu item by link and deactivate others
+   */
+  activateMenuItem(link: string): void {
+    const menuItems = this.getCurrentMenuItems();
+    const updatedMenuItems = menuItems.map(item => {
+      // Deactivate all main menu items first
+      item.isActive = false;
+      
+      // Check if this is the item to activate
+      if (item.link === link) {
+        item.isActive = true;
+      }
+      
+      // Handle submenu items
+      if (item.subMenu) {
+        item.subMenu = item.subMenu.map(subItem => {
+          subItem.isActive = subItem.link === link;
+          // If a submenu item is active, also activate the parent
+          if (subItem.isActive) {
+            item.isActive = true;
+          }
+          return subItem;
+        });
+      }
+      
+      return item;
+    });
+    
+    this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Deactivate a specific menu item by link
+   */
+  deactivateMenuItem(link: string): void {
+    const menuItems = this.getCurrentMenuItems();
+    const updatedMenuItems = menuItems.map(item => {
+      if (item.link === link) {
+        item.isActive = false;
+      }
+      
+      if (item.subMenu) {
+        item.subMenu = item.subMenu.map(subItem => {
+          if (subItem.link === link) {
+            subItem.isActive = false;
+          }
+          return subItem;
+        });
+      }
+      
+      return item;
+    });
+    
+    this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Deactivate all menu items
+   */
+  deactivateAllMenuItems(): void {
+    const menuItems = this.getCurrentMenuItems();
+    const updatedMenuItems = menuItems.map(item => {
+      item.isActive = false;
+      
+      if (item.subMenu) {
+        item.subMenu = item.subMenu.map(subItem => {
+          subItem.isActive = false;
+          return subItem;
+        });
+      }
+      
+      return item;
+    });
+    
+    this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Add a new menu item
+   */
+  addMenuItem(menuItem: MenuItem): void {
+    const menuItems = this.getCurrentMenuItems();
+    menuItems.push(menuItem);
+    this.menuItemsSubject.next([...menuItems]);
+  }
+
+  /**
+   * Remove a menu item by link
+   */
+  removeMenuItem(link: string): void {
+    const menuItems = this.getCurrentMenuItems();
+    const updatedMenuItems = menuItems.filter(item => item.link !== link);
+    this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Update menu items
+   */
+  updateMenuItems(menuItems: MenuItem[]): void {
+    this.menuItemsSubject.next([...menuItems]);
+  }
+
+  /**
+   * Check if a menu item is active
+   */
+  isMenuItemActive(link: string): boolean {
+    const menuItems = this.getCurrentMenuItems();
+    
+    for (const item of menuItems) {
+      if (item.link === link && item.isActive) {
+        return true;
+      }
+      
+      if (item.subMenu) {
+        for (const subItem of item.subMenu) {
+          if (subItem.link === link && subItem.isActive) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  }
+}

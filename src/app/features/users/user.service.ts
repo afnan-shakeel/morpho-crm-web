@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 // Using the new @ path mapping
+import { ApiBaseService } from '@/core';
 import { APP_CONFIG } from '@/core/config/app.config';
-import { ApiBaseService } from '@/core/services/api-base.service';
 
 export interface User {
   id: number;

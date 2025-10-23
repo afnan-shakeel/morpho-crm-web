@@ -1,9 +1,8 @@
-import { AuthService } from '@/core/services/auth.service';
+import { AuthService, ToastService } from '@/core';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -39,6 +38,13 @@ export class Login {
     const credentials = this.loginForm.value;
     this.authService.login(credentials).subscribe({
       next: (response) => {
+        // check if there is a returnUrl query param
+        const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
+        if (returnUrl) {
+          this.router.navigateByUrl(returnUrl);
+          this.isLoading = false;
+          return;
+        }
         this.router.navigate(['/dashboard']);
         this.isLoading = false;
       },

@@ -1,17 +1,16 @@
 // src/app/core/services/auth.service.ts
 
-import { AuthResponse, UserCredentials } from '@/core/models/auth.model';
+import { AuthResponse, AuthUserInfo, UserCredentials } from '@/core/models/auth.model';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
-import { ApiBaseService } from './api-base.service';
+import { MorphoApiResponse } from '../../models/api.model';
+import { ApiBaseService } from '../http/api-base.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-
     // A Subject/Signal would handle the current user state reactively
     // For now, let's keep it simple and focus on token retrieval.
-    private authToken: string | null = 'dummy-token';
     // BehaviorSubject holds the current value (initial state: false) and streams updates.
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.checkInitialAuthStatus());
 
@@ -27,15 +26,16 @@ export class AuthService {
        * Attempts to log in the user via the API.
        * Uses RxJs operators (tap, catchError) for side effects and error handling.
        */
-    login(credentials: UserCredentials): Observable<AuthResponse> {
+    login(credentials: UserCredentials): Observable<MorphoApiResponse<AuthResponse>> {
 
         // 1. Call the API using the ApiBaseService wrapper
-        return this.api.post<AuthResponse, UserCredentials>('auth/login', credentials).pipe(
+        return this.api.post<MorphoApiResponse<AuthResponse>, UserCredentials>('auth/login', credentials).pipe(
 
             // 2. RxJs tap: Perform side effects upon successful response
             tap(response => {
-                this.storeToken(response.accessToken);
-                this.isAuthenticatedSubject.next(true); // Update state reactively
+                this.storeToken(response?.data?.tokenDetails?.accessToken);
+                this.storeUserInfo(response?.data?.userDetails);
+                this.isAuthenticatedSubject.next(true);
             }),
 
             // 3. RxJs catchError: Handle API errors (e.g., 401 Unauthorized)
@@ -48,29 +48,38 @@ export class AuthService {
         );
     }
 
+    public isAuthenticated(): boolean {
+        return !!this.getAuthToken();
+    }
+
     public getAuthToken(): string | null {
         // Note: The interceptor should primarily use this getter.
-        return this.authToken;
-    }
-    private getStoredToken(): string | null {
         return localStorage.getItem('auth_token');
     }
 
+    public getUserInfo(): AuthUserInfo | null {
+        const userInfo = localStorage.getItem('user_info');
+        return userInfo ? JSON.parse(userInfo) : null;
+    }
+
     private storeToken(token: string): void {
-        this.authToken = token;
         localStorage.setItem('auth_token', token);
     }
 
+    private storeUserInfo(userInfo: AuthUserInfo): void {
+        localStorage.setItem('user_info', JSON.stringify(userInfo));
+    }
+
     private checkInitialAuthStatus(): boolean {
-        return !!this.getStoredToken();
+        return !!this.getAuthToken();
     }
 
     /**
    * Clears the authentication state and token.
    */
     logout(): void {
-        this.authToken = null;
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_info');
         this.isAuthenticatedSubject.next(false);
     }
 }

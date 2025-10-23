@@ -1,6 +1,6 @@
-// Core Services
-export * from './services/api-base.service';
-export * from './services/environment.service';
+// All Services
+export * from './services';
 
 // Core Config
 export * from './config/app.config';
+

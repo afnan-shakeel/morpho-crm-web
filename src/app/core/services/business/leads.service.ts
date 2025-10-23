@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { catchError, Observable, of } from "rxjs";
-import { ApiBaseService } from "./api-base.service";
-import { ToastService } from "./toast.service";
+import { ApiBaseService } from "../http/api-base.service";
+import { ToastService } from "../ui/toast.service";
 
 @Injectable({
     providedIn: 'root'
