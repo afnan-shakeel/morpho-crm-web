@@ -1,0 +1,55 @@
+<form class="bg-white p-4 shadow-md rounded-lg" [formGroup]="filterForm" (ngSubmit)="onApplyFilters()">
+    @for (filter of filterData?.filters; let idx = $index; track idx;) {
+    <ng-container>
+        <div class="mb-4">
+            <label [for]="filter.field" class="block text-sm font-medium text-black dark:text-primary-light mb-0.5">{{
+                filter.label }}</label>
+            @switch(filter.type) {
+            @case ('text') {
+            <input [id]="filter.field" type="text" formControlName="{{filter.field}}"
+                class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+            }
+            @case ('number') {
+            <input [id]="filter.field" type="number" formControlName="{{filter.field}}"
+                class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+            }
+            @case ('date') {
+            <input [id]="filter.field" type="date" formControlName="{{filter.field}}"
+                class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+            }
+            @case ('select') {
+            <div class="grid grid-cols-1">
+                <select [id]="filter.field" [name]="filter.field" formControlName="{{filter.field}}"
+                    class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-0.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
+                    @for (option of filter.options; let oidx = $index; track oidx;) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"
+                    class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                    <path
+                        d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+            </div>
+            }
+            @case ('multiselect') {
+
+            }
+            @default {
+            <input [id]="filter.field" [name]="filter.field" type="text" formControlName="{{filter.field}}"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary sm:text-sm dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-light" />
+            }
+            }
+        </div>
+
+    </ng-container>
+    }
+
+    <div class="flex justify-end space-x-2">
+        <button type="button" (click)="onResetFilters()"
+            class="rounded-md bg-gray-300 px-2 py-0.5 text-xs text-black hover:bg-gray-300/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-700/80 dark:focus-visible:outline-gray-500">Reset</button>
+        <button type="submit"
+            class="rounded-md bg-primary-500 px-3 py-0.5 text-xs text-white hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:text-white dark:hover:bg-primary-500 dark:focus-visible:outline-primary-500">Apply</button>
+    </div>
+</form>

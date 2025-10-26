@@ -16,15 +16,30 @@ export class LeadsService {
             "limit": pageSize
         }
         const body = {
-            query,
-            filters,
-            sort,
-            pagination
+            "globalSearch": {value: query || ''},
+            "filters": filters || [],
+            "sort": sort || {},
+            "pagination": pagination
         };
         return this.api.post('leads/search', body).pipe(
             catchError(error => {
-                this.toastService.error('Failed to fetch leads. Please try again later.');
+                console.error('Error fetching leads:', error);
+                if(error && error.status && (error.status >= 400 && error.status < 500)) {
+                    this.toastService.error(error.error?.message || 'Failed to fetch leads. Please check your input.');
+                } else {
+                    this.toastService.error('Failed to fetch leads. Please try again later.');
+                }
                 return of([])
+            })
+        );
+    }
+
+    getLeadsLookupData(): Observable<any> {
+        return this.api.get('leads/lookup-data').pipe(
+            catchError(error => {
+                console.error('Error fetching leads lookup data:', error);
+                this.toastService.error('Failed to fetch leads lookup data. Please try again later.');
+                return of(null);
             })
         );
     }
