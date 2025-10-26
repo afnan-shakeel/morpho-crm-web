@@ -17,7 +17,15 @@ export const routes: Routes = [
                     import('./modules/dashboard/dashboard.routes')
                         .then(m => m.DASHBOARD_ROUTES)
             },
+            {
+                path: 'leads',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/leads/leads.routes')
+                        .then(m => m.LEADS_ROUTES)
+            }
         ]
     },
+    
 
 ];

@@ -50,7 +50,7 @@ export class Login {
       },
       error: (err) => {
         this.errorMessage = err.message; 
-        this.toastService.error(this.errorMessage || 'Login failed. Please try again.');
+        this.toastService.error(this.errorMessage || 'Login failed. Please try again.', 5000, 'Login Error');
         this.isLoading = false;
       }
     });

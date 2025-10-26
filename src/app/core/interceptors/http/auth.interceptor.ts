@@ -11,12 +11,11 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     
-    // ⚡ V20/Standalone Injection: Use inject()
     private authService = inject(AuthService); 
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const authToken = this.authService.getAuthToken();
-
+        console.log("AuthInterceptor - Token:", authToken);
         // 1. Check if a token exists
         if (authToken) {
             // 2. Clone the request to modify it (requests are immutable)

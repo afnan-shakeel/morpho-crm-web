@@ -91,15 +91,15 @@
 </el-dialog>
 
 <!-- Static sidebar for desktop -->
-<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
+<div class="hidden bg-primary-500 lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div
-        class="relative flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-white/10 dark:bg-gray-900 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
+        class="relative flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200  px-6 dark:border-white/10 dark:bg-gray-900 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
         <div class="relative flex h-16 shrink-0 items-center">
-            <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"
+            <!-- <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"
                 class="h-8 w-auto dark:hidden" />
             <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"
-                class="h-8 w-auto not-dark:hidden" />
+                class="h-8 w-auto not-dark:hidden" /> -->
         </div>
         <nav class="relative flex flex-1 flex-col">
             <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -112,20 +112,21 @@
                             <button type="button" command="--toggle" [attr.commandfor]="'sub-menu-' + idx" 
                                 (click)="onMenuItemClick(item.link)"
                                 [ngClass]="{
-                                    'bg-gray-50 dark:bg-white/5 text-primary dark:text-white': item.isActive,
-                                    'text-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 dark:hover:text-white dark:text-gray-400': !item.isActive
+                                    'bg-gray-50 dark:bg-white/5 text-primary-500 dark:text-white': item.isActive,
+                                    'text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5 dark:hover:text-white dark:text-gray-400': !item.isActive
                                 }"
-                                class="flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold">
+                                class="flex w-full items-center gap-x-3 rounded-md hover:text-primary-500 p-2 text-left text-sm/6 font-semibold">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                                     data-slot="icon" aria-hidden="true"
-                                    class="size-6 shrink-0 text-gray-400 dark:text-current">
+                                    class="size-6 shrink-0 dark:text-current">
                                     <path
                                         d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 {{ item.title }}
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
-                                    class="ml-auto size-5 shrink-0 not-in-aria-expanded:text-gray-400 in-aria-expanded:rotate-90 in-aria-expanded:text-gray-500 dark:in-aria-expanded:text-gray-400">
+
+                                    class="ml-auto size-5 shrink-0 in-aria-expanded:rotate-90 not-in-aria-expanded:text-gray-100 in-aria-expanded:text-primary-500 dark:in-aria-expanded:text-gray-400">
                                     <path
                                         d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
                                         clip-rule="evenodd" fill-rule="evenodd" />
@@ -138,10 +139,10 @@
                                         <!-- 44px -->
                                         <a (click)="onSubMenuItemClick(subItem.link, $event)" [routerLink]="subItem.link"
                                             [ngClass]="{
-                                                'bg-gray-50 text-primary dark:bg-white/5 dark:text-white': subItem.isActive,
-                                                'text-gray-700 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white': !subItem.isActive
+                                                'bg-gray-50 text-primary-500 dark:bg-white/5 dark:text-white': subItem.isActive,
+                                                'text-gray-100 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white': !subItem.isActive
                                             }"
-                                            class="block rounded-md py-2 pr-2 pl-9 text-sm/6 cursor-pointer">{{
+                                            class="block rounded-md hover:text-primary-500 py-2 pr-2 pl-9 text-sm/6 cursor-pointer">{{
                                             subItem.title }}</a>
                                     </li>
                                     }
@@ -151,13 +152,13 @@
                             @else {
                             <a (click)="onMenuItemClick(item.link)" [routerLink]="item.link"
                                 [ngClass]="{
-                                    'bg-gray-50 text-primary dark:bg-white/5 dark:text-white': item.isActive,
-                                    'text-gray-700 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white': !item.isActive
+                                    'bg-gray-50 text-primary-500 dark:bg-white/5 dark:text-white': item.isActive,
+                                    'text-gray-100 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white': !item.isActive
                                 }"
-                                class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold cursor-pointer">
+                                class="group flex gap-x-3 rounded-md p-2 hover:bg-gray-50 hover:text-primary-500 text-sm/6 font-semibold cursor-pointer">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                                     data-slot="icon" aria-hidden="true"
-                                    class="size-6 shrink-0 text-gray-400 dark:text-current">
+                                    class="size-6 shrink-0 dark:text-current hover:text-primary-500">
                                     <path
                                         d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                                         stroke-linecap="round" stroke-linejoin="round" />
@@ -170,9 +171,9 @@
                         }
                     </ul>
                 </li>
-                <li class="-mx-6 mt-auto">
-                    <a href="#"
-                        class="flex items-center gap-x-4 px-6 py-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-white/5">
+                <li class="-mx-6 mt-auto p-2">
+                    <a
+                        class="flex items-center gap-x-4 rounded-md px-6 py-3 text-sm/6 font-semibold text-gray-100 hover:bg-primary-400/40 dark:text-white dark:hover:bg-white/5">
                         <app-avatar [name]="userDetails?.name || ''" size="md"></app-avatar>
                         <span class="sr-only">Your profile</span>
                         <span aria-hidden="true">{{ userDetails?.name }}</span>

@@ -11,14 +11,17 @@ export class LeadsService {
     private toastService = inject(ToastService);
 
     getLeads(query?: string, filters?: any, sort?: any, page?: number, pageSize?: number): Observable<any> {
+        const pagination = {
+            "page": page,
+            "limit": pageSize
+        }
         const body = {
             query,
             filters,
             sort,
-            page,
-            pageSize
+            pagination
         };
-        return this.api.post('leads', body).pipe(
+        return this.api.post('leads/search', body).pipe(
             catchError(error => {
                 this.toastService.error('Failed to fetch leads. Please try again later.');
                 return of([])

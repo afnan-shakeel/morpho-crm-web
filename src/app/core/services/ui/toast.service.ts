@@ -3,9 +3,12 @@ import { Observable, Subject } from 'rxjs';
 
 export interface Toast {
   id: number; // Unique ID for tracking/dismissal
+  title?: string;
   message: string;
   type: 'success' | 'error' | 'info' | 'warning';
   duration: number; // Duration in milliseconds
+  dismissable?: boolean; // Whether user can manually dismiss
+  actions?: { label: string; callback: () => void }[]; // Optional action buttons
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,21 +43,22 @@ export class ToastService {
    * This is called automatically by the ToastContainerComponent after 'duration'.
    */
   public dismiss(id: number): void {
+    console.log('Dismissing toast with id:', id);
     this.toastQueue = this.toastQueue.filter(t => t.id !== id);
     this.queueSubject.next(this.toastQueue); // Push the new, shorter queue
   }
 
   // --- Public Shortcut Methods (Standard Durations) ---
 
-  public success(message: string, duration: number = 4000): void {
-    this.addToast({ message, type: 'success', duration });
+  public success(message: string, duration: number = 4000, title?: string, dismissable?: boolean, actions?: { label: string; callback: () => void }[]): void {
+    this.addToast({ message, type: 'success', duration, title, dismissable, actions });
   }
 
-  public error(message: string, duration: number = 7000): void {
-    this.addToast({ message, type: 'error', duration });
+  public error(message: string, duration: number = 7000, title?: string, dismissable?: boolean, actions?: { label: string; callback: () => void }[]): void {
+    this.addToast({ message, type: 'error', duration, title, dismissable, actions });
   }
 
-  public info(message: string, duration: number = 5000): void {
-    this.addToast({ message, type: 'info', duration });
+  public info(message: string, duration: number = 5000, title?: string, dismissable?: boolean, actions?: { label: string; callback: () => void }[]): void {
+    this.addToast({ message, type: 'info', duration, title, dismissable, actions });
   }
 }

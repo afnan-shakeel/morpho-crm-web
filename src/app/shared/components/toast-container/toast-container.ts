@@ -9,7 +9,7 @@ import { Component, inject, OnInit } from '@angular/core';
   styleUrl: './toast-container.css'
 })
 export class ToastContainer implements OnInit {
-   public toastService = inject(ToastService); // Inject service publicly for template access
+  public toastService = inject(ToastService); // Inject service publicly for template access
   
   ngOnInit(): void {
     // We subscribe here to manage the timers explicitly
@@ -33,7 +33,7 @@ export class ToastContainer implements OnInit {
   public getToastClasses(type: Toast['type']): string {
     switch (type) {
       case 'success':
-        return 'bg-green-500 text-white';
+        return 'bg-green-50 dark:bg-green-500/10 text-white  dark:outline dark:outline-green-500/20';
       case 'error':
         return 'bg-red-600 text-white';
       case 'info':
