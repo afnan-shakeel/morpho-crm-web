@@ -1,1 +1,10 @@
-<app-lead-form></app-lead-form>
+<app-lead-form 
+  [leadStatusOptions]="leadStatuses" 
+  [leadSourceOptions]="leadSources"
+  [isEditMode]="isEditMode"
+  [formTitle]="formTitle"
+  [leadId]="leadId"
+  [isLoading]="isLoading"
+  (formSubmit)="onFormSubmit($event)"
+  (formCancel)="onFormCancel()">
+</app-lead-form>

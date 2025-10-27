@@ -53,7 +53,6 @@ export class AuthService {
     }
 
     public getAuthToken(): string | null {
-        // Note: The interceptor should primarily use this getter.
         return localStorage.getItem('auth_token');
     }
 

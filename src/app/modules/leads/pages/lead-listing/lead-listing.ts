@@ -2,8 +2,9 @@ import { CustomDatatable } from "@/shared/components/custom-datatable/custom-dat
 import { PageHeading } from "@/shared/components/page-heading/page-heading";
 import { Component, inject } from '@angular/core';
 import { Router } from "@angular/router";
-import { LeadsService } from "../../../../core";
 import { DataTableColumn } from "../../../../shared/components/custom-datatable/types";
+import { LeadsService } from "../../leads.service";
+import { LeadLookupData } from "../../types";
 
 @Component({
   selector: 'app-lead-listing',
@@ -85,10 +86,10 @@ export class LeadListing {
 
   setLeadLookupData() {
     this.leadsService.getLeadsLookupData().subscribe({
-      next: (response) => {
+      next: (response: LeadLookupData) => {
         if (response) {
-          this.leadSourcesOptions = response.data?.leadSources || [];
-          this.leadStatusOptions = response.data?.leadStatuses || [];
+          this.leadSourcesOptions = response.leadSources || [];
+          this.leadStatusOptions = response.leadStatuses || [];
           console.log("Fetched lead lookup data:", this.leadStatusOptions);
           // update the filters with the fetched options
           this.filters = this.filters.map(filter => {
@@ -131,8 +132,8 @@ export class LeadListing {
     ).subscribe({
       next: (response) => {
 
-        let data = response.data?.data || []
-        this.totalRecords = response.data?.total || data.length;
+        let data = response?.data || []
+        this.totalRecords = response?.total || data.length;
 
         // use the columns to map the data
         this.leads = data.map((lead: any) => {
@@ -191,5 +192,9 @@ export class LeadListing {
 
     this.currentPage = 1;
     this.loadLeads();
+  }
+
+  onCreateLead() {
+    this.router.navigate(['/leads/form']);
   }
 }
