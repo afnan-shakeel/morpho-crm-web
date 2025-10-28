@@ -5,6 +5,7 @@ import { UsersService } from '../../../../core/services/business/users.service';
 import { LeadsService } from '../../leads.service';
 import {
   Lead,
+  LeadAddressForm as LeadAddressFormType,
   LeadFormData,
   LeadOwnerOption,
   LeadSourceOption,
@@ -32,9 +33,13 @@ export class LeadForm {
   @Input() leadSourceOptions: LeadSourceOption[] = [];
   @Input() leadStatusOptions: LeadStatusOption[] = [];
   @Input() isLoading: boolean = false;
+  @Input() showAddressForm: boolean = false;
+  @Input() saveButtonText: string = 'Save';
+  @Input() saveAndExitButtonText: string = 'Save and Exit';
 
-  @Output() formSubmit = new EventEmitter<LeadFormData>();
+  @Output() formSubmit = new EventEmitter<{data: LeadFormData, action: 'next' | 'saveAndExit'}>();
   @Output() formCancel = new EventEmitter<void>();
+  @Output() addressFormSubmit = new EventEmitter<{data: LeadAddressFormType, action: 'save' | 'saveAndExit'}>();
 
   leadInfoForm = this.fb.group({
     leadId: [''],
@@ -52,11 +57,10 @@ export class LeadForm {
 
   userList: LeadOwnerOption[] = []
 
-
   ngOnInit() {
     if (this.isEditMode && this.leadId) {
       // fetch lead data by leadId and populate the form
-      this.fetchLeadData(this.leadId);
+      this.populateLeadData(this.leadId);
     }
     this.loadUserList();
 
@@ -71,24 +75,31 @@ export class LeadForm {
   }
   ngAfterViewInit() {
 
-    // handle input event for lead owner autocomplete
+    // [custom event] handle input event for lead owner autocomplete
     const leadOwnerElement = document.getElementById('leadOwner');
     if (leadOwnerElement) {
       leadOwnerElement.addEventListener('input', (event: any) => {
-        const searchTerm = event.target.value;
         const optionsContainer = leadOwnerElement.querySelector('el-options');
         const optionElements = optionsContainer?.getElementsByTagName('el-option');
         if (optionElements) {
-          // filter elements based on search term
+          // filter elements based on user search
           for (let i = 0; i < optionElements.length; i++) {
             const option = optionElements[i];
-            const fullName = option.textContent || '';
-            if (fullName.toLowerCase().includes(searchTerm.toLowerCase())) {
-              const userId = isNaN(Number(option.getAttribute('id'))) ? 0 : Number(option.getAttribute('id'));
-              this.leadInfoForm.patchValue({ leadOwnerId: userId });
+            const selectedUserName = this.leadInfoForm.get('leadOwnerName')?.value?.toLowerCase() || '';
+            const optionUserName = option.getAttribute('value')?.toLowerCase() || '';
+            if (optionUserName.includes(selectedUserName)) {
+              const selectedUserId = option.getAttribute('id');
+              this.leadInfoForm.patchValue({ leadOwnerId: isNaN(Number(selectedUserId)) ? 0 : Number(selectedUserId) });
+              break;
             }
           }
         }
+
+        // if the input is cleared, reset leadOwnerId
+        if (!this.leadInfoForm.get('leadOwnerName')?.value) {
+          this.leadInfoForm.patchValue({ leadOwnerId: 0 });
+        }
+
       });
     }
   }
@@ -106,11 +117,10 @@ export class LeadForm {
     });
   }
 
-  private fetchLeadData(leadId: string) {
+  private populateLeadData(leadId: string) {
     this.leadsService.getLeadById(leadId).subscribe({
       next: (response: Lead) => {
         const leadData = response;
-        // Populate the form with the fetched lead data
         this.leadInfoForm.patchValue({
           leadId: leadData.leadId,
           leadOwnerId: leadData.leadOwnerId,
@@ -124,6 +134,7 @@ export class LeadForm {
           email: leadData.email,
           company: leadData.company
         });
+        this.leadInfoForm.patchValue({ leadOwnerName: "admin admin" });
       },
       error: (error) => {
         console.error('Error fetching lead data:', error);
@@ -131,17 +142,14 @@ export class LeadForm {
     });
   }
 
-  setOwnerId(user: LeadOwnerOption) {
-    console.log('Setting Owner ID:', user.id);
-    this.leadInfoForm.patchValue({ leadOwnerId: user.id });
-    console.log('Selected Owner ID:', this.leadInfoForm.get('leadOwnerId')?.value);
+  setOwnerName(user: LeadOwnerOption) {
+    this.leadInfoForm.patchValue({ leadOwnerName: user.fullName });
   }
 
-  onSubmit() {
+  onSubmit(action: 'next' | 'saveAndExit' = 'next') {
     if (this.leadInfoForm.valid) {
       const leadData = this.leadInfoForm.value;
 
-      // Prepare the data for submission
       const submissionData: LeadFormData = {
         leadOwnerId: leadData.leadOwnerId as number,
         leadOwnerName: leadData.leadOwnerName || '',
@@ -156,8 +164,7 @@ export class LeadForm {
         leadId: this.leadId || undefined,
       };
 
-      // Emit the form data to the parent component
-      this.formSubmit.emit(submissionData);
+      this.formSubmit.emit({ data: submissionData, action });
     } else {
       // Mark all fields as touched to show validation errors
       this.leadInfoForm.markAllAsTouched();
@@ -166,5 +173,9 @@ export class LeadForm {
 
   onCancel() {
     this.formCancel.emit();
+  }
+
+  handleLeadAddressSubmit(addressData: LeadAddressFormType, action: 'save' | 'saveAndExit' = 'save') {
+    this.addressFormSubmit.emit({ data: addressData, action });
   }
 }

@@ -1,10 +1,12 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../../core';
 import { LeadForm } from "../../components/lead-form/lead-form";
 import { LeadsService } from '../../leads.service';
 import {
   CreateLeadPayload,
+  LeadAddressForm,
   LeadFormData,
   LeadLookupData,
   LeadSourceOption,
@@ -24,24 +26,37 @@ export class LeadsCreateOrUpdate {
 
   private leadService = inject(LeadsService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   // get the leadId from query params to determine if it's create or update
   private fb = inject(FormBuilder);
-  leadId: string | null = null;
-  isEditMode: boolean = false;
-  formTitle: string = 'Create Lead';
+  leadId = signal<string | null>(null);
+  isEditMode = signal<boolean>(false);
+  formTitle = signal<string>('Create Lead');
+  showAddressForm = signal<boolean>(false);
 
   leadSources: LeadSourceOption[] = [];
   leadStatuses: LeadStatusOption[] = [];
-  isLoading: boolean = false;
+  isLoading = signal<boolean>(false);
+
+  // Button text based on mode
+  get saveButtonText(): string {
+    return this.isEditMode() ? 'Update' : 'Save';
+  }
+
+  get saveAndExitButtonText(): string {
+    return this.isEditMode() ? 'Update and Exit' : 'Save and Exit';
+  }
 
   ngOnInit() {
     const urlParams = new URLSearchParams(window.location.search);
-    this.leadId = urlParams.get('leadId');
-    this.isEditMode = this.leadId !== null;
+    this.leadId.set(urlParams.get('leadId'));
+    console.log('Lead ID from query params:', this.leadId());
+    this.isEditMode.set(this.leadId() !== null);
     
-    if (this.isEditMode) {
-      this.formTitle = 'Edit Lead';
+    if (this.isEditMode()) {
+      this.formTitle.set('Edit Lead');
+      this.showAddressForm.set(true); // Show address form immediately in edit mode
     }
     this.setLeadsLookupData();
   }
@@ -58,15 +73,15 @@ export class LeadsCreateOrUpdate {
     })
   }
 
-  onFormSubmit(formData: LeadFormData) {
-    if (this.isLoading) return; // Prevent multiple submissions
-    
-    this.isLoading = true;
-    
+  onFormSubmit(formData: LeadFormData, action: 'next' | 'saveAndExit' = 'next') {
+    if (this.isLoading()) return; // Prevent multiple submissions
+
+    this.isLoading.set(true);
+
     if (formData.leadId) {
-      this.updateLead(formData);
+      this.updateLead(formData, action);
     } else {
-      this.createLead(formData);
+      this.createLead(formData, action);
     }
   }
 
@@ -75,7 +90,7 @@ export class LeadsCreateOrUpdate {
     this.router.navigate(['/leads']);
   }
 
-  private createLead(leadData: LeadFormData) {
+  private createLead(leadData: LeadFormData, action: 'next' | 'saveAndExit') {
     // Remove unnecessary fields before sending to API
     const { leadId, ...cleanData } = leadData;
     
@@ -94,21 +109,35 @@ export class LeadsCreateOrUpdate {
     
     this.leadService.createLead(createPayload).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (response) {
-          console.log('Lead created successfully:', response);
-          // Navigate to leads listing or show success message
-          // this.router.navigate(['/leads']);
+          this.leadId.set(response.leadId);
+          this.isEditMode.set(true);
+          this.formTitle.set('Edit Lead');
+          this.toastService.success('Lead saved successfully');
+          
+          if (action === 'next') {
+            this.showAddressForm.set(true);
+            // wait 2 seconds and then scroll down to address section
+            setTimeout(() => {
+              const addressSection = document.getElementById('lead-address-form');
+              if (addressSection) {
+                addressSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 2000);
+          } else if (action === 'saveAndExit') {
+            this.router.navigate(['/leads']);
+          }
         }
       },
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error('Error creating lead:', error);
       }
     });
   }
 
-  private updateLead(leadData: LeadFormData) {
+  private updateLead(leadData: LeadFormData, action: 'next' | 'saveAndExit') {
     // Remove unnecessary fields before sending to API
     const { ...cleanData } = leadData;
     
@@ -128,17 +157,51 @@ export class LeadsCreateOrUpdate {
     
     this.leadService.updateLead(updatePayload).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (response) {
-          console.log('Lead updated successfully:', response);
-          // Navigate to leads listing or show success message
-          // this.router.navigate(['/leads']);
+          this.toastService.success('Lead updated successfully');
+          
+          if (action === 'next') {
+            this.showAddressForm.set(true);
+            // Scroll to address section
+            setTimeout(() => {
+              const addressSection = document.getElementById('lead-address-form');
+              if (addressSection) {
+                addressSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 500);
+          } else if (action === 'saveAndExit') {
+            this.router.navigate(['/leads']);
+          }
         }
       }, 
       error: (error) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error('Error updating lead:', error);
       }
     });
+  }
+
+  onAddressFormSubmit(addressData: LeadAddressForm, action: 'save' | 'saveAndExit' = 'save') {
+    addressData.isPrimary = true; // ensure primary flag is set
+    this.leadService.createLeadAddress(this.leadId()!, addressData).subscribe({
+      next: (response) => {
+        if(response.addressId){
+          this.toastService.success('Lead address saved successfully');
+          
+          if (action === 'saveAndExit') {
+            this.router.navigate(['/leads']);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error creating lead address:', error);
+      }
+    });
+  }
+
+  onAddressFormCancel() {
+    // Navigate back to leads listing page
+    this.router.navigate(['/leads']);
   }
 }

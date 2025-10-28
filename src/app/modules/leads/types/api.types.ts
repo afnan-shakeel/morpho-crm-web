@@ -1,4 +1,6 @@
-import { LeadStatus } from './lead.types';
+import { ApiResponse } from '../../../core/services/http/types';
+import { LeadSourceOption, LeadStatusOption } from './form.types';
+import { Lead, LeadInteraction, LeadInteractionType, LeadStatus } from './lead.types';
 
 /**
  * Create lead API payload
@@ -39,15 +41,51 @@ export interface UpdateLeadPayload {
  */
 export interface CreateLeadAddressPayload {
   leadId: string;
-  addressType: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  isPrimary: boolean;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  isPrimary?: boolean;
 }
+ 
 
 export interface UpdateLeadAddressPayload extends CreateLeadAddressPayload {
   addressId: string;
 }
+
+export interface LeadsListData {
+  data: Lead[];
+  count: number;
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface LeadLookupData {
+  leadSources: LeadSourceOption[];
+  leadStatuses: LeadStatusOption[];
+}
+
+export interface LeadLookupDataResponse extends ApiResponse<LeadLookupData> {}
+
+export interface LeadLookupDataResponse extends ApiResponse<LeadLookupData> {}
+
+
+/**
+ * Lead address API response
+ */
+export interface LeadAddressResponse extends ApiResponse<CreateLeadAddressPayload> {}
+
+
+export interface CreateLeadInteractionPayload {
+  interactionType: LeadInteractionType;
+  interactionDate: string;
+  notes?: string;
+}
+export interface UpdateLeadInteractionPayload extends CreateLeadInteractionPayload {
+  interactionId: string;
+}
+export interface LeadInteractionResponse extends ApiResponse<LeadInteraction> {}
+

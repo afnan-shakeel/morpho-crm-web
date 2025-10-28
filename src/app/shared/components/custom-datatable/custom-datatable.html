@@ -75,9 +75,11 @@
                                 </div>
                             </th>
                             @for (column of columns; track column.field; let idx = $index) {
+                            @if (!column.hidden) {
                             <th scope="col"
                                 class="min-w-48 py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
                                 {{ column.label }}</th>
+                            }
                             }
                             <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-3">
                                 <span class="sr-only">Edit</span>
@@ -107,8 +109,10 @@
                             </td>
 
                             @for (column of columns; track column.field) {
+                            @if (!column.hidden) {
                             <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                                 {{ record[column.field] }}</td>
+                            }
                             }
                             <td class="py-4 pr-4 pl-3 whitespace-nowrap sm:pr-3">
                                 <el-dropdown class="inline-block">

@@ -1,18 +1,22 @@
+import { ModalSmall } from "@/modules/shared/components/modal-small/modal-small";
 import { CustomDatatable } from "@/shared/components/custom-datatable/custom-datatable";
 import { PageHeading } from "@/shared/components/page-heading/page-heading";
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
+import { FormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { DataTableColumn } from "../../../../shared/components/custom-datatable/types";
 import { LeadsService } from "../../leads.service";
-import { LeadLookupData } from "../../types";
+import { Lead, LeadLookupData } from "../../types";
 
 @Component({
   selector: 'app-lead-listing',
-  imports: [PageHeading, CustomDatatable],
+  imports: [PageHeading, CustomDatatable, ModalSmall, FormsModule],
   templateUrl: './lead-listing.html',
   styleUrl: './lead-listing.css'
 })
 export class LeadListing {
+  @ViewChild(ModalSmall) leadStatusChangeModal!: ModalSmall;
+
   constructor() {
     this.setLeadLookupData();
   }
@@ -26,9 +30,12 @@ export class LeadListing {
 
   leads: any[] = [];
   columns: DataTableColumn[] = [
+    { field: 'leadId', label: 'Lead ID', hidden: true },
     { field: 'firstName', label: 'Name' },
     { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
+    { field: 'leadStatus', label: 'Lead Status' },
+    { field: 'createdAt', label: 'Created At' },
   ];
   loading: boolean = false;
   currentPage: number = 1;
@@ -61,14 +68,26 @@ export class LeadListing {
       label: 'View',
       actionCallback: (rowData: any) => {
         console.log("View Details clicked for:", rowData);
+        // navigate to the lead detail view page, add in route path
+        this.router.navigate(['/leads/detail', rowData.leadId]);
       }
     },
     {
       label: 'Edit',
-      actionCallback: (rowData: any) => {
+      actionCallback: (rowData: Lead) => {
         console.log("Edit clicked for:", rowData);
         // navigate to the lead edit page
-        this.router.navigate(['/leads/form'], { queryParams: { leadId: rowData.id } });
+        this.router.navigate(['/leads/form'], { queryParams: { leadId: rowData.leadId } });
+      }
+    },
+    {
+      label: 'Update Status',
+      actionCallback: (rowData: Lead) => {
+        console.log("clicked for:", rowData);
+        this.leadStatusUpdateFormData.leadId = rowData.leadId;
+        this.leadStatusUpdateFormData.newStatus = rowData.leadStatus;
+        this.openLeadStatusChangeDialog();
+        
       }
     },
     {
@@ -79,6 +98,10 @@ export class LeadListing {
     }
   ];
 
+  leadStatusUpdateFormData = {
+    leadId: '',
+    newStatus: ''
+  };
 
   ngOnInit() {
     this.loadLeads();
@@ -196,5 +219,25 @@ export class LeadListing {
 
   onCreateLead() {
     this.router.navigate(['/leads/form']);
+  }
+
+  openLeadStatusChangeDialog() {
+    this.leadStatusChangeModal.open();
+  }
+  closeLeadStatusChangeDialog() {
+    this.leadStatusChangeModal.close();
+  }
+  handleLeadStatusUpdate() {
+    this.leadsService.updateLeadStatus(this.leadStatusUpdateFormData.leadId, this.leadStatusUpdateFormData.newStatus).subscribe({
+      next: (response) => {
+        console.log("Lead status updated successfully:", response);
+        this.leadStatusChangeModal.close();
+        this.loadLeads(); // refresh the leads list
+      },
+      error: (error) => {
+        console.error("Error updating lead status:", error);
+      }
+    });
+
   }
 }

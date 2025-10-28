@@ -24,13 +24,24 @@ export class UsersService {
         }
 
         return this.api.get('users/list', params).pipe(
-            map((response: any) => response.data),
             catchError(error => {
                 console.error('Error fetching users:', error);
                 // this.toastService.error('Failed to fetch users. Please try again later.');
                 return of([]);
-            })
+            }),
+            map((response: any) => response.data),
         )
+    }
+
+    getUserById(userId: number): Observable<any> {
+        return this.api.get(`users/${userId}`).pipe(
+            catchError(error => {
+                console.error(`Error fetching user with ID ${userId}:`, error);
+                // this.toastService.error('Failed to fetch user details. Please try again later.');
+                return of(null);
+            }),
+            map((response: any) => response.data),
+        );
     }
 
 }

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastService } from '../../../../core';
+import { LeadsService } from '../../leads.service';
+import { LeadAddressForm as LeadAddressFormType } from '../../types';
 
 @Component({
   selector: 'app-lead-address-form',
@@ -11,19 +13,22 @@ import { ToastService } from '../../../../core';
 export class LeadAddressForm {
   private fb = inject(FormBuilder);
   private toastService = inject(ToastService);
+  private leadsService = inject(LeadsService);
 
-  private leadId: string | null = null;
+  public leadId: string | null = null;
   @Input() set setLeadId(value: string | null) {
     this.leadId = value;
   }
-  @Output() submitAddress: EventEmitter<any> = new EventEmitter<any>();
+  isEditMode: boolean = false;
+  @Input() isLoading: boolean = false;
+  @Input() saveButtonText: string = 'Save';
+  @Input() saveAndExitButtonText: string = 'Save and Exit';
+  @Output() submitAddress: EventEmitter<{data: LeadAddressFormType, action: 'save' | 'saveAndExit'}> = new EventEmitter();
+  @Output() cancelAddress: EventEmitter<void> = new EventEmitter();
 
 
   ngOnInit() {
-    if(!this.leadId) {
-      // disable the form if no leadId is provided
-      this.addressForm.disable();
-    }
+    this.getLeadAddress();
   }
   leadInformationErrorMessage: string = 'Please fill and save lead information before adding an address.';
   addressForm = this.fb.group({
@@ -31,37 +36,43 @@ export class LeadAddressForm {
     addressLine1: [''],
     addressLine2: [''],
     city: [''],
-    pincode: [''],
+    postalCode: [''],
     state: ['', Validators.required],
     country: ['Oman', Validators.required]
   });
 
-  onSubmit() {
+  onSubmit(action: 'save' | 'saveAndExit' = 'save') {
     if (!this.leadId) {
       this.toastService.error('Please fill and save lead information before adding an address.');
       return;
     }
     if (this.addressForm.valid) {
-      this.submitAddress.emit(this.addressForm.value);
+      this.submitAddress.emit({ data: this.addressForm.value as LeadAddressFormType, action });
     }
   }
 
-  getLeadAddress() {
-    // Simulate fetching address data for the given leadId
-    if (!this.leadId) return;
-    const addressData = {
-      addressLine1: '123 Main St',
-      addressLine2: 'Apt 4B',
-      city: 'Metropolis',
-      state: 'NY',
-      zip: '10001',
-      country: 'USA'
-    };
-    this.populateAddress(addressData);
+  onCancel() {
+    this.cancelAddress.emit();
   }
 
-  // Method to populate the form with existing address data
-  populateAddress(addressData: any) {
+  getLeadAddress() {
+    if (!this.leadId) return;
+    this.leadsService.getLeadAddress(this.leadId).subscribe({
+      next: (response) => {
+        // if address data exists, populate the form and consider edit mode
+        if (response && response.addressId) {
+          this.populateAddressForm(response);
+          this.isEditMode = true;
+        }
+        else {
+          this.isEditMode = false;
+          // this.addressForm.reset();
+        }
+      }
+    });
+  }
+
+  populateAddressForm(addressData: LeadAddressFormType) {
     this.addressForm.patchValue(addressData);
   }
 }

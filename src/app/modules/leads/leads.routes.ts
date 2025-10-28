@@ -9,5 +9,9 @@ export const LEADS_ROUTES: Routes = [
   {
     path: 'form',
     loadComponent: () => import('./pages/leads-create-or-update/leads-create-or-update').then(m => m.LeadsCreateOrUpdate)
+  },
+  {
+    path: 'detail/:id',
+    loadComponent: () => import('./pages/lead-detail-view/lead-detail-view').then(m => m.LeadDetailView)
   }
 ];

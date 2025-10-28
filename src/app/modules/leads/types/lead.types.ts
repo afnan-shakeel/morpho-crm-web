@@ -53,11 +53,11 @@ export enum LeadSource {
 export interface LeadAddress {
   addressId?: string;
   leadId: string;
-  addressType: AddressType;
-  street: string;
+  addressLine1: string;
+  addressLine2?: string;
   city: string;
   state: string;
-  zipCode: string;
+  postalCode: string;
   country: string;
   isPrimary: boolean;
 }
@@ -69,5 +69,46 @@ export enum AddressType {
   PRIMARY = 'Primary',
   BILLING = 'Billing',
   SHIPPING = 'Shipping',
+  OTHER = 'Other'
+}
+
+
+export interface LeadLogs {
+  logId: string;
+  leadId: string;
+  logMessage: string;
+  changedBy: number;
+  changedByName?: string;
+  changedAt: string;
+  changeType: LeadLogChangeType;
+}
+
+export enum LeadLogChangeType {
+  ENTITY_CREATED = 'Lead Created',
+  STATUS_CHANGE = 'Status Change',
+  SOURCE_CHANGE = 'Source Change',
+  INFO_UPDATE = 'Information Update',
+  ADDRESS_UPDATE = 'Address Update',
+  OTHER = 'Other'
+}
+
+export interface LeadInteraction {
+  interactionId: string;
+  leadId: string;
+  interactionType: LeadInteractionType;
+  interactionDate: string;
+  notes?: string;
+  createdAt: string;
+  createdBy: number;
+  createdByName: string;
+  updatedAt: string;
+  updatedBy: number;
+}
+
+export enum LeadInteractionType {
+  CALL = 'Call',
+  EMAIL = 'Email',
+  MEETING = 'Meeting',
+  FOLLOW_UP = 'Follow-up',
   OTHER = 'Other'
 }

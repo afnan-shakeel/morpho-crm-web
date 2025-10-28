@@ -1,14 +1,22 @@
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
 import { ApiBaseService, ToastService } from "../../core";
+import { ApiErrorHandlerService } from "../../core/services/http/api-error-handler.service";
 import { ApiResponse, SearchApiPayload } from "../../core/services/http/types";
 import {
+    CreateLeadAddressPayload,
+    CreateLeadInteractionPayload,
     CreateLeadPayload,
     Lead,
+    LeadAddress,
     LeadAddressResponse,
+    LeadInteraction,
+    LeadInteractionResponse,
+    LeadLogs,
     LeadLookupData,
     LeadLookupDataResponse,
     LeadsListData,
+    UpdateLeadInteractionPayload,
     UpdateLeadPayload
 } from "./types";
 
@@ -18,58 +26,51 @@ import {
 export class LeadsService {
     private api = inject(ApiBaseService);
     private toastService = inject(ToastService);
+    private errorHandler = inject(ApiErrorHandlerService);
 
     getLeads(query?: string, filters?: any, sort?: any, page?: number, pageSize?: number): Observable<LeadsListData> {
-        const pagination = {
-            "page": page || 1,
-            "limit": pageSize || 10
-        }
         const body: SearchApiPayload = {
             "globalSearch": {value: query || ''},
             "filters": filters || [],
             "sort": sort || {},
-            "pagination": pagination
+            "pagination": {
+                page: page || 1,
+                limit: pageSize || 10
+            }
         };
         return this.api.post<LeadsListData, SearchApiPayload>('leads/search', body).pipe(
-            map((response: any) => response.data),
             catchError(error => {
-                console.error('Error fetching leads:', error);
-                if(error && error.status && (error.status >= 400 && error.status < 500)) {
-                    this.toastService.error(error.error?.message || 'Failed to fetch leads. Please check your input.');
-                } else {
-                    this.toastService.error('Failed to fetch leads. Please try again later.');
-                }
+                this.errorHandler.handleError(error);
                 return of({} as LeadsListData)
-            })
+            }),
+            map((response: any) => response.data),
         );
     }
 
     getLeadsLookupData(): Observable<LeadLookupData> {
         return this.api.get<LeadLookupDataResponse>('leads/lookup-data').pipe(
-            map((response: any) => response.data),
             catchError(error => {
                 console.error('Error fetching leads lookup data:', error);
                 this.toastService.error('Failed to fetch leads lookup data. Please try again later.');
                 return of({} as LeadLookupData);
-            })
+            }),
+            map((response: any) => response.data),
         );
     }
 
-    getLeadAddress(leadId: string): Observable<LeadAddressResponse> {
+    getLeadAddress(leadId: string): Observable<LeadAddress> {
         return this.api.get<LeadAddressResponse>(`leads/${leadId}/address-primary`).pipe(
             catchError(error => {
-                console.error('Error fetching lead address:', error);
-                this.toastService.error('Failed to fetch lead address. Please try again later.');
                 return of({} as LeadAddressResponse);
-            })
+            }),
+            map((response: any) => response.data),
         );
     }
 
-    createLead(leadData: CreateLeadPayload): Observable<ApiResponse<Lead>> {
+    createLead(leadData: CreateLeadPayload): Observable<Lead> {
         return this.api.post<ApiResponse<Lead>, CreateLeadPayload>('leads/create', leadData).pipe(
             catchError(error => {
-                console.error('Error creating lead:', error);
-                this.toastService.error('Failed to create lead. Please try again later.');
+                this.errorHandler.handleError(error);
                 return of({} as ApiResponse<Lead>);
             }),
             map((response: any) => response.data),
@@ -77,24 +78,93 @@ export class LeadsService {
     }
 
     updateLead(updateleadData: UpdateLeadPayload): Observable<ApiResponse<Lead>> {
-        return this.api.put<ApiResponse<Lead>, UpdateLeadPayload>(`leads/update`, updateleadData).pipe(
-            map((response: any) => response.data),
+        return this.api.post<ApiResponse<Lead>, UpdateLeadPayload>(`leads/update`, updateleadData).pipe(
             catchError(error => {
-                console.error('Error updating lead:', error);
-                this.toastService.error('Failed to update lead. Please try again later.');
+                this.errorHandler.handleError(error);
                 return of({} as ApiResponse<Lead>);
-            })
+            }),
+            map((response: any) => response.data),
         );
     }
 
     getLeadById(leadId: string): Observable<Lead> {
         return this.api.get<ApiResponse<Lead>>(`leads/${leadId}`).pipe(
-            map((response: any) => response.data),
             catchError(error => {
                 console.error('Error fetching lead:', error);
                 this.toastService.error('Failed to fetch lead details. Please try again later.');
                 return of({} as Lead);
-            })
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    createLeadAddress(leadId: string, addressData: CreateLeadAddressPayload): Observable<LeadAddress> {
+        return this.api.post<LeadAddressResponse, CreateLeadAddressPayload>(`leads/${leadId}/address/create`, addressData).pipe(
+            catchError(error => {
+                return this.errorHandler.handleError(error);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    getLeadLogs(leadId: string): Observable<LeadLogs[]> {
+        return this.api.get<ApiResponse<LeadLogs[]>>(`leads/${leadId}/logs`).pipe(
+            catchError(error => {
+                console.error('Error fetching lead logs:', error);
+                this.toastService.error('Failed to fetch lead logs. Please try again later.');
+                return of([] as LeadLogs[]);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    createLeadInteraction(leadId: string, interactionData: CreateLeadInteractionPayload): Observable<LeadInteraction> {
+        return this.api.post<LeadInteractionResponse, CreateLeadInteractionPayload>(`leads/${leadId}/interaction/create`, interactionData).pipe(
+            catchError(error => {
+                return this.errorHandler.handleError(error);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    updateLeadInteraction(leadId: string, interactionId: string, interactionData: UpdateLeadInteractionPayload): Observable<LeadInteraction> {
+        return this.api.post<LeadInteractionResponse, UpdateLeadInteractionPayload>(`leads/${leadId}/interaction/update/${interactionId}`, interactionData).pipe(
+            catchError(error => {
+                return this.errorHandler.handleError(error);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    getLeadInteractions(leadId: string): Observable<LeadInteraction[]> {
+        return this.api.get<ApiResponse<LeadInteraction[]>>(`leads/${leadId}/interaction`).pipe(
+            catchError(error => {
+                console.error('Error fetching lead interactions:', error);
+                this.toastService.error('Failed to fetch lead interactions. Please try again later.');
+                return of([] as LeadInteraction[]);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    getLeadInteractionById(leadId: string, interactionId: string): Observable<LeadInteraction> {
+        return this.api.get<LeadInteractionResponse>(`leads/${leadId}/interaction/${interactionId}`).pipe(
+            catchError(error => {
+                console.error('Error fetching lead interaction:', error);
+                this.toastService.error('Failed to fetch lead interaction. Please try again later.');
+                return of({} as LeadInteraction);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    updateLeadStatus(leadId: string, status: string): Observable<Lead> {
+        return this.api.post<ApiResponse<Lead>, any>(`leads/status-update/${leadId}`, { leadStatus: status }).pipe(
+            catchError(error => {
+                this.errorHandler.handleError(error);
+                return of({} as ApiResponse<Lead>);
+            }),
+            map((response: any) => response.data),
         );
     }
 
