@@ -12,7 +12,7 @@ import {
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadsService } from '../../leads.service';
-import { Lead, LeadLookupData } from '../../types';
+import { Lead } from '../../types';
 
 @Component({
   selector: 'app-lead-listing',
@@ -138,33 +138,54 @@ export class LeadListing {
     this.loadLeads();
   }
 
+  
+
   setLeadLookupData() {
-    this.leadsService.getLeadsLookupData().subscribe({
-      next: (response: LeadLookupData) => {
-        if (response) {
-          this.leadSourcesOptions = response.leadSources || [];
-          this.leadStatusOptions = response.leadStatuses || [];
-          console.log('Fetched lead lookup data:', this.leadStatusOptions);
-          // update the filters with the fetched options
-          this.filters = this.filters.map((filter) => {
-            if (filter.field === 'leadSource') {
-              return { ...filter, options: this.leadSourcesOptions };
-            }
-            if (filter.field === 'leadStatus') {
-              return { ...filter, options: this.leadStatusOptions };
-            }
-            return filter;
-          });
-        }
+    this.getLeadStatuses();
+    this.getLeadSources();
+  }
+
+  getLeadSources() {
+    this.leadsService.getLeadSources().subscribe({
+      next: (sources) => {
+        this.leadSourcesOptions = sources.map(source => ({ label: source.sourceName, value: source.sourceId }));
+        // update the filters with the fetched options
+        this.filters = this.filters.map((filter) => {
+          if (filter.field === 'leadSource') {
+            return { ...filter, options: this.leadSourcesOptions };
+          }
+          return filter;
+        });
         this.filterData = {
           filters: this.filters,
           config: {},
         };
-        console.log('Lead filter options set:', this.filters);
+        console.log('Lead Sources Options:', this.leadSourcesOptions);
       },
-
       error: (error) => {
-        console.error('Error fetching lead lookup data:', error);
+        console.error('Error fetching lead sources:', error);
+      },
+    });
+  }
+
+  getLeadStatuses() {
+    this.leadsService.getLeadsLookupData().subscribe({
+      next: (response) => {
+        this.leadStatusOptions = response.leadStatuses.map(status => ({ label: status.label, value: status.value }));
+        // update the filters with the fetched options
+        this.filters = this.filters.map((filter) => {
+          if (filter.field === 'leadStatus') {
+            return { ...filter, options: this.leadStatusOptions };
+          }
+          return filter;
+        });
+        this.filterData = {
+          filters: this.filters,
+          config: {},
+        };
+      },
+      error: (error) => {
+        console.error('Error fetching lead statuses:', error);
       },
     });
   }

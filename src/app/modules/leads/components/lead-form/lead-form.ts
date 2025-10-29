@@ -8,7 +8,7 @@ import {
   LeadAddressForm as LeadAddressFormType,
   LeadFormData,
   LeadOwnerOption,
-  LeadSourceOption,
+  LeadSource,
   LeadStatus,
   LeadStatusOption
 } from '../../types';
@@ -30,7 +30,7 @@ export class LeadForm {
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Lead';
   @Input() leadId: string | null = null;
-  @Input() leadSourceOptions: LeadSourceOption[] = [];
+  @Input() leadSourceOptions: LeadSource[] = [];
   @Input() leadStatusOptions: LeadStatusOption[] = [];
   @Input() isLoading: boolean = false;
   @Input() showAddressForm: boolean = false;
@@ -45,7 +45,7 @@ export class LeadForm {
     leadId: [''],
     leadOwnerId: [0, Validators.required], // is a integer
     leadOwnerName: ['', Validators.required],
-    leadSource: [''],
+    leadSourceId: [''],
     leadStatus: [LeadStatus.NEW, Validators.required],
     leadConversionDate: [new Date().toISOString().slice(0, 16)],
     firstName: ['', Validators.required],
@@ -125,7 +125,7 @@ export class LeadForm {
           leadId: leadData.leadId,
           leadOwnerId: leadData.leadOwnerId,
           leadOwnerName: leadData.leadOwnerName,
-          leadSource: leadData.leadSource,
+          leadSourceId: leadData.leadSourceId,
           leadStatus: leadData.leadStatus,
           leadConversionDate: leadData.leadConversionDate,
           firstName: leadData.firstName,
@@ -153,7 +153,7 @@ export class LeadForm {
       const submissionData: LeadFormData = {
         leadOwnerId: leadData.leadOwnerId as number,
         leadOwnerName: leadData.leadOwnerName || '',
-        leadSource: leadData.leadSource,
+        leadSourceId: leadData.leadSourceId || null,
         leadStatus: leadData.leadStatus || LeadStatus.NEW,
         leadConversionDate: leadData.leadConversionDate,
         firstName: leadData.firstName,

@@ -47,4 +47,13 @@ export class SideBar implements OnInit, OnDestroy {
     this.menuService.activateMenuItem(link);
   }
 
+  /**
+   * Handle menu expansion toggle
+   */
+  onMenuToggle(link: string, event: Event): void {
+    event.preventDefault(); // Prevent navigation
+    event.stopPropagation(); // Prevent other handlers
+    this.menuService.toggleMenuExpansion(link);
+  }
+
 }

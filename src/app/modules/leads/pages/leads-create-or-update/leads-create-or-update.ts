@@ -8,8 +8,7 @@ import {
   CreateLeadPayload,
   LeadAddressForm,
   LeadFormData,
-  LeadLookupData,
-  LeadSourceOption,
+  LeadSource,
   LeadStatus,
   LeadStatusOption,
   UpdateLeadPayload
@@ -35,7 +34,7 @@ export class LeadsCreateOrUpdate {
   formTitle = signal<string>('Create Lead');
   showAddressForm = signal<boolean>(false);
 
-  leadSources: LeadSourceOption[] = [];
+  leadSources: LeadSource[] = [];
   leadStatuses: LeadStatusOption[] = [];
   isLoading = signal<boolean>(false);
 
@@ -53,7 +52,7 @@ export class LeadsCreateOrUpdate {
     this.leadId.set(urlParams.get('leadId'));
     console.log('Lead ID from query params:', this.leadId());
     this.isEditMode.set(this.leadId() !== null);
-    
+
     if (this.isEditMode()) {
       this.formTitle.set('Edit Lead');
       this.showAddressForm.set(true); // Show address form immediately in edit mode
@@ -62,15 +61,29 @@ export class LeadsCreateOrUpdate {
   }
 
   setLeadsLookupData() {
-    this.leadService.getLeadsLookupData().subscribe({
-      next: (response: LeadLookupData) => {
-        this.leadSources = response?.leadSources || [];
-        this.leadStatuses = response?.leadStatuses || [];
+    this.getLeadSources();
+    this.getLeadStatuses();
+  }
+  getLeadSources() {
+    this.leadService.getLeadSources().subscribe({
+      next: (sources) => {
+        this.leadSources = sources;
       },
-      error: (err) => {
-        console.error('Error fetching lead lookup data:', err);
-      }
-    })
+      error: (error) => {
+        console.error('Error fetching lead sources:', error);
+      },
+    });
+  }
+
+  getLeadStatuses() {
+    this.leadService.getLeadsLookupData().subscribe({
+      next: (response) => {
+        this.leadStatuses = response.leadStatuses.map(status => ({ label: status.label, value: status.value }));
+      },
+      error: (error) => {
+        console.error('Error fetching lead statuses:', error);
+      },
+    });
   }
 
   onFormSubmit(formData: LeadFormData, action: 'next' | 'saveAndExit' = 'next') {
@@ -93,11 +106,11 @@ export class LeadsCreateOrUpdate {
   private createLead(leadData: LeadFormData, action: 'next' | 'saveAndExit') {
     // Remove unnecessary fields before sending to API
     const { leadId, ...cleanData } = leadData;
-    
+
     const createPayload: CreateLeadPayload = {
       leadOwnerId: cleanData.leadOwnerId,
       leadOwnerName: cleanData.leadOwnerName,
-      leadSource: cleanData.leadSource || null,
+      leadSourceId: cleanData.leadSourceId || null,
       leadStatus: cleanData.leadStatus || LeadStatus.NEW,
       leadConversionDate: cleanData.leadConversionDate,
       firstName: cleanData.firstName || '',
@@ -106,7 +119,7 @@ export class LeadsCreateOrUpdate {
       email: cleanData.email || null,
       companyName: cleanData.company || null
     };
-    
+
     this.leadService.createLead(createPayload).subscribe({
       next: (response) => {
         this.isLoading.set(false);
@@ -115,7 +128,7 @@ export class LeadsCreateOrUpdate {
           this.isEditMode.set(true);
           this.formTitle.set('Edit Lead');
           this.toastService.success('Lead saved successfully');
-          
+
           if (action === 'next') {
             this.showAddressForm.set(true);
             // wait 2 seconds and then scroll down to address section
@@ -140,12 +153,12 @@ export class LeadsCreateOrUpdate {
   private updateLead(leadData: LeadFormData, action: 'next' | 'saveAndExit') {
     // Remove unnecessary fields before sending to API
     const { ...cleanData } = leadData;
-    
+
     const updatePayload: UpdateLeadPayload = {
       leadId: cleanData.leadId!,
       leadOwnerId: cleanData.leadOwnerId || undefined,
       leadOwnerName: cleanData.leadOwnerName || undefined,
-      leadSource: cleanData.leadSource || undefined,
+      leadSourceId: cleanData.leadSourceId || undefined,
       leadStatus: cleanData.leadStatus || undefined,
       leadConversionDate: cleanData.leadConversionDate || undefined,
       firstName: cleanData.firstName || undefined,
@@ -154,13 +167,13 @@ export class LeadsCreateOrUpdate {
       email: cleanData.email || undefined,
       companyName: cleanData.company || undefined
     };
-    
+
     this.leadService.updateLead(updatePayload).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response) {
           this.toastService.success('Lead updated successfully');
-          
+
           if (action === 'next') {
             this.showAddressForm.set(true);
             // Scroll to address section
@@ -174,7 +187,7 @@ export class LeadsCreateOrUpdate {
             this.router.navigate(['/leads']);
           }
         }
-      }, 
+      },
       error: (error) => {
         this.isLoading.set(false);
         console.error('Error updating lead:', error);
@@ -186,9 +199,9 @@ export class LeadsCreateOrUpdate {
     addressData.isPrimary = true; // ensure primary flag is set
     this.leadService.createLeadAddress(this.leadId()!, addressData).subscribe({
       next: (response) => {
-        if(response.addressId){
+        if (response.addressId) {
           this.toastService.success('Lead address saved successfully');
-          
+
           if (action === 'saveAndExit') {
             this.router.navigate(['/leads']);
           }

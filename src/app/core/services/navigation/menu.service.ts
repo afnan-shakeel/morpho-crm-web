@@ -6,6 +6,7 @@ export interface MenuItem {
   icon: string;
   link: string;
   isActive: boolean;
+  expanded?: boolean;
   subMenu?: SubMenuItem[];
 }
 
@@ -24,19 +25,22 @@ export class MenuService {
       title: 'Dashboard',
       icon: 'home',
       link: '/dashboard',
-      isActive: true
+      isActive: true,
+      expanded: false
     },
     {
       title: 'Leads',
       icon: 'leads',
       link: '/leads',
-      isActive: false
+      isActive: false,
+      expanded: false
     },
     {
       title: 'Sample',
       icon: 'sample',
       link: '/sample',
       isActive: false,
+      expanded: false,
       subMenu: [
         {
           title: 'List',
@@ -55,6 +59,7 @@ export class MenuService {
       icon: 'sample II',
       link: '/sample ii',
       isActive: false,
+      expanded: false,
       subMenu: [
         {
           title: 'List',
@@ -72,7 +77,8 @@ export class MenuService {
       title: 'Settings',
       icon: 'settings',
       link: '/settings',
-      isActive: false
+      isActive: false,
+      expanded: false
     }
   ]);
 
@@ -216,5 +222,23 @@ export class MenuService {
     }
     
     return false;
+  }
+
+  /**
+   * Toggle expansion of a menu item by link, ensuring only one is expanded at a time
+   */
+  toggleMenuExpansion(link: string): void {
+    const menuItems = this.getCurrentMenuItems();
+    const updatedMenuItems = menuItems.map(item => {
+      if (item.subMenu && item.link === link) {
+        // Toggle the clicked menu
+        item.expanded = !item.expanded;
+      } else if (item.subMenu) {
+        // Collapse all other menus with submenus
+        item.expanded = false;
+      }
+      return item;
+    });
+    this.menuItemsSubject.next(updatedMenuItems);
   }
 }

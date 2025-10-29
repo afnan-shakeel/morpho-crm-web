@@ -21,8 +21,11 @@ export class ApiBaseService {
 
   /** Generic GET request */
   get<T>(path: string, params?: HttpParams): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${path}`, { params });
+    return this.http.get<T>(`${this.baseUrl}/${path}`, { params: params });
   }
+  // example usage with params:
+  // const params = new HttpParams().set('key', 'value');
+  // this.apiBaseService.get<YourType>('your/path', params);
 
   /** Generic POST request */
   post<T, B>(path: string, body: B): Observable<T> {

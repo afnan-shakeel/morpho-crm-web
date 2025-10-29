@@ -1,10 +1,10 @@
-import { DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Lead } from '../../types';
 
 @Component({
   selector: 'app-lead-summary-box',
-  imports: [DatePipe],
+  imports: [CommonModule],
   templateUrl: './lead-summary-box.html',
   styleUrl: './lead-summary-box.css'
 })

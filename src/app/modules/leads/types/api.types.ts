@@ -1,5 +1,5 @@
 import { ApiResponse } from '../../../core/services/http/types';
-import { LeadSourceOption, LeadStatusOption } from './form.types';
+import { LeadStatusOption } from './form.types';
 import { Lead, LeadInteraction, LeadInteractionType, LeadStatus } from './lead.types';
 
 /**
@@ -8,7 +8,7 @@ import { Lead, LeadInteraction, LeadInteractionType, LeadStatus } from './lead.t
 export interface CreateLeadPayload {
   leadOwnerId: number;
   leadOwnerName: string;
-  leadSource: string | null;
+  leadSourceId: string | null;
   leadStatus: LeadStatus | null;
   leadConversionDate?: string | null;
   firstName: string | null;
@@ -25,7 +25,7 @@ export interface UpdateLeadPayload {
   leadId: string;
   leadOwnerId?: number;
   leadOwnerName?: string;
-  leadSource?: string;
+  leadSourceId?: string;
   leadStatus?: LeadStatus;
   leadConversionDate?: string | null;
   firstName?: string;
@@ -64,7 +64,6 @@ export interface LeadsListData {
 }
 
 export interface LeadLookupData {
-  leadSources: LeadSourceOption[];
   leadStatuses: LeadStatusOption[];
 }
 

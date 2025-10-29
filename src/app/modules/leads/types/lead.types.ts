@@ -5,7 +5,8 @@ export interface Lead {
   leadId: string;
   leadOwnerId: number;
   leadOwnerName: string;
-  leadSource: string;
+  leadSourceId: string;
+  leadSourceName?: string;
   leadStatus: LeadStatus;
   leadConversionDate?: string | null;
   firstName: string;
@@ -17,6 +18,7 @@ export interface Lead {
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
+  leadSource?: LeadSource;
 }
 
 /**
@@ -31,20 +33,6 @@ export enum LeadStatus {
   CONVERTED = 'Converted',
   LOST = 'Lost',
   UNQUALIFIED = 'Unqualified'
-}
-
-/**
- * Lead source enumeration
- */
-export enum LeadSource {
-  WEBSITE = 'Website',
-  REFERRAL = 'Referral',
-  SOCIAL_MEDIA = 'Social Media',
-  EMAIL_CAMPAIGN = 'Email Campaign',
-  PHONE_CALL = 'Phone Call',
-  TRADE_SHOW = 'Trade Show',
-  ADVERTISEMENT = 'Advertisement',
-  OTHER = 'Other'
 }
 
 /**
@@ -111,4 +99,9 @@ export enum LeadInteractionType {
   MEETING = 'Meeting',
   FOLLOW_UP = 'Follow-up',
   OTHER = 'Other'
+}
+
+export interface LeadSource {
+  sourceId: string;
+  sourceName: string;
 }

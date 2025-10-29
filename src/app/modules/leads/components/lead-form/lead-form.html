@@ -62,10 +62,10 @@
                         <label for="leadSource" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead
                             Source</label>
                         <div class="mt-2 grid grid-cols-1">
-                            <select formControlName="leadSource" id="leadSource"
+                            <select formControlName="leadSourceId" id="leadSource"
                                 class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
                                 @for (option of leadSourceOptions; let oidx = $index; track oidx;) {
-                                <option [value]="option.value">{{ option.label }}</option>
+                                <option [value]="option.sourceId">{{ option.sourceName }}</option>
                                 }
                             </select>
                             <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"

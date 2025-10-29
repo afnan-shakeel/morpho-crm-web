@@ -1,3 +1,4 @@
+import { HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
 import { ApiBaseService, ToastService } from "../../core";
@@ -16,6 +17,7 @@ import {
     LeadLookupData,
     LeadLookupDataResponse,
     LeadsListData,
+    LeadSource,
     UpdateLeadInteractionPayload,
     UpdateLeadPayload
 } from "./types";
@@ -87,8 +89,12 @@ export class LeadsService {
         );
     }
 
-    getLeadById(leadId: string): Observable<Lead> {
-        return this.api.get<ApiResponse<Lead>>(`leads/${leadId}`).pipe(
+    getLeadById(leadId: string, eagerFetch: boolean = false): Observable<Lead> {
+        let params = new HttpParams();
+        if(eagerFetch) {
+            params = params.set('eagerFetch', 'true');
+        }
+        return this.api.get<ApiResponse<Lead>>(`leads/${leadId}`, params).pipe(
             catchError(error => {
                 console.error('Error fetching lead:', error);
                 this.toastService.error('Failed to fetch lead details. Please try again later.');
@@ -163,6 +169,28 @@ export class LeadsService {
             catchError(error => {
                 this.errorHandler.handleError(error);
                 return of({} as ApiResponse<Lead>);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    getLeadSources(): Observable<LeadSource[]> {
+        return this.api.get<ApiResponse<LeadSource[]>>('leads/sources').pipe(
+            catchError(error => {
+                console.error('Error fetching lead sources:', error);
+                this.toastService.error('Failed to fetch lead sources. Please try again later.');
+                return of([] as LeadSource[]);
+            }),
+            map((response: any) => response.data),
+        );
+    }
+
+    getLeadSourceById(sourceId: string): Observable<LeadSource> {
+        return this.api.get<ApiResponse<LeadSource>>(`leads/sources/${sourceId}`).pipe(
+            catchError(error => {
+                console.error('Error fetching lead source:', error);
+                this.toastService.error('Failed to fetch lead source. Please try again later.');
+                return of({} as LeadSource);
             }),
             map((response: any) => response.data),
         );
