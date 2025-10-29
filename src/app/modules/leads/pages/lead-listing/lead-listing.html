@@ -16,9 +16,10 @@
     <app-custom-datatable [records]="leads" [columns]="columns" [currentPage]="currentPage" [pageSize]="pageSize"
         [totalRecords]="totalRecords" (pageChange)="onPageChangeHandler($event)" (search)="onSearchChange($event)"
         [filterData]="filterData" (filterChange)="onFilterChange($event)" [rowActions]="tableRowActions"
-        [tableConfig]="{ multiSelect: false }">
+        [tableConfig]="{ multiSelect: false, rowReferenceField: 'leadId' }">
     </app-custom-datatable>
 </div>
+
 <app-modal-small #leadStatusChangeModal [modalId]="'lead-status-change-modal'">
     <div class="mt-3 text-center sm:mt-0 sm:text-left">
         <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Update Lead Status</h3>
@@ -41,6 +42,15 @@
             class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
             Discard</button>
     </div>
-    <!-- <app-lead-status-change-box (statusChange)="handleLeadStatusUpdate('', '')"> -->
-    <!-- </app-lead-status-change-box> -->
+</app-modal-small>
+<app-modal-small #leadInteractionModal [modalId]="'lead-interaction-modal'">
+    <div class="mt-3 text-center sm:mt-0 sm:text-left">
+        <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Create Interaction</h3>
+        <div class="mt-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the details for the interaction:</p>
+        </div>
+        <div class="mt-2">
+            <app-lead-interaction-form [leadId]="selectedLeadIdForInteraction" (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form> 
+        </div>
+    </div>
 </app-modal-small>

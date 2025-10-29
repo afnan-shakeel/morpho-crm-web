@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
-import { UsersService } from '../../../../core/services/business/users.service';
+import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
 import {
   Lead,

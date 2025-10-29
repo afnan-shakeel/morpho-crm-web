@@ -1,8 +1,8 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
-import { UsersService } from '../../../../core/services/business/users.service';
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
+import { UsersService } from '../../../user/users.service';
 import { LeadInteractionsTable } from "../../components/lead-interactions-table/lead-interactions-table";
 import { LeadLogsTimeline } from "../../components/lead-logs-timeline/lead-logs-timeline";
 import { LeadSummaryBox } from "../../components/lead-summary-box/lead-summary-box";

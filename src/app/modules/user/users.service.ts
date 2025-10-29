@@ -1,7 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of } from "rxjs";
-import { ApiBaseService } from "../http";
-import { ToastService } from "../ui";
+import { ApiBaseService, ToastService } from "../../core";
 
 
 @Injectable({

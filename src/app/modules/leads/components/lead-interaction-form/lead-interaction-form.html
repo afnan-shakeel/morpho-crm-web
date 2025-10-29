@@ -1,0 +1,47 @@
+<form [formGroup]="interactionForm" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+        <div class="sm:col-span-6">
+            <label for="interaction-type" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Interaction
+                Type</label>
+            <div class="mt-2">
+                <select id="interaction-type" formControlName="interactionType"
+                    class="w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:focus:outline-primary-500">
+                    @for (option of interactionTypes; let i = $index; track i) {
+                    <option [value]="option">{{ option }}</option>
+                    }
+                </select>
+            </div>
+            @if (interactionForm.get('interactionType')?.invalid && (interactionForm.get('interactionType')?.touched || interactionForm.get('interactionType')?.dirty)) {
+                <div class="text-xs text-red-500 mt-1">
+                    Interaction type is required.
+                </div>
+            }
+        </div>
+        <div class="sm:col-span-6">
+            <label for="interaction-date" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Interaction
+                Date</label>
+            <div class="mt-2">
+                <input id="interaction-date" type="datetime-local" formControlName="interactionDate"
+                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+            @if (interactionForm.get('interactionDate')?.invalid && (interactionForm.get('interactionDate')?.touched || interactionForm.get('interactionDate')?.dirty)) {
+                <div class="text-xs text-red-500 mt-1">
+                    Interaction date is required.
+                </div>
+            }
+        </div>
+        <div class="sm:col-span-6">
+            <label for="notes" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Notes</label>
+            <div class="mt-2">
+                <textarea id="notes" rows="4" formControlName="notes"
+                    class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"></textarea>
+            </div>
+        </div>
+        <div class="sm:col-span-6">
+            <button type="submit" [disabled]="interactionForm.invalid"
+                class="inline-flex w-full justify-center rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500 disabled:opacity-50 disabled:pointer-events-none">
+                Submit Interaction</button>
+        </div>
+    </div>
+
+</form>

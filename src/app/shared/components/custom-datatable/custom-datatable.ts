@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ɵInternalFormsSharedModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 import { FilterBox } from "../filter-box/filter-box";
 import { TablePagination } from "../table-pagination/table-pagination";
 import { DataTableColumn } from './types';
@@ -13,11 +14,12 @@ interface RowAction {
 interface TableConfig {
   sortable?: boolean;
   multiSelect?: boolean;
+  rowReferenceField: string; // field to use as unique row identifier for multiSelect/selection/etc.
 }
 
 @Component({
   selector: 'app-custom-datatable',
-  imports: [TablePagination, ɵInternalFormsSharedModule, FormsModule, FilterBox, CommonModule],
+  imports: [TablePagination, ɵInternalFormsSharedModule, FormsModule, FilterBox, CommonModule, RouterLink],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './custom-datatable.html',
   styleUrl: './custom-datatable.css'
@@ -42,7 +44,7 @@ export class CustomDatatable {
   @Input() rowActions: RowAction[] = [];
   @Output() rowActionTriggered: EventEmitter<{ action: RowAction; rowData: any }> = new EventEmitter();
 
-  @Input() tableConfig: TableConfig = { sortable: false, multiSelect: false };
+  @Input() tableConfig: TableConfig = { rowReferenceField: '' };
 
   onPageChange(newPage: number) {
     this.currentPage = newPage;

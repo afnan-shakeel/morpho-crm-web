@@ -31,18 +31,24 @@
                     </div> -->
                     <div class="mt-6 border-gray-900/5 pt-6 sm:pr-4 dark:border-white/10">
                         <dt class="font-semibold text-gray-900 dark:text-white">Location</dt>
-                        <dd class="mt-2 text-gray-500 dark:text-gray-400"><span
-                                class="font-medium text-gray-900 dark:text-white">{{leadAddressDetails?.addressLine1}}</span><br />
-                            {{leadAddressDetails?.addressLine2}}
-                            <br />{{leadAddressDetails?.city}}, {{leadAddressDetails?.state}}
-                            {{leadAddressDetails?.postalCode}}
-                            <br />{{leadAddressDetails?.country}}
+                        <dd class="mt-2 text-gray-500 dark:text-gray-400">
+                            @if (leadAddressDetails != null) {
+                            <span
+                                class="font-medium text-gray-900 dark:text-white">{{leadAddressDetails.addressLine1}}</span><br />
+                            {{leadAddressDetails.addressLine2}}<br />
+                            {{leadAddressDetails.city}}, {{leadAddressDetails.state}}
+                            {{leadAddressDetails.postalCode}}<br />
+                            {{leadAddressDetails.country}}
+                            }
+                            @else {
+                            <span class="italic text-gray-400">No address available</span>
+                            }
                         </dd>
                     </div>
                     <div class="mt-8 sm:mt-6 sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
                         <dt class="font-semibold text-gray-900 dark:text-white">Contact</dt>
                         <dd class="mt-2 text-gray-500 dark:text-gray-400">
-                            <a href="mailto:alex.curren@example.com"
+                            <a [href]="'mailto:' + leadDetails?.email"
                                 class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.firstName }}</a>
                             <br />{{ (leadDetails?.email ? leadDetails?.email : 'N/A') + " (email)" }}<br />
                             {{ (leadDetails?.phoneNumber ? leadDetails?.phoneNumber : 'N/A') + " (phone)" }}

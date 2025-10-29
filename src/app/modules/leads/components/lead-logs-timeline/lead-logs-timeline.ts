@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { UsersService } from '../../../../core/services/business/users.service';
+import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
 import { LeadLogs } from '../../types';
 

@@ -1,25 +1,28 @@
-import { ModalSmall } from '@/modules/shared/components/modal-small/modal-small';
 import { CustomDatatable } from '@/shared/components/custom-datatable/custom-datatable';
 import { PageHeading } from '@/shared/components/page-heading/page-heading';
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../../core';
 import {
   CellTemplate,
   ColorBadgeColor,
   DataTableColumn,
 } from '../../../../shared/components/custom-datatable/types';
+import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
+import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadsService } from '../../leads.service';
 import { Lead, LeadLookupData } from '../../types';
 
 @Component({
   selector: 'app-lead-listing',
-  imports: [PageHeading, CustomDatatable, ModalSmall, FormsModule],
+  imports: [PageHeading, CustomDatatable, ModalSmall, FormsModule, LeadInteractionForm],
   templateUrl: './lead-listing.html',
   styleUrl: './lead-listing.css',
 })
 export class LeadListing {
-  @ViewChild(ModalSmall) leadStatusChangeModal!: ModalSmall;
+  @ViewChild('leadStatusChangeModal') leadStatusChangeModal!: ModalSmall;
+  @ViewChild('leadInteractionModal') leadInteractionModal!: ModalSmall;
 
   constructor() {
     this.setLeadLookupData();
@@ -27,6 +30,7 @@ export class LeadListing {
 
   private router = inject(Router);
   private leadsService = inject(LeadsService);
+  private toastService = inject(ToastService);
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
     { label: 'Leads', path: '/leads' },
@@ -107,6 +111,14 @@ export class LeadListing {
         this.leadStatusUpdateFormData.leadId = rowData.leadId;
         this.leadStatusUpdateFormData.newStatus = rowData.leadStatus;
         this.openLeadStatusChangeDialog();
+      },
+    },
+    {
+      label: 'Add Interaction',
+      actionCallback: (rowData: Lead) => {
+        console.log('clicked for:', rowData);
+        this.selectedLeadIdForInteraction = rowData.leadId;
+        this.openLeadInteractionForm(rowData.leadId);
       },
     },
     {
@@ -235,6 +247,7 @@ export class LeadListing {
     this.router.navigate(['/leads/form']);
   }
 
+  // start: lead status update modal methods
   openLeadStatusChangeDialog() {
     this.leadStatusChangeModal.open();
   }
@@ -258,4 +271,34 @@ export class LeadListing {
         },
       });
   }
+  // end: lead status update modal methods
+
+  // start: lead interaction methods
+  selectedLeadIdForInteraction: string = '';
+
+  onInteractionSubmit(interactionData: any) {
+    this.leadsService.createLeadInteraction(this.selectedLeadIdForInteraction, interactionData).subscribe({
+      next: (response) => {
+        if(response.interactionId) {
+          this.toastService.success('Lead interaction created successfully.');
+          this.leadInteractionModal.close();
+          return;
+        }
+        this.toastService.error('Failed to create lead interaction. Please try again later.');
+      },
+      error: (error) => {
+        console.error('Error creating lead interaction:', error);
+        this.toastService.error('Failed to create lead interaction. Please try again later.');        
+      },
+    });
+  }
+
+  openLeadInteractionForm(leadId: string) {
+    this.selectedLeadIdForInteraction = leadId;
+    this.leadInteractionModal.open();
+  }
+  closeLeadInteractionForm() {
+    this.leadInteractionModal.close();
+  }
+  // end: lead interaction methods
 }
