@@ -1,4 +1,4 @@
-<form class="bg-white p-4 shadow-md rounded-lg" [formGroup]="filterForm" (ngSubmit)="onApplyFilters()">
+<form class="bg-white min-w-[210px] p-4 shadow-md rounded-lg" [formGroup]="filterForm" (ngSubmit)="onApplyFilters()">
     @for (filter of filterData?.filters; let idx = $index; track idx;) {
     <ng-container>
         <div class="mb-4">

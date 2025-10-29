@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ɵInternalFormsSharedModule } from "@angular/forms";
 import { FilterBox } from "../filter-box/filter-box";
@@ -9,10 +10,14 @@ interface RowAction {
   actionCallback: (rowData: any) => void;
 }
 
+interface TableConfig {
+  sortable?: boolean;
+  multiSelect?: boolean;
+}
 
 @Component({
   selector: 'app-custom-datatable',
-  imports: [TablePagination, ɵInternalFormsSharedModule, FormsModule, FilterBox],
+  imports: [TablePagination, ɵInternalFormsSharedModule, FormsModule, FilterBox, CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './custom-datatable.html',
   styleUrl: './custom-datatable.css'
@@ -36,6 +41,8 @@ export class CustomDatatable {
   
   @Input() rowActions: RowAction[] = [];
   @Output() rowActionTriggered: EventEmitter<{ action: RowAction; rowData: any }> = new EventEmitter();
+
+  @Input() tableConfig: TableConfig = { sortable: false, multiSelect: false };
 
   onPageChange(newPage: number) {
     this.currentPage = newPage;

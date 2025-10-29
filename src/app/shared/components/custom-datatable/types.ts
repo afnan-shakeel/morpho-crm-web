@@ -29,9 +29,11 @@ export interface DataTableColumn {
     hidden?: boolean;
     sortable?: boolean;
     width?: string;
-    cellTemplate?: string; // Optional custom cell template identifier. eg: 'link', 'badge', etc.
+    cellTemplate?: CellTemplate; // Optional custom cell template identifier. eg: 'link', 'badge', etc.
     linkPrefix?: string; // Optional link prefix for 'link' cellTemplate
     linkSuffix?: string; // Optional link suffix for 'link' cellTemplate
     hrefField?: string; // Optional field to use for href in 'link' cellTemplate
+    // mapper for color badge
+    colorBadgeMapper?: { [key: string]: ColorBadgeColor };
 
 }

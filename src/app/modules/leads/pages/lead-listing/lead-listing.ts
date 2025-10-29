@@ -1,18 +1,22 @@
-import { ModalSmall } from "@/modules/shared/components/modal-small/modal-small";
-import { CustomDatatable } from "@/shared/components/custom-datatable/custom-datatable";
-import { PageHeading } from "@/shared/components/page-heading/page-heading";
+import { ModalSmall } from '@/modules/shared/components/modal-small/modal-small';
+import { CustomDatatable } from '@/shared/components/custom-datatable/custom-datatable';
+import { PageHeading } from '@/shared/components/page-heading/page-heading';
 import { Component, inject, ViewChild } from '@angular/core';
-import { FormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
-import { DataTableColumn } from "../../../../shared/components/custom-datatable/types";
-import { LeadsService } from "../../leads.service";
-import { Lead, LeadLookupData } from "../../types";
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import {
+  CellTemplate,
+  ColorBadgeColor,
+  DataTableColumn,
+} from '../../../../shared/components/custom-datatable/types';
+import { LeadsService } from '../../leads.service';
+import { Lead, LeadLookupData } from '../../types';
 
 @Component({
   selector: 'app-lead-listing',
   imports: [PageHeading, CustomDatatable, ModalSmall, FormsModule],
   templateUrl: './lead-listing.html',
-  styleUrl: './lead-listing.css'
+  styleUrl: './lead-listing.css',
 })
 export class LeadListing {
   @ViewChild(ModalSmall) leadStatusChangeModal!: ModalSmall;
@@ -21,8 +25,8 @@ export class LeadListing {
     this.setLeadLookupData();
   }
 
-  private router = inject(Router)
-  private leadsService = inject(LeadsService)
+  private router = inject(Router);
+  private leadsService = inject(LeadsService);
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
     { label: 'Leads', path: '/leads' },
@@ -31,11 +35,22 @@ export class LeadListing {
   leads: any[] = [];
   columns: DataTableColumn[] = [
     { field: 'leadId', label: 'Lead ID', hidden: true },
-    { field: 'firstName', label: 'Name' },
+    { field: 'firstName', label: 'Name', cellTemplate: CellTemplate.LINK },
     { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
-    { field: 'leadStatus', label: 'Lead Status' },
-    { field: 'createdAt', label: 'Created At' },
+    {
+      field: 'leadStatus',
+      label: 'Lead Status',
+      cellTemplate: CellTemplate.COLOR_BADGE,
+      colorBadgeMapper: {
+        New: ColorBadgeColor.BLUE,
+        Contacted: ColorBadgeColor.ORANGE,
+        Interested: ColorBadgeColor.TEAL,
+        Converted: ColorBadgeColor.GREEN,
+        Disqualified: ColorBadgeColor.RED,
+      },
+    },
+    { field: 'createdAt', label: 'Created At', cellTemplate: CellTemplate.DATETIME },
   ];
   loading: boolean = false;
   currentPage: number = 1;
@@ -44,63 +59,67 @@ export class LeadListing {
   searchQuery: string = '';
   leadSourcesOptions: Array<{ label: string; value: string }> = [];
   leadStatusOptions: Array<{ label: string; value: string }> = [];
-  filters: Filters[] =[
+  filters: Filters[] = [
     {
-      field: 'leadStatus', label: 'Lead Status', value: '',
-      type: 'select', options: this.leadStatusOptions
+      field: 'leadStatus',
+      label: 'Lead Status',
+      value: '',
+      type: 'select',
+      options: this.leadStatusOptions,
     },
     {
-      field: 'leadSource', label: 'Lead Source', value: '',
-      type: 'select', options: this.leadSourcesOptions
+      field: 'leadSource',
+      label: 'Lead Source',
+      value: '',
+      type: 'select',
+      options: this.leadSourcesOptions,
     },
     { field: 'ConvertedAt', label: 'Converted At', value: null, type: 'date' },
     { field: 'createdAt', label: 'Created At', value: null, type: 'date' },
   ];
   filterData: FilterData = {
     filters: this.filters,
-    config: {}
+    config: {},
   };
   apiReadyFilterData: any[] = [];
-
 
   tableRowActions = [
     {
       label: 'View',
       actionCallback: (rowData: any) => {
-        console.log("View Details clicked for:", rowData);
+        console.log('View Details clicked for:', rowData);
         // navigate to the lead detail view page, add in route path
         this.router.navigate(['/leads/detail', rowData.leadId]);
-      }
+      },
     },
     {
       label: 'Edit',
       actionCallback: (rowData: Lead) => {
-        console.log("Edit clicked for:", rowData);
+        console.log('Edit clicked for:', rowData);
         // navigate to the lead edit page
         this.router.navigate(['/leads/form'], { queryParams: { leadId: rowData.leadId } });
-      }
+      },
     },
     {
       label: 'Update Status',
       actionCallback: (rowData: Lead) => {
-        console.log("clicked for:", rowData);
+        console.log('clicked for:', rowData);
         this.leadStatusUpdateFormData.leadId = rowData.leadId;
         this.leadStatusUpdateFormData.newStatus = rowData.leadStatus;
         this.openLeadStatusChangeDialog();
-        
-      }
+      },
     },
     {
       label: 'Convert to Customer',
       actionCallback: (rowData: any) => {
-        console.log("Convert to Customer clicked for:", rowData);
-      }
-    }
+        console.log('Convert to Customer clicked for:', rowData);
+      },
+    },
   ];
 
   leadStatusUpdateFormData = {
     leadId: '',
-    newStatus: ''
+    newStatus: '',
   };
 
   ngOnInit() {
@@ -113,9 +132,9 @@ export class LeadListing {
         if (response) {
           this.leadSourcesOptions = response.leadSources || [];
           this.leadStatusOptions = response.leadStatuses || [];
-          console.log("Fetched lead lookup data:", this.leadStatusOptions);
+          console.log('Fetched lead lookup data:', this.leadStatusOptions);
           // update the filters with the fetched options
-          this.filters = this.filters.map(filter => {
+          this.filters = this.filters.map((filter) => {
             if (filter.field === 'leadSource') {
               return { ...filter, options: this.leadSourcesOptions };
             }
@@ -127,14 +146,14 @@ export class LeadListing {
         }
         this.filterData = {
           filters: this.filters,
-          config: {}
+          config: {},
         };
-        console.log("Lead filter options set:", this.filters);
+        console.log('Lead filter options set:', this.filters);
       },
 
       error: (error) => {
-        console.error("Error fetching lead lookup data:", error);
-      }
+        console.error('Error fetching lead lookup data:', error);
+      },
     });
   }
 
@@ -143,63 +162,58 @@ export class LeadListing {
 
     // TEMP: hardcoded sort
     const sort: any = {
-      "field": "createdAt",
-      "order": "desc"
-    }
-    this.leadsService.getLeads(
-      this.searchQuery,
-      this.apiReadyFilterData,
-      sort,
-      this.currentPage,
-      this.pageSize
-    ).subscribe({
-      next: (response) => {
+      field: 'createdAt',
+      order: 'desc',
+    };
+    this.leadsService
+      .getLeads(this.searchQuery, this.apiReadyFilterData, sort, this.currentPage, this.pageSize)
+      .subscribe({
+        next: (response) => {
+          let data = response?.data || [];
+          this.totalRecords = response?.total || data.length;
 
-        let data = response?.data || []
-        this.totalRecords = response?.total || data.length;
-
-        // use the columns to map the data
-        this.leads = data.map((lead: any) => {
-          let mappedLead: any = {}
-          this.columns.forEach(column => {
-            mappedLead[column.field] = lead[column.field]
-          })
-          return mappedLead
-        })
-        this.loading = false;
-      },
-      error: (error) => {
-        this.loading = false
-      }
-    })
+          // use the columns to map the data
+          this.leads = data.map((lead: any) => {
+            let mappedLead: any = {};
+            this.columns.forEach((column) => {
+              mappedLead[column.field] = lead[column.field];
+            });
+            return mappedLead;
+          });
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 
   onPageChangeHandler(event: any) {
-    console.log("Page change event:", event);
+    console.log('Page change event:', event);
     this.currentPage = event;
     this.loadLeads();
   }
 
   onSearchChange(event: any) {
-    console.log("Search change event:", event);
+    console.log('Search change event:', event);
     this.searchQuery = event;
     this.currentPage = 1;
     this.loadLeads();
   }
 
   onFilterChange(event: Filters[]) {
-    console.log("Filter change event:", event);
+    console.log('Filter change event:', event);
 
-    if(!event || event.length === 0) {
+    if (!event || event.length === 0) {
       this.apiReadyFilterData = [];
       this.currentPage = 1;
       this.loadLeads();
       return;
     }
     // remove items with empty value
-    const _filters = event.filter(filter => filter.value);
+    const _filters = event.filter((filter) => filter.value);
     // map it to the format required by the API
-    const filters = _filters.map(filter => {
+    const filters = _filters.map((filter) => {
       let _apiType = 'contains';
       if (filter.type === 'select') _apiType = 'equals';
       if (filter.type === 'date') _apiType = 'equals';
@@ -208,7 +222,7 @@ export class LeadListing {
       return {
         field: filter.field,
         value: filter.value,
-        type: _apiType
+        type: _apiType,
       };
     });
     this.apiReadyFilterData = filters;
@@ -228,16 +242,20 @@ export class LeadListing {
     this.leadStatusChangeModal.close();
   }
   handleLeadStatusUpdate() {
-    this.leadsService.updateLeadStatus(this.leadStatusUpdateFormData.leadId, this.leadStatusUpdateFormData.newStatus).subscribe({
-      next: (response) => {
-        console.log("Lead status updated successfully:", response);
-        this.leadStatusChangeModal.close();
-        this.loadLeads(); // refresh the leads list
-      },
-      error: (error) => {
-        console.error("Error updating lead status:", error);
-      }
-    });
-
+    this.leadsService
+      .updateLeadStatus(
+        this.leadStatusUpdateFormData.leadId,
+        this.leadStatusUpdateFormData.newStatus
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Lead status updated successfully:', response);
+          this.leadStatusChangeModal.close();
+          this.loadLeads(); // refresh the leads list
+        },
+        error: (error) => {
+          console.error('Error updating lead status:', error);
+        },
+      });
   }
 }

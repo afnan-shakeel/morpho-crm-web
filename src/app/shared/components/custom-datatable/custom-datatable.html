@@ -60,6 +60,7 @@
                     class="relative min-w-full table-fixed divide-y divide-gray-300 dark:divide-white/15">
                     <thead>
                         <tr>
+                            @if (tableConfig.multiSelect) {
                             <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
                                 <div class="group absolute top-1/2 left-4 -mt-2 grid size-4 grid-cols-1">
                                     <input type="checkbox"
@@ -74,6 +75,7 @@
                                     </svg>
                                 </div>
                             </th>
+                            }
                             @for (column of columns; track column.field; let idx = $index) {
                             @if (!column.hidden) {
                             <th scope="col"
@@ -89,6 +91,7 @@
                     <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
                         @for (record of records; let idx = $index; track idx;) {
                         <tr class="group has-checked:bg-gray-50 dark:has-checked:bg-gray-800/50">
+                            @if (tableConfig.multiSelect) {
                             <td class="relative px-7 sm:w-12 sm:px-6">
                                 <div
                                     class="absolute inset-y-0 left-0 hidden w-0.5 bg-indigo-600 group-has-checked:block dark:bg-indigo-500">
@@ -107,14 +110,40 @@
                                     </svg>
                                 </div>
                             </td>
+                            }
 
                             @for (column of columns; track column.field) {
                             @if (!column.hidden) {
-                            <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                {{ record[column.field] }}</td>
+                            @if (column.cellTemplate === 'link') {
+                                <td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                    <a class="font-semibold text-gray-600 hover:underline cursor-pointer">{{ record[column.field] }}</a>
+                                </td>
+                            }
+                            @else if(column.cellTemplate === 'datetime') {
+                                <td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                    {{ record[column.field] | date:'short' }}</td>
+
+                            }
+                            @else if (column.cellTemplate === 'color-badge') {
+                                <td>
+                                    <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium"
+                                    [ngClass]="{ 
+                                        'text-blue-600 bg-blue-50 inset-ring inset-ring-blue-500/10': column.colorBadgeMapper?.[record[column.field]] === 'blue',
+                                        'text-orange-600 bg-orange-50 inset-ring inset-ring-orange-500/10': column.colorBadgeMapper?.[record[column.field]] === 'orange',
+                                        'text-teal-600 bg-teal-50 inset-ring inset-ring-teal-500/10': column.colorBadgeMapper?.[record[column.field]] === 'teal',
+                                        'text-green-600 bg-green-50 inset-ring inset-ring-green-500/10': column.colorBadgeMapper?.[record[column.field]] === 'green',
+                                        'text-red-600 bg-red-50 inset-ring inset-ring-red-500/10': column.colorBadgeMapper?.[record[column.field]] === 'red',
+                                         }">
+                                        {{ record[column.field] }}</span>
+                                </td>
+                            }
+                            @else {
+                                <td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                    {{ record[column.field] }}</td>
                             }
                             }
-                            <td class="py-4 pr-4 pl-3 whitespace-nowrap sm:pr-3">
+                            }
+                            <td class="py-3 pr-4 pl-3 whitespace-nowrap sm:pr-3">
                                 <el-dropdown class="inline-block">
                                     <button
                                         class="flex items-center rounded-full text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-gray-400 dark:hover:text-gray-300 dark:focus-visible:outline-indigo-500">
