@@ -1,0 +1,12 @@
+<div class="px-4 sm:px-6 lg:px-8 h-full">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <div class="">
+                <app-page-heading [title]="account?.companyName || ''"
+                    description="A detailed view of the account."
+                    [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
+            </div>
+        </div>
+    </div>
+    <router-outlet></router-outlet>
+</div>

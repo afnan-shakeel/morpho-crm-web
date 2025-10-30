@@ -114,9 +114,9 @@
 
                             @for (column of columns; track column.field) {
                             @if (!column.hidden) {
-                            @if (column.cellTemplate === 'link') {
+                            @if (column.cellTemplate === 'link' && column.hrefField) {
                                 <td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                    <a [routerLink]="['/leads/detail', record[tableConfig.rowReferenceField]]" class="font-semibold text-gray-600 hover:underline cursor-pointer">{{ record[column.field] }}</a>
+                                    <a [routerLink]="getColumnTemplateRouterLink(column.hrefField, record, [tableConfig.rowReferenceField])" class="font-semibold text-gray-600 hover:underline cursor-pointer">{{ record[column.field] }}</a>
                                 </td>
                             }
                             @else if(column.cellTemplate === 'datetime') {

@@ -39,7 +39,7 @@ export class LeadListing {
   leads: any[] = [];
   columns: DataTableColumn[] = [
     { field: 'leadId', label: 'Lead ID', hidden: true },
-    { field: 'firstName', label: 'Name', cellTemplate: CellTemplate.LINK },
+    { field: 'firstName', label: 'Name', cellTemplate: CellTemplate.LINK, hrefField: '/leads/detail/:leadId' },
     { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
     {
@@ -222,20 +222,17 @@ export class LeadListing {
   }
 
   onPageChangeHandler(event: any) {
-    console.log('Page change event:', event);
     this.currentPage = event;
     this.loadLeads();
   }
 
   onSearchChange(event: any) {
-    console.log('Search change event:', event);
     this.searchQuery = event;
     this.currentPage = 1;
     this.loadLeads();
   }
 
   onFilterChange(event: Filters[]) {
-    console.log('Filter change event:', event);
 
     if (!event || event.length === 0) {
       this.apiReadyFilterData = [];

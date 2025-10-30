@@ -29,27 +29,39 @@ export class MenuService {
       expanded: false
     },
     {
-      title: 'Leads',
-      icon: 'leads',
-      link: '/leads',
-      isActive: false,
-      expanded: false
-    },
-    {
-      title: 'Sample',
-      icon: 'sample',
-      link: '/sample',
+      title: 'Customer',
+      icon: 'home',
+      link: '/accounts',
       isActive: false,
       expanded: false,
       subMenu: [
         {
-          title: 'List',
-          link: '/sample/list',
+          title: 'Accounts',
+          link: '/accounts/list',
           isActive: false
         },
         {
-          title: 'Create',
-          link: '/sample/create',
+          title: 'Contacts',
+          link: '/contacts',
+          isActive: false
+        }
+      ]
+    },
+    {
+      title: 'Sales',
+      icon: '',
+      link: '/leads',
+      isActive: false,
+      expanded: false,
+      subMenu: [
+        {
+          title: 'Leads',
+          link: '/leads',
+          isActive: false
+        },
+        {
+          title: 'Opportunities',
+          link: '/opportunities',
           isActive: false
         }
       ]

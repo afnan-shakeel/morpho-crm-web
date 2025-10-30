@@ -23,6 +23,13 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./modules/leads/leads.routes')
                         .then(m => m.LEADS_ROUTES)
+            },
+            {
+                path: 'accounts',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/accounts/accounts.routes')
+                        .then(m => m.ACCOUNTS_ROUTES)
             }
         ]
     },

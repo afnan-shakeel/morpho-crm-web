@@ -40,7 +40,7 @@ export class CustomDatatable {
 
   @Input() filterData: FilterData | null = null;
   @Output() filterChange: EventEmitter<Filters[]> = new EventEmitter<Filters[]>();
-  
+
   @Input() rowActions: RowAction[] = [];
   @Output() rowActionTriggered: EventEmitter<{ action: RowAction; rowData: any }> = new EventEmitter();
 
@@ -70,5 +70,34 @@ export class CustomDatatable {
     if (filterBoxElement) {
       filterBoxElement.hidePopover();
     }
+  }
+
+  getColumnTemplateRouterLink(
+    template: string,
+    record: Record<string, any>,
+    referenceFields: string[] = []
+  ): any[] {
+    if (!template) return [];
+
+    const params: Record<string, any> = {};
+
+    // Optionally map reference fields from record into params
+    referenceFields.forEach(field => {
+      if (record?.[field] !== undefined) {
+        params[field] = record[field];
+      }
+    });
+
+    const parts = template.replace(/^\//, '').split('/')
+      .map(part => {
+        if (part.startsWith(':')) {
+          const key = part.substring(1);
+          return record?.[key] ?? params[key] ?? '';
+        }
+        return part;
+      });
+
+      return ['/', ...parts];
+
   }
 }

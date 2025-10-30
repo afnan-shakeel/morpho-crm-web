@@ -13,6 +13,7 @@ export enum CellTemplate {
 
 // color badge color options
 export enum ColorBadgeColor {
+    // basic colors
     RED = 'red',
     GREEN = 'green',
     BLUE = 'blue',
@@ -20,7 +21,16 @@ export enum ColorBadgeColor {
     PURPLE = 'purple',
     GRAY = 'gray',
     YELLOW = 'yellow',
-    TEAL = 'teal'
+    TEAL = 'teal',
+
+    // semantic colors
+    SUCCESS = 'success',
+    DANGER = 'danger',
+    WARNING = 'warning',
+
+    // neutral colors
+    LIGHT = 'light',
+    DARK = 'dark'
 }
 
 export interface DataTableColumn {
@@ -30,10 +40,7 @@ export interface DataTableColumn {
     sortable?: boolean;
     width?: string;
     cellTemplate?: CellTemplate; // Optional custom cell template identifier. eg: 'link', 'badge', etc.
-    linkPrefix?: string; // Optional link prefix for 'link' cellTemplate
-    linkSuffix?: string; // Optional link suffix for 'link' cellTemplate
     hrefField?: string; // Optional field to use for href in 'link' cellTemplate
-    // mapper for color badge
     colorBadgeMapper?: { [key: string]: ColorBadgeColor };
 
 }

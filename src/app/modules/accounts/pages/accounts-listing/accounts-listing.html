@@ -1,0 +1,21 @@
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <div class="">
+                <app-page-heading [title]="'Accounts'"
+                    description="A list of all the accounts in your system."
+                    [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
+            </div>
+        </div>
+        <div class="sm:mt-0 sm:ml-16 sm:flex-none">
+            <button type="button" (click)="onCreateAccount()"
+                class="block rounded-md bg-primary-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-primary-500">Add
+                account</button>
+        </div>
+    </div>
+    <app-custom-datatable [records]="accounts" [columns]="columns" [currentPage]="currentPage" [pageSize]="pageSize"
+        [totalRecords]="totalRecords" (pageChange)="onPageChangeHandler($event)" (search)="onSearchChange($event)"
+        [filterData]="filterData" (filterChange)="onFilterChange($event)" [rowActions]="tableRowActions"
+        [tableConfig]="{ multiSelect: false, rowReferenceField: 'accountId' }">
+    </app-custom-datatable>
+</div>
