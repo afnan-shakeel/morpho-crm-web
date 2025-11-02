@@ -8,6 +8,7 @@ export interface Lead {
   leadSourceId: string;
   leadSourceName?: string;
   leadStatus: LeadStatus;
+  leadTopic?: string;
   leadConversionDate?: string | null;
   firstName: string;
   lastName?: string;

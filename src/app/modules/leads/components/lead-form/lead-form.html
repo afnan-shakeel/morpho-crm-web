@@ -2,19 +2,27 @@
     <div class="grid grid-cols-1 gap-x-8 gap-y-8 py-10 md:grid-cols-3">
         <div class="px-4 sm:px-0">
             <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Lead Information</h2>
-            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">This information will be used as 
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">This information will be used as
                 part of the lead profile.</p>
         </div>
         <form (ngSubmit)="onSubmit()" [formGroup]="leadInfoForm"
             class="bg-white shadow-xs outline outline-gray-900/5 sm:rounded-xl md:col-span-2 dark:bg-gray-800/50 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
             <div class="px-4 py-6 sm:p-8">
                 <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="col-span-6">
+                        <label for="leadTopic" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead Topic <span class="text-red-500">*</span></label>
+                        <div class="mt-2 grid grid-cols-1">
+                            <input formControlName="leadTopic" type="text" id="leadTopic" placeholder="Enter lead topic"
+                                class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                        </div>
+                    </div>
+
                     <div class="sm:col-span-3">
                         <label for="combobox"
-                            class="block text-sm/6 font-medium text-gray-900 dark:text-white">Owner</label>
+                            class="block text-sm/6 font-medium text-gray-900 dark:text-white">Owner <span class="text-red-500">*</span></label>
                         <input type="hidden" formControlName="leadOwnerId" />
                         <el-autocomplete class="relative mt-2 block" id="leadOwner">
-                            <input id="combobox" type="text" formControlName="leadOwnerName"
+                            <input id="combobox" type="text" formControlName="leadOwnerName" placeholder="Select or type owner name"
                                 class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                             <button type="button"
                                 class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
@@ -28,8 +36,7 @@
                             <el-options anchor="bottom end" popover
                                 class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
                                 @for (user of userList; let uidx = $index; track uidx;) {
-                                <el-option [attr.value]="user.fullName" (click)="setOwnerName(user)"
-                                    id="{{user.id}}"
+                                <el-option [attr.value]="user.fullName" (click)="setOwnerName(user)" id="{{user.id}}"
                                     class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
                                     <div class="flex">
                                         <span class="truncate">{{user.fullName}}</span>
@@ -59,11 +66,11 @@
                     </div>
 
                     <div class="col-span-3">
-                        <label for="leadSource" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead
-                            Source</label>
+                        <label for="leadSource" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead Source</label>
                         <div class="mt-2 grid grid-cols-1">
                             <select formControlName="leadSourceId" id="leadSource"
                                 class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
+                                <option value="" disabled selected>Select lead source</option>
                                 @for (option of leadSourceOptions; let oidx = $index; track oidx;) {
                                 <option [value]="option.sourceId">{{ option.sourceName }}</option>
                                 }
@@ -77,11 +84,11 @@
                         </div>
                     </div>
                     <div class="col-span-3">
-                        <label for="leadStatus" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead
-                            Status</label>
+                        <label for="leadStatus" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Lead Status</label>
                         <div class="mt-2 grid grid-cols-1">
                             <select formControlName="leadStatus" id="leadStatus"
                                 class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
+                                <option value="" disabled selected>Select lead status</option>
                                 @for (option of leadStatusOptions; let oidx = $index; track oidx;) {
                                 <option [value]="option.value">{{ option.label }}</option>
                                 }
@@ -114,10 +121,10 @@
                     </div>
 
                     <div class="col-span-3">
-                        <label for="full-name" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Full
-                            Name</label>
+                        <label for="full-name" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Full Name <span class="text-red-500">*</span></label>
                         <div class="mt-2 grid grid-cols-1">
                             <input formControlName="firstName" type="text" id="full-name"
+                                placeholder="Enter first name"
                                 class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                         </div>
                         @if (leadInfoForm.get('firstName')?.invalid && (leadInfoForm.get('firstName')?.dirty ||
@@ -132,6 +139,7 @@
                             class="block text-sm/6 font-medium text-gray-900 dark:text-white">Surname</label>
                         <div class="mt-2 grid grid-cols-1">
                             <input formControlName="lastName" type="text" id="surname"
+                                placeholder="Enter surname"
                                 class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                         </div>
                     </div>
@@ -140,6 +148,7 @@
                             class="block text-sm/6 font-medium text-gray-900 dark:text-white">Phone Number</label>
                         <div class="mt-2 grid grid-cols-1">
                             <input formControlName="phoneNumber" type="text" id="phone-number"
+                                placeholder="Enter phone number"
                                 class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                         </div>
                     </div>
@@ -148,6 +157,7 @@
                             class="block text-sm/6 font-medium text-gray-900 dark:text-white">Email Address</label>
                         <div class="mt-2 grid grid-cols-1">
                             <input formControlName="email" type="email" id="email-address"
+                                placeholder="Enter email address"
                                 class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                         </div>
                         @if (leadInfoForm.get('email')?.invalid && (leadInfoForm.get('email')?.dirty ||
@@ -162,6 +172,7 @@
                             class="block text-sm/6 font-medium text-gray-900 dark:text-white">Company</label>
                         <div class="mt-2 grid grid-cols-1">
                             <input formControlName="company" type="text" id="company"
+                                placeholder="Enter company name"
                                 class="col-start-1 row-start-1 w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                         </div>
                     </div>

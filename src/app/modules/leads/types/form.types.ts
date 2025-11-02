@@ -9,6 +9,7 @@ export interface LeadFormData {
   leadOwnerName: string;
   leadSourceId?: string | null;
   leadStatus?: LeadStatus | null;
+  leadTopic?: string | null;
   leadConversionDate?: string | null;
   firstName?: string | null;
   lastName?: string | null;

@@ -7,6 +7,7 @@
                     Line 1</label>
                 <div class="mt-2">
                     <input id="address-line-1" type="text" formControlName="addressLine1"
+                        placeholder="Enter address line 1"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                 </div>
             </div>
@@ -16,6 +17,7 @@
                     Line 2</label>
                 <div class="mt-2">
                     <input id="address-line-2" type="text" formControlName="addressLine2"
+                        placeholder="Enter address line 2"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                 </div>
             </div>
@@ -24,6 +26,7 @@
                 <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">City</label>
                 <div class="mt-2">
                     <input id="city" type="text" formControlName="city"
+                        placeholder="Enter city"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                 </div>
             </div>
@@ -32,6 +35,7 @@
                     code</label>
                 <div class="mt-2">
                     <input id="postalCode" type="text" formControlName="postalCode"
+                        placeholder="Enter ZIP or postal code"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                 </div>
             </div>
@@ -40,6 +44,7 @@
                     Province</label>
                 <div class="mt-2">
                     <input id="state" type="text" formControlName="state"
+                        placeholder="Enter state or province"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                     @if (addressForm.get('state')?.invalid && (addressForm.get('state')?.dirty ||
                     addressForm.get('state')?.touched)) {

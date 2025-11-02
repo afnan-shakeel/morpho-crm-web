@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-modal-small',
+  selector: 'app-modal-medium',
   imports: [CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './modal-small.html',
-  styleUrl: './modal-small.css'
+  templateUrl: './modal-medium.html',
+  styleUrl: './modal-medium.css'
 })
-export class ModalSmall implements AfterViewInit {
+export class ModalMedium implements AfterViewInit {
 
   @Input() modalId: string = 'dialog';
   @Input() preventAutoClose: boolean = false; // Flag to prevent auto-closing on outside click
@@ -17,6 +17,17 @@ export class ModalSmall implements AfterViewInit {
 
   ngAfterViewInit() {
     // const backdropEl = document.getElementById('modal-backdrop');
+    // if (this.preventAutoClose) {
+    //   // Disable closing on backdrop click
+    //   if (backdropEl) {
+    //     backdropEl.style.display = 'block';
+    //   }
+    // } else {
+    //   // Enable closing on backdrop click
+    //   if (backdropEl) {
+    //     backdropEl.style.display = 'none';
+    //   }
+    // }
   }
 
   ngOnDestroy() {

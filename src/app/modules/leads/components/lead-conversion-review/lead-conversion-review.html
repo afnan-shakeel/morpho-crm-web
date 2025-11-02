@@ -1,0 +1,201 @@
+<div class="space-y-6">
+  <!-- Lead Information Header -->
+  <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+    <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Lead Conversion Review</h4>
+    <div class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+      <p>
+        <span class="font-medium">Lead ID:</span> {{ leadId }}
+      </p>
+      <div *ngIf="leadData" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div>
+          <p><span class="font-medium">Lead Name:</span> {{ leadData.leadName }}</p>
+          <p><span class="font-medium">Company:</span> {{ leadData.companyName }}</p>
+        </div>
+        <div>
+          <p *ngIf="leadData.email"><span class="font-medium">Email:</span> {{ leadData.email }}</p>
+          <p *ngIf="leadData.phone"><span class="font-medium">Phone:</span> {{ leadData.phone }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversion Form -->
+  <form [formGroup]="conversionForm" (ngSubmit)="onSubmit()" class="space-y-8">
+    
+    <!-- 1. Company/Account Selection -->
+    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+      <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Company/Account Information</h5>
+      
+      <!-- Two Column Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Left Column - Company Name -->
+        <div>
+          <!-- Radio Button for New Company -->
+          <div class="mb-3">
+            <label class="flex items-center">
+              <input
+                type="radio"
+                [value]="false"
+                formControlName="useExistingAccount"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use New Company</span>
+            </label>
+          </div>
+          
+          <label for="companyName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Company Name
+            <span *ngIf="isCompanyNameRequired()" class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="companyName"
+            formControlName="companyName"
+            [disabled]="conversionForm.get('useExistingAccount')?.value"
+            placeholder="Enter company name"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            [class.border-red-500]="hasCustomError('companyName')"
+          />
+          <p *ngIf="hasCustomError('companyName')" class="mt-1 text-sm text-red-600">
+            Company name is required
+          </p>
+        </div>
+
+        <!-- Right Column - Account Name -->
+        <div>
+          <!-- Radio Button for Existing Account -->
+          <div class="mb-3">
+            <label class="flex items-center">
+              <input
+                type="radio"
+                [value]="true"
+                formControlName="useExistingAccount"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Existing Account</span>
+            </label>
+          </div>
+          
+          <label for="accountName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Account Name
+            <span *ngIf="isAccountNameRequired()" class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="accountName"
+            formControlName="accountName"
+            [disabled]="!conversionForm.get('useExistingAccount')?.value"
+            placeholder="Select existing account"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            [class.border-red-500]="hasCustomError('accountName')"
+          />
+          <p *ngIf="hasCustomError('accountName')" class="mt-1 text-sm text-red-600">
+            Account name is required
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Lead/Contact Selection -->
+    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+      <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Contact Information</h5>
+      
+      <!-- Two Column Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Left Column - Lead Name -->
+        <div>
+          <!-- Radio Button for Lead Name -->
+          <div class="mb-3">
+            <label class="flex items-center">
+              <input
+                type="radio"
+                [value]="false"
+                formControlName="useExistingContact"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Lead Name</span>
+            </label>
+          </div>
+          
+          <label for="leadName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Lead Name
+            <span *ngIf="isLeadNameRequired()" class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="leadName"
+            formControlName="leadName"
+            [disabled]="conversionForm.get('useExistingContact')?.value"
+            placeholder="Enter lead name"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            [class.border-red-500]="hasCustomError('leadName')"
+          />
+          <p *ngIf="hasCustomError('leadName')" class="mt-1 text-sm text-red-600">
+            Lead name is required
+          </p>
+        </div>
+
+        <!-- Right Column - Contact Name -->
+        <div>
+          <!-- Radio Button for Existing Contact -->
+          <div class="mb-3">
+            <label class="flex items-center">
+              <input
+                type="radio"
+                [value]="true"
+                formControlName="useExistingContact"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Existing Contact</span>
+            </label>
+          </div>
+          
+          <label for="contactName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Contact Name
+            <span *ngIf="isContactNameRequired()" class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="contactName"
+            formControlName="contactName"
+            [disabled]="!conversionForm.get('useExistingContact')?.value"
+            placeholder="Select existing contact"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            [class.border-red-500]="hasCustomError('contactName')"
+          />
+          <p *ngIf="hasCustomError('contactName')" class="mt-1 text-sm text-red-600">
+            Contact name is required
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+      <button
+        type="button"
+        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="conversionForm.invalid"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Convert Lead
+      </button>
+    </div>
+  </form>
+
+  <!-- Information Section -->
+  <div class="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+    <p class="font-medium text-blue-800 dark:text-blue-200 mb-2">Conversion Process Information:</p>
+    <ul class="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
+      <li>Create a new opportunity record with the provided information</li>
+      <li>Update the lead status to "Converted"</li>
+      <li>Link the lead to the new opportunity for reference</li>
+      <li>Preserve all lead data for audit trail</li>
+    </ul>
+  </div>
+</div>

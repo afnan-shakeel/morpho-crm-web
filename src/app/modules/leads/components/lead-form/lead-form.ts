@@ -43,6 +43,7 @@ export class LeadForm {
 
   leadInfoForm = this.fb.group({
     leadId: [''],
+    leadTopic: ['', Validators.required],
     leadOwnerId: [0, Validators.required], // is a integer
     leadOwnerName: ['', Validators.required],
     leadSourceId: [''],
@@ -127,6 +128,7 @@ export class LeadForm {
           leadOwnerName: leadData.leadOwnerName,
           leadSourceId: leadData.leadSourceId,
           leadStatus: leadData.leadStatus,
+          leadTopic: leadData.leadTopic,
           leadConversionDate: leadData.leadConversionDate,
           firstName: leadData.firstName,
           lastName: leadData.lastName,
@@ -155,6 +157,7 @@ export class LeadForm {
         leadOwnerName: leadData.leadOwnerName || '',
         leadSourceId: leadData.leadSourceId || null,
         leadStatus: leadData.leadStatus || LeadStatus.NEW,
+        leadTopic: leadData.leadTopic || null,
         leadConversionDate: leadData.leadConversionDate,
         firstName: leadData.firstName,
         lastName: leadData.lastName,

@@ -9,20 +9,23 @@ import {
   ColorBadgeColor,
   DataTableColumn,
 } from '../../../../shared/components/custom-datatable/types';
+import { ModalMedium } from '../../../../shared/components/modal-medium/modal-medium';
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
+import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadsService } from '../../leads.service';
 import { Lead } from '../../types';
 
 @Component({
   selector: 'app-lead-listing',
-  imports: [PageHeading, CustomDatatable, ModalSmall, FormsModule, LeadInteractionForm],
+  imports: [PageHeading, CustomDatatable, ModalSmall, ModalMedium, FormsModule, LeadInteractionForm, LeadConversionReview],
   templateUrl: './lead-listing.html',
   styleUrl: './lead-listing.css',
 })
 export class LeadListing {
   @ViewChild('leadStatusChangeModal') leadStatusChangeModal!: ModalSmall;
   @ViewChild('leadInteractionModal') leadInteractionModal!: ModalSmall;
+  @ViewChild('leadConversionReviewModal') leadConversionReviewModal!: ModalMedium;
 
   constructor() {
     this.setLeadLookupData();
@@ -122,9 +125,10 @@ export class LeadListing {
       },
     },
     {
-      label: 'Convert to Customer',
+      label: 'Convert to Opportunity',
       actionCallback: (rowData: any) => {
-        console.log('Convert to Customer clicked for:', rowData);
+        console.log('Convert to Opportunity clicked for:', rowData);
+        this.openLeadConversionReviewModal(rowData.leadId);
       },
     },
   ];
@@ -319,4 +323,17 @@ export class LeadListing {
     this.leadInteractionModal.close();
   }
   // end: lead interaction methods
+
+  // start: lead conversion review methods
+  selectedLeadIdForConversion: string = '';
+
+  openLeadConversionReviewModal(leadId: string) {
+    this.selectedLeadIdForConversion = leadId;
+    this.leadConversionReviewModal.open();
+  }
+  
+  closeLeadConversionReviewModal() {
+    this.leadConversionReviewModal.close();
+  }
+  // end: lead conversion review methods
 }

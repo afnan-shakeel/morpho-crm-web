@@ -10,6 +10,7 @@ export interface CreateLeadPayload {
   leadOwnerName: string;
   leadSourceId: string | null;
   leadStatus: LeadStatus | null;
+  leadTopic?: string | null;
   leadConversionDate?: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -27,6 +28,7 @@ export interface UpdateLeadPayload {
   leadOwnerName?: string;
   leadSourceId?: string;
   leadStatus?: LeadStatus;
+  leadTopic?: string;
   leadConversionDate?: string | null;
   firstName?: string;
   lastName?: string;
