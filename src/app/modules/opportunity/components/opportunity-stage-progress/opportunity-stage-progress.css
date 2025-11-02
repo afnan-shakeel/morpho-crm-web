@@ -1,0 +1,48 @@
+/* Opportunity Stage Progress Styles */
+
+.stage-progress {
+  transition: all 0.3s ease-in-out;
+}
+
+.stage-progress:hover {
+  transform: translateY(-1px);
+}
+
+/* Custom progress bar animation */
+.progress-bar {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Stage indicator animations */
+.stage-indicator {
+  transition: all 0.2s ease-in-out;
+}
+
+.stage-indicator:hover {
+  transform: scale(1.1);
+}
+
+/* Pulse animation for current stage */
+.current-stage-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .stage-name {
+    font-size: 0.875rem;
+  }
+  
+  .stage-probability {
+    font-size: 0.75rem;
+  }
+}

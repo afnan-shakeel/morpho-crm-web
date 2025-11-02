@@ -3,11 +3,11 @@
 
   <!-- Conversion Form -->
   <form [formGroup]="conversionForm" (ngSubmit)="onSubmit()" class="space-y-2">
-    
+
     <!-- 1. Company/Account Selection -->
     <div class="rounded-lg p-2">
       <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">Company/Account Information</h5>
-      
+
       <!-- Two Column Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Left Column - Company Name -->
@@ -15,31 +15,22 @@
           <!-- Radio Button for New Company -->
           <div class="mb-3">
             <label class="flex items-center">
-              <input
-                type="radio"
-                [value]="false"
-                formControlName="useExistingAccount"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+              <input type="radio" [value]="false" formControlName="useExistingAccount"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
               <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create New</span>
             </label>
           </div>
-          
+
           <label for="companyName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Company Name
             @if (isCompanyNameRequired()) {
             <span class="text-red-500">*</span>
             }
           </label>
-          <input
-            type="text"
-            id="companyName"
-            formControlName="companyName"
-            [disabled]="conversionForm.get('useExistingAccount')?.value"
-            placeholder="Enter company name"
-            class="w-full  mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
-            [class.border-red-500]="hasCustomError('companyName')"
-          />
+          <input type="text" id="companyName" formControlName="companyName"
+            [disabled]="conversionForm.get('useExistingAccount')?.value" placeholder="Enter company name"
+            class="w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"
+            [class.border-red-500]="hasCustomError('companyName')" />
           @if (hasCustomError('companyName')) {
           <p class="mt-1 text-xs text-red-600">
             Company name is required
@@ -52,31 +43,44 @@
           <!-- Radio Button for Existing Account -->
           <div class="mb-3">
             <label class="flex items-center">
-              <input
-                type="radio"
-                [value]="true"
-                formControlName="useExistingAccount"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+              <input type="radio" [value]="true" formControlName="useExistingAccount"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
               <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Choose Existing</span>
             </label>
           </div>
-          
+
           <label for="accountName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Account Name
             @if (isAccountNameRequired()) {
             <span class="text-red-500">*</span>
             }
           </label>
-          <input
-            type="text"
-            id="accountName"
-            formControlName="accountName"
-            [disabled]="!conversionForm.get('useExistingAccount')?.value"
-            placeholder="Select existing account"
-            class="w-full mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
-            [class.border-red-500]="hasCustomError('accountName')"
-          />
+          <el-autocomplete class="relative block" id="accountName">
+            <input id="combobox" type="text" formControlName="accountName" placeholder="Select or type account name"
+              (change)="loadAccounts($event.target.value)"
+              class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            <button type="button"
+              class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                class="size-5 text-gray-400">
+                <path
+                  d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                  clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </button>
+            <el-options anchor="bottom end" popover
+              class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+              @for (account of accounts; let uidx = $index; track uidx;) {
+              <el-option [attr.value]="account.companyName" id="{{account.accountId}}"
+                class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
+                <div class="flex">
+                  <span class="truncate">{{account.companyName}}</span>
+                </div>
+              </el-option>
+              }
+
+            </el-options>
+          </el-autocomplete>
           @if (hasCustomError('accountName')) {
           <p class="mt-1 text-xs text-red-600">
             Account name is required
@@ -89,7 +93,7 @@
     <!-- 2. Lead/Contact Selection -->
     <div class="rounded-lg p-4">
       <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">Contact Information</h5>
-      
+
       <!-- Two Column Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Left Column - Lead Name -->
@@ -97,31 +101,22 @@
           <!-- Radio Button for Lead Name -->
           <div class="mb-3">
             <label class="flex items-center">
-              <input
-                type="radio"
-                [value]="false"
-                formControlName="useExistingContact"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+              <input type="radio" [value]="false" formControlName="useExistingContact"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
               <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create New</span>
             </label>
           </div>
-          
+
           <label for="leadName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Lead Name
             @if (isLeadNameRequired()) {
             <span class="text-red-500">*</span>
             }
           </label>
-          <input
-            type="text"
-            id="leadName"
-            formControlName="leadName"
-            [disabled]="conversionForm.get('useExistingContact')?.value"
-            placeholder="Enter lead name"
-            class="w-full mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
-            [class.border-red-500]="hasCustomError('leadName')"
-          />
+          <input type="text" id="leadName" formControlName="leadName"
+            [disabled]="conversionForm.get('useExistingContact')?.value" placeholder="Enter lead name"
+            class="w-full rounded-md bg-white py-1.5 pr-4 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"
+            [class.border-red-500]="hasCustomError('leadName')" />
           @if (hasCustomError('leadName')) {
           <p class="mt-1 text-xs text-red-600">
             Lead name is required
@@ -134,31 +129,44 @@
           <!-- Radio Button for Existing Contact -->
           <div class="mb-3">
             <label class="flex items-center">
-              <input
-                type="radio"
-                [value]="true"
-                formControlName="useExistingContact"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+              <input type="radio" [value]="true" formControlName="useExistingContact"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
               <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Choose Existing</span>
             </label>
           </div>
-          
+
           <label for="contactName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Contact Name
             @if (isContactNameRequired()) {
             <span class="text-red-500">*</span>
             }
           </label>
-          <input
-            type="text"
-            id="contactName"
-            formControlName="contactName"
-            [disabled]="!conversionForm.get('useExistingContact')?.value"
-            placeholder="Select existing contact"
-            class="w-full mt-2 px-3 py-1.5 border border-gray-300 placeholder:text-gray-400 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
-            [class.border-red-500]="hasCustomError('contactName')"
-          />
+          <el-autocomplete class="relative block" id="contactName">
+            <input id="combobox" type="text" formControlName="contactName" placeholder="Select or type contact name"
+              (change)="loadContacts($event.target.value)"
+              class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            <button type="button"
+              class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                class="size-5 text-gray-400">
+                <path
+                  d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                  clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </button>
+            <el-options anchor="bottom end" popover
+              class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+              @for (contact of contacts; let uidx = $index; track uidx;) {
+              <el-option [attr.value]="contact.fullName" id="{{contact.contactId}}"
+                class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
+                <div class="flex">
+                  <span class="truncate">{{contact.fullName}}</span>
+                </div>
+              </el-option>
+              }
+
+            </el-options>
+          </el-autocomplete>
           @if (hasCustomError('contactName')) {
           <p class="mt-1 text-xs text-red-600">
             Contact name is required
@@ -170,30 +178,24 @@
 
     <!-- Form Actions -->
     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-      <button
-        type="button"
-        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
+      <button type="button" (click)="cancel()"
+        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500">
         Cancel
       </button>
-      <button
-        type="submit"
-        [disabled]="conversionForm.invalid"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
+      <button type="submit" [disabled]="conversionForm.invalid"
+        class="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md shadow-sm hover:bg-primary-500/90 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed">
         Convert Lead
       </button>
     </div>
   </form>
 
   <!-- Information Section -->
-  <div class="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-    <p class="font-medium text-blue-800 dark:text-blue-200 mb-2">Conversion Process Information:</p>
-    <ul class="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
+  <div class="text-sm text-gray-7 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+    <p class="font-medium text-primary-800 dark:text-primary-200 mb-2">What does the conversion process involve?</p>
+    <ul class="list-disc list-inside space-y-1 text-primary-500/90 dark:text-primary-300">
       <li>Create a new opportunity record with the provided information</li>
       <li>Update the lead status to "Converted"</li>
       <li>Link the lead to the new opportunity for reference</li>
-      <li>Preserve all lead data for audit trail</li>
     </ul>
   </div>
 </div>

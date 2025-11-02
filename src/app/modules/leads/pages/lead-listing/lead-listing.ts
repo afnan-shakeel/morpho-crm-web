@@ -1,5 +1,6 @@
 import { CustomDatatable } from '@/shared/components/custom-datatable/custom-datatable';
 import { PageHeading } from '@/shared/components/page-heading/page-heading';
+import { DataMappingUtils } from '@/shared/utils/data-mapping';
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,7 +15,7 @@ import { ModalSmall } from '../../../../shared/components/modal-small/modal-smal
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadsService } from '../../leads.service';
-import { Lead } from '../../types';
+import { Lead, UpdateLeadPayload } from '../../types';
 
 @Component({
   selector: 'app-lead-listing',
@@ -142,7 +143,7 @@ export class LeadListing {
     this.loadLeads();
   }
 
-  
+
 
   setLeadLookupData() {
     this.getLeadStatuses();
@@ -210,13 +211,7 @@ export class LeadListing {
           this.totalRecords = response?.total || data.length;
 
           // use the columns to map the data
-          this.leads = data.map((lead: any) => {
-            let mappedLead: any = {};
-            this.columns.forEach((column) => {
-              mappedLead[column.field] = lead[column.field];
-            });
-            return mappedLead;
-          });
+          this.leads = DataMappingUtils.mapDataToColumns<Lead>(data, this.columns);
           this.loading = false;
         },
         error: (error) => {
@@ -301,7 +296,7 @@ export class LeadListing {
   onInteractionSubmit(interactionData: any) {
     this.leadsService.createLeadInteraction(this.selectedLeadIdForInteraction, interactionData).subscribe({
       next: (response) => {
-        if(response.interactionId) {
+        if (response.interactionId) {
           this.toastService.success('Lead interaction created successfully.');
           this.leadInteractionModal.close();
           return;
@@ -310,7 +305,7 @@ export class LeadListing {
       },
       error: (error) => {
         console.error('Error creating lead interaction:', error);
-        this.toastService.error('Failed to create lead interaction. Please try again later.');        
+        this.toastService.error('Failed to create lead interaction. Please try again later.');
       },
     });
   }
@@ -326,14 +321,72 @@ export class LeadListing {
 
   // start: lead conversion review methods
   selectedLeadForConversion: Lead | null = null;
-
   openLeadConversionReviewModal(lead: Lead) {
     this.selectedLeadForConversion = lead;
     this.leadConversionReviewModal.open();
   }
-  
+
   closeLeadConversionReviewModal() {
     this.leadConversionReviewModal.close();
+  }
+
+  onLeadConversionSubmit(conversionData: any) {
+    if (!this.selectedLeadForConversion) {
+      this.toastService.error('No lead selected for conversion.');
+      return;
+    }
+
+    if (!this.selectedLeadForConversion.leadId) {
+      this.toastService.error('Invalid lead selected for conversion. Sorry for the inconvenience.');
+      return;
+    }
+
+    const updatePayload: UpdateLeadPayload = {
+      leadId: this.selectedLeadForConversion.leadId,
+    };
+
+    if (conversionData.useExistingAccount) updatePayload.companyName = conversionData.accountName;
+    else updatePayload.companyName = conversionData.companyName;
+    
+    if (conversionData.useExistingContact) updatePayload.firstName = conversionData.contactName;
+    else updatePayload.firstName = conversionData.leadName;
+
+    this.leadsService.updateLead(updatePayload).subscribe({
+      next: (response) => {
+        // after successful update, call the convert service
+        if (!this.selectedLeadForConversion) {
+          this.toastService.error('No lead selected for conversion.');
+          return;
+        }
+        this.leadsService.convertLeadToCustomer(this.selectedLeadForConversion.leadId, true).subscribe({
+          next: (response) => {
+            console.log('Lead convert response:', response);
+            const isMergeConfirmationRequired = response?.isMergeConfirmedRequired;
+            if (isMergeConfirmationRequired) {
+              this.toastService.error('Lead conversion requires merge confirmation. Please try again.');
+              return;
+            }
+            if(response?.converted) {
+              this.toastService.success('Lead converted to customer successfully.');
+            }
+            else {
+              this.toastService.error('Lead conversion failed. Please try again later.');
+              return;
+            }
+            this.leadConversionReviewModal.close();
+            this.loadLeads();
+          },
+          error: (error) => {
+            console.error('Error converting lead:', error);
+            this.toastService.error('Failed to convert lead. Please try again later.');
+          },
+        });
+      },
+      error: (error) => {
+        console.error('Error updating lead:', error);
+        this.toastService.error('Failed to update lead. Please try again later.');
+      },
+    });
   }
   // end: lead conversion review methods
 }

@@ -5,21 +5,21 @@ import { ApiBaseService, ToastService } from '../../core';
 import { ApiErrorHandlerService } from '../../core/services/http/api-error-handler.service';
 import { ApiResponse, SearchApiPayload, SortDirection } from '../../core/services/http/types';
 import {
-    CreateLeadAddressPayload,
-    CreateLeadInteractionPayload,
-    CreateLeadPayload,
-    Lead,
-    LeadAddress,
-    LeadAddressResponse,
-    LeadInteraction,
-    LeadInteractionResponse,
-    LeadLogs,
-    LeadLookupData,
-    LeadLookupDataResponse,
-    LeadsListData,
-    LeadSource,
-    UpdateLeadInteractionPayload,
-    UpdateLeadPayload,
+  CreateLeadAddressPayload,
+  CreateLeadInteractionPayload,
+  CreateLeadPayload,
+  Lead,
+  LeadAddress,
+  LeadAddressResponse,
+  LeadInteraction,
+  LeadInteractionResponse,
+  LeadLogs,
+  LeadLookupData,
+  LeadLookupDataResponse,
+  LeadsListData,
+  LeadSource,
+  UpdateLeadInteractionPayload,
+  UpdateLeadPayload,
 } from './types';
 
 @Injectable({
@@ -231,8 +231,8 @@ export class LeadsService {
     );
   }
 
-  convertLeadToCustomer(leadId: string): Observable<Lead | null> {
-    return this.api.get<ApiResponse<Lead>>(`leads/convert/${leadId}`).pipe(
+  convertLeadToCustomer(leadId: string, isMergeConfirmed: boolean): Observable<any> {
+    return this.api.post<ApiResponse<any>, any>(`leads/convert/${leadId}`, { isMergeConfirmed }).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
         return of(null);

@@ -47,12 +47,14 @@ export class LeadConversionReview implements OnInit, OnChanges {
 
   conversionForm!: FormGroup;
 
-  accounts: Account [] = [];
-  contacts: Contact [] = [];
+  accounts: Account[] = [];
+  contacts: Contact[] = [];
+
+  selectedAccountIdForContactDropdown: string | null = null;
 
   private fb = inject(FormBuilder);
   private leadService = inject(LeadsService);
-  private accountsService = inject(AccountsService);  
+  private accountsService = inject(AccountsService);
   private contactsService = inject(ContactsService);
 
   ngOnInit(): void {
@@ -66,6 +68,19 @@ export class LeadConversionReview implements OnInit, OnChanges {
     if (changes['leadId'] && !changes['leadId'].firstChange) {
       const newLeadId = changes['leadId'].currentValue;
       this.fetchLeadData(newLeadId);
+      this.initializeForm();
+    }
+
+    // changes for the form field account name to load contacts based on selected account
+    if (changes['conversionForm']) {
+      const accountNameControl = this.conversionForm.get('accountName');
+      if (accountNameControl) {
+        accountNameControl.valueChanges.subscribe(value => {
+          const selectedAccount = this.accounts.find(acc => acc.companyName === value);
+          this.selectedAccountIdForContactDropdown = selectedAccount ? selectedAccount.accountId : null;
+          this.loadContacts('');
+        });
+      }
     }
   }
 
@@ -79,6 +94,8 @@ export class LeadConversionReview implements OnInit, OnChanges {
       leadName: [''],
       contactName: ['']
     }, { validators: [this.customValidator.bind(this)] });
+    this.loadAccounts('');
+    this.loadContacts('');
   }
 
   private fetchLeadData(leadId: string): void {
@@ -93,8 +110,8 @@ export class LeadConversionReview implements OnInit, OnChanges {
     });
   }
 
-  private loadAccounts(event: any): void {
-    this.accountsService.searchAccountsForAutocomplete(event.target.value).subscribe({
+  loadAccounts(searchTerm: string): void {
+    this.accountsService.searchAccountsForAutocomplete(searchTerm).subscribe({
       next: (accounts) => {
         this.accounts = accounts;
       },
@@ -104,8 +121,8 @@ export class LeadConversionReview implements OnInit, OnChanges {
     });
   }
 
-  private loadContacts(event: any): void {
-    this.contactsService.searchContactsForAutocomplete(event.target.value).subscribe({
+  loadContacts(searchTerm: string): void {
+    this.contactsService.searchContactsForAutocomplete(searchTerm, 10, this.selectedAccountIdForContactDropdown).subscribe({
       next: (contacts) => {
         this.contacts = contacts;
       },
@@ -137,6 +154,11 @@ export class LeadConversionReview implements OnInit, OnChanges {
         this.conversionForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  cancel(): void {
+    this.initializeForm();
+    this.formSubmit.emit();
   }
 
   // Helper method to check if field has error

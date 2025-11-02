@@ -62,7 +62,7 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Review lead details before converting to opportunity:</p>
         </div>
         <div class="mt-4">
-            <app-lead-conversion-review [leadId]="selectedLeadForConversion?.leadId || null" [leadData]="selectedLeadForConversion"></app-lead-conversion-review>
+            <app-lead-conversion-review [leadId]="selectedLeadForConversion?.leadId || null" (formSubmit)="onLeadConversionSubmit($event)"></app-lead-conversion-review>
         </div>
     </div>
     <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">

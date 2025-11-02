@@ -1,0 +1,56 @@
+<div class="px-4 py-12 sm:px-6 lg:px-8">
+  <nav aria-label="Progress" class="flex justify-center">
+    <ol role="list" class="space-y-6">
+      @for (stage of opportunityStages; track stage.stageId; let i = $index) {
+      <li>
+        <!-- Complete Step -->
+        @if (isStageCompleted(i)) {
+        <a class="group">
+          <span class="flex items-start">
+            <span class="relative flex size-5 shrink-0 items-center justify-center">
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-full text-primary-600 group-hover:text-primary-800 dark:text-primary-400 dark:group-hover:text-primary-300">
+                <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </span>
+            <span class="ml-3 text-sm font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">{{ stage.name }}</span>
+          </span>
+        </a>
+        }
+        <!-- Current Step -->
+        @else if (isCurrentStage(i)) {
+        <a aria-current="step" class="flex items-start">
+          <span aria-hidden="true" class="relative flex size-5 shrink-0 items-center justify-center">
+            <span class="absolute size-4 rounded-full bg-primary-500/20 dark:bg-primary-900"></span>
+            <span class="relative block size-2 rounded-full bg-primary-600 dark:bg-primary-400"></span>
+          </span>
+          <span class="ml-3 text-sm font-medium text-primary-600 dark:text-primary-400">{{ stage.name }}</span>
+        </a>
+        }
+        <!-- Upcoming Step -->
+        @else {
+        <a class="group">
+          <div class="flex items-start">
+            <div aria-hidden="true" class="relative flex size-5 shrink-0 items-center justify-center">
+              <div class="size-2 rounded-full bg-gray-300 group-hover:bg-gray-400 dark:bg-white/15 dark:group-hover:bg-white/25"></div>
+            </div>
+            <p class="ml-3 text-sm font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">{{ stage.name }}</p>
+          </div>
+        </a>
+        }
+      </li>
+      }
+    </ol>
+  </nav>
+  
+
+  <!-- No Stages State -->
+  @if (!loading && opportunityStages.length === 0) {
+  <div class="text-center py-8">
+    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+    </svg>
+    <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">No Stages Available</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Opportunity stages are not configured yet.</p>
+  </div>
+  }
+</div>

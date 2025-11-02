@@ -29,13 +29,13 @@ export class ApiErrorHandlerService {
                     //     this.toastService.error(`Bad Request: ${detail.message}`);
                     // });
                     // Temporarily show a generic message instead of multiple toasts
-                    this.toastService.error(`Bad Request: Please check your input.`);
+                    this.toastService.error(`Please check your input.`);
                     break;
                 } else if (error.error && error.error.message) {
-                    this.toastService.error(`Bad Request: ${error.error.message}`);
+                    this.toastService.error(`${error.error.message}`);
                     break;
                 } else {
-                    this.toastService.error('Bad Request: Please check your input.');
+                    this.toastService.error('Please check your input.');
                 }
                 break;
             case 401:

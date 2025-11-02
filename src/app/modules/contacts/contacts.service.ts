@@ -17,9 +17,11 @@ export class ContactsService {
     filters?: any,
     sort?: any,
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    eagerFetch: boolean = false
   ): Observable<ContactsListData> {
     const body: SearchApiPayload = {
+      eagerFetch: eagerFetch,
       globalSearch: { value: query || '' },
       filters: filters || [],
       sort: sort || {},
@@ -79,7 +81,7 @@ export class ContactsService {
    * @param limit - Maximum number of results to return (default: 10)
    * @returns Observable<Contact[]> - List of matching contacts
    */
-  searchContactsForAutocomplete(searchQuery: string, limit: number = 10): Observable<Contact[]> {
+  searchContactsForAutocomplete(searchQuery: string, limit: number = 10, accountId: string | null): Observable<Contact[]> {
     const body: SearchApiPayload = {
       globalSearch: { value: searchQuery || '' },
       filters: [],
@@ -89,6 +91,13 @@ export class ContactsService {
         limit: limit,
       },
     };
+    if (accountId) {
+      body.filters.push({
+        field: 'accountId',
+        operator: 'equals' as any,
+        value: accountId
+      });
+    }
 
     return this.api
       .post<ApiResponse<ContactsListData>, SearchApiPayload>('contacts/search', body)
