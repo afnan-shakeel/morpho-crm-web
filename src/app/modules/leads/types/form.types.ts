@@ -15,7 +15,7 @@ export interface LeadFormData {
   lastName?: string | null;
   phoneNumber?: string | null;
   email?: string | null;
-  company?: string | null;
+  companyName?: string | null;
 }
 
 /**

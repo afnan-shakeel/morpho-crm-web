@@ -128,7 +128,7 @@ export class LeadListing {
       label: 'Convert to Opportunity',
       actionCallback: (rowData: any) => {
         console.log('Convert to Opportunity clicked for:', rowData);
-        this.openLeadConversionReviewModal(rowData.leadId);
+        this.openLeadConversionReviewModal(rowData);
       },
     },
   ];
@@ -325,10 +325,10 @@ export class LeadListing {
   // end: lead interaction methods
 
   // start: lead conversion review methods
-  selectedLeadIdForConversion: string = '';
+  selectedLeadForConversion: Lead | null = null;
 
-  openLeadConversionReviewModal(leadId: string) {
-    this.selectedLeadIdForConversion = leadId;
+  openLeadConversionReviewModal(lead: Lead) {
+    this.selectedLeadForConversion = lead;
     this.leadConversionReviewModal.open();
   }
   

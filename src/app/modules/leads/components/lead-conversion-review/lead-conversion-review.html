@@ -1,30 +1,12 @@
 <div class="space-y-6">
   <!-- Lead Information Header -->
-  <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-    <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Lead Conversion Review</h4>
-    <div class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
-      <p>
-        <span class="font-medium">Lead ID:</span> {{ leadId }}
-      </p>
-      <div *ngIf="leadData" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-        <div>
-          <p><span class="font-medium">Lead Name:</span> {{ leadData.leadName }}</p>
-          <p><span class="font-medium">Company:</span> {{ leadData.companyName }}</p>
-        </div>
-        <div>
-          <p *ngIf="leadData.email"><span class="font-medium">Email:</span> {{ leadData.email }}</p>
-          <p *ngIf="leadData.phone"><span class="font-medium">Phone:</span> {{ leadData.phone }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Conversion Form -->
-  <form [formGroup]="conversionForm" (ngSubmit)="onSubmit()" class="space-y-8">
+  <form [formGroup]="conversionForm" (ngSubmit)="onSubmit()" class="space-y-2">
     
     <!-- 1. Company/Account Selection -->
-    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-      <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Company/Account Information</h5>
+    <div class="rounded-lg p-2">
+      <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">Company/Account Information</h5>
       
       <!-- Two Column Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -39,13 +21,15 @@
                 formControlName="useExistingAccount"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use New Company</span>
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create New</span>
             </label>
           </div>
           
           <label for="companyName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Company Name
-            <span *ngIf="isCompanyNameRequired()" class="text-red-500">*</span>
+            @if (isCompanyNameRequired()) {
+            <span class="text-red-500">*</span>
+            }
           </label>
           <input
             type="text"
@@ -53,12 +37,14 @@
             formControlName="companyName"
             [disabled]="conversionForm.get('useExistingAccount')?.value"
             placeholder="Enter company name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            class="w-full  mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
             [class.border-red-500]="hasCustomError('companyName')"
           />
-          <p *ngIf="hasCustomError('companyName')" class="mt-1 text-sm text-red-600">
+          @if (hasCustomError('companyName')) {
+          <p class="mt-1 text-xs text-red-600">
             Company name is required
           </p>
+          }
         </div>
 
         <!-- Right Column - Account Name -->
@@ -72,13 +58,15 @@
                 formControlName="useExistingAccount"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Existing Account</span>
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Choose Existing</span>
             </label>
           </div>
           
           <label for="accountName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Account Name
-            <span *ngIf="isAccountNameRequired()" class="text-red-500">*</span>
+            @if (isAccountNameRequired()) {
+            <span class="text-red-500">*</span>
+            }
           </label>
           <input
             type="text"
@@ -86,19 +74,21 @@
             formControlName="accountName"
             [disabled]="!conversionForm.get('useExistingAccount')?.value"
             placeholder="Select existing account"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            class="w-full mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
             [class.border-red-500]="hasCustomError('accountName')"
           />
-          <p *ngIf="hasCustomError('accountName')" class="mt-1 text-sm text-red-600">
+          @if (hasCustomError('accountName')) {
+          <p class="mt-1 text-xs text-red-600">
             Account name is required
           </p>
+          }
         </div>
       </div>
     </div>
 
     <!-- 2. Lead/Contact Selection -->
-    <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-      <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Contact Information</h5>
+    <div class="rounded-lg p-4">
+      <h5 class="text-md font-medium text-gray-900 dark:text-white mb-4">Contact Information</h5>
       
       <!-- Two Column Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -113,13 +103,15 @@
                 formControlName="useExistingContact"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Lead Name</span>
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create New</span>
             </label>
           </div>
           
           <label for="leadName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Lead Name
-            <span *ngIf="isLeadNameRequired()" class="text-red-500">*</span>
+            @if (isLeadNameRequired()) {
+            <span class="text-red-500">*</span>
+            }
           </label>
           <input
             type="text"
@@ -127,12 +119,14 @@
             formControlName="leadName"
             [disabled]="conversionForm.get('useExistingContact')?.value"
             placeholder="Enter lead name"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            class="w-full mt-2 px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
             [class.border-red-500]="hasCustomError('leadName')"
           />
-          <p *ngIf="hasCustomError('leadName')" class="mt-1 text-sm text-red-600">
+          @if (hasCustomError('leadName')) {
+          <p class="mt-1 text-xs text-red-600">
             Lead name is required
           </p>
+          }
         </div>
 
         <!-- Right Column - Contact Name -->
@@ -146,13 +140,15 @@
                 formControlName="useExistingContact"
                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
-              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Use Existing Contact</span>
+              <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Choose Existing</span>
             </label>
           </div>
           
           <label for="contactName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Contact Name
-            <span *ngIf="isContactNameRequired()" class="text-red-500">*</span>
+            @if (isContactNameRequired()) {
+            <span class="text-red-500">*</span>
+            }
           </label>
           <input
             type="text"
@@ -160,12 +156,14 @@
             formControlName="contactName"
             [disabled]="!conversionForm.get('useExistingContact')?.value"
             placeholder="Select existing contact"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+            class="w-full mt-2 px-3 py-1.5 border border-gray-300 placeholder:text-gray-400 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
             [class.border-red-500]="hasCustomError('contactName')"
           />
-          <p *ngIf="hasCustomError('contactName')" class="mt-1 text-sm text-red-600">
+          @if (hasCustomError('contactName')) {
+          <p class="mt-1 text-xs text-red-600">
             Contact name is required
           </p>
+          }
         </div>
       </div>
     </div>

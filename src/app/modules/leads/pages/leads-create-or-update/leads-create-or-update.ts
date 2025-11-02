@@ -118,7 +118,7 @@ export class LeadsCreateOrUpdate {
       lastName: cleanData.lastName || null,
       phone: cleanData.phoneNumber || null,
       email: cleanData.email || null,
-      companyName: cleanData.company || null
+      companyName: cleanData.companyName || null
     };
 
     this.leadService.createLead(createPayload).subscribe({
@@ -167,7 +167,7 @@ export class LeadsCreateOrUpdate {
       lastName: cleanData.lastName || undefined,
       phone: cleanData.phoneNumber || undefined,
       email: cleanData.email || undefined,
-      companyName: cleanData.company || undefined
+      companyName: cleanData.companyName || undefined
     };
 
     this.leadService.updateLead(updatePayload).subscribe({

@@ -46,6 +46,17 @@ export class CustomDatatable {
 
   @Input() tableConfig: TableConfig = { rowReferenceField: '' };
 
+  // Empty state configuration
+  @Input() emptyStateTitle: string = 'No data found';
+  @Input() emptyStateMessage: string = 'Get started by adding your first record.';
+  @Input() showAddButton: boolean = false;
+  @Input() addButtonLabel: string = 'Add New Record';
+  @Output() addButtonClick: EventEmitter<void> = new EventEmitter<void>();
+
+  onAddButtonClick() {
+    this.addButtonClick.emit();
+  }
+
   onPageChange(newPage: number) {
     this.currentPage = newPage;
     this.pageChange.emit(this.currentPage);
