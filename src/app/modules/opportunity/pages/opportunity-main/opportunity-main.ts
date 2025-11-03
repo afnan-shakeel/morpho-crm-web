@@ -21,7 +21,7 @@ export class OpportunityMain {
   private route = inject(ActivatedRoute);
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
-    { label: 'Opportunities', path: '/opportunities' },
+    { label: 'Opportunities', path: '/opportunities/list' },
     { label: '#', path: '/opportunities/#' },
   ];
   opportunityId: string = '';

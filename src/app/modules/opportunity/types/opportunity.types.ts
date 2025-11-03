@@ -1,5 +1,6 @@
 import { Account } from "../../accounts/types";
 import { Contact } from "../../contacts/types";
+import { User } from "../../user/user.types";
 
 /**
  * Base Opportunity interface representing the core opportunity entity
@@ -29,6 +30,7 @@ export interface Opportunity {
   opportunityStage? : OpportunityStage;
   account?: Account;
   contact?: Contact;
+  opportunityOwner?: User
 }
 
 /**

@@ -22,7 +22,6 @@ export interface CreateOpportunityPayload {
  * Update opportunity API payload
  */
 export interface UpdateOpportunityPayload {
-  opportunityId: string;
   opportunityName?: string;
   accountId?: string;
   opportunityOwnerId?: string;

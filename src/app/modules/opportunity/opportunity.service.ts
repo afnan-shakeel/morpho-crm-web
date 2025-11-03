@@ -90,8 +90,8 @@ export class OpportunityService {
     /**
      * Update an existing opportunity
      */
-    updateOpportunity(updateOpportunityData: UpdateOpportunityPayload): Observable<Opportunity> {
-        return this.api.post<OpportunityResponse, UpdateOpportunityPayload>('opportunities/update', updateOpportunityData).pipe(
+    updateOpportunity(opportunityId: string, updateOpportunityData: UpdateOpportunityPayload): Observable<Opportunity> {
+        return this.api.post<OpportunityResponse, UpdateOpportunityPayload>(`opportunities/${opportunityId}/update`, updateOpportunityData).pipe(
             catchError((error) => {
                 this.errorHandler.handleError(error);
                 return of({} as Opportunity);

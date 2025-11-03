@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 
 @Directive({
   selector: '[appAutocomplete]',
@@ -11,7 +11,11 @@ export class AutocompleteDirective implements OnInit, OnDestroy {
   @Input() optionValueAttribute: string = 'value'; // Attribute to match against
   @Input() optionIdAttribute: string = 'id'; // Attribute to get ID from
 
+  // Custom event output
+  @Output() optionSelected = new EventEmitter<{id: any, name: string, originalEvent: Event}>();
+
   private inputListener?: () => void;
+  private clickListener?: (event: Event) => void;
 
   constructor(private el: ElementRef) {}
 
@@ -22,6 +26,9 @@ export class AutocompleteDirective implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.inputListener) {
       this.el.nativeElement.removeEventListener('input', this.inputListener);
+    }
+    if (this.clickListener) {
+      this.el.nativeElement.removeEventListener('click', this.clickListener);
     }
   }
 
@@ -58,27 +65,46 @@ export class AutocompleteDirective implements OnInit, OnDestroy {
     };
 
     // Handle option selection
-    const optionClickListener = (event: Event) => {
+    this.clickListener = (event: Event) => {
+        console.log('Click event detected in AutocompleteDirective');
       const target = event.target as HTMLElement;
-      if (target.tagName === 'EL-OPTION') {
-        const selectedId = target.getAttribute(this.optionIdAttribute);
-        const selectedValue = target.getAttribute(this.optionValueAttribute);
+      
+      // Look for el-option element by traversing up the DOM tree
+      let option: Element | null = target;
+      while (option && option.tagName.toLowerCase() !== 'el-option') {
+        option = option.parentElement;
+      }
+      
+      console.log('Option found:', option);
+      if (option) {
+        console.log('Option selected in AutocompleteDirective');
+        const selectedId = option.getAttribute(this.optionIdAttribute);
+        const selectedValue = option.getAttribute(this.optionValueAttribute);
         
         if (selectedId && selectedValue) {
-          const numericId = isNaN(Number(selectedId)) ? 0 : Number(selectedId);
+          console.log('Selected ID:', selectedId);
+          console.log('Selected Value:', selectedValue);
+          const formatedId = isNaN(Number(selectedId)) ? selectedId : Number(selectedId);
           this.targetForm.patchValue({
             [this.nameControl]: selectedValue,
-            [this.idControl]: numericId
+            [this.idControl]: formatedId
           });
           
           // Mark as touched and validate
           this.targetForm.get(this.nameControl)?.markAsTouched();
           this.targetForm.get(this.idControl)?.markAsTouched();
+          console.log('Emitting optionSelected event from AutocompleteDirective');
+          // Emit the custom event
+          this.optionSelected.emit({
+            id: formatedId,
+            name: selectedValue,
+            originalEvent: event
+          });
         }
       }
     };
 
     this.el.nativeElement.addEventListener('input', this.inputListener);
-    this.el.nativeElement.addEventListener('click', optionClickListener);
+    this.el.nativeElement.addEventListener('click', this.clickListener);
   }
 }
