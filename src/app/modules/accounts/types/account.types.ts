@@ -3,8 +3,6 @@ import { Contact } from "../../contacts/types";
 export interface Account {
     accountId: string;
     companyName: string;
-    companyPhone?: string;
-    companyWebsite?: string;
     industry: string;
     companyPhone?: string;
     companyWebsite?: string;
