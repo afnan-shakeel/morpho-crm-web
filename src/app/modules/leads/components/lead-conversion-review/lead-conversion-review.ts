@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AccountsService } from '../../../accounts/accounts.service';
+import { Account } from '../../../accounts/types';
+import { ContactsService } from '../../../contacts/contacts.service';
+import { Contact } from '../../../contacts/types';
+import { LeadsService } from '../../leads.service';
+import { Lead } from '../../types';
 
 export interface LeadData {
   id: string;
@@ -20,7 +26,7 @@ export interface LeadConversionFormData {
   useExistingAccount: boolean;
   companyName: string;
   accountName: string;
-  
+
   // Lead/Contact Selection
   useExistingContact: boolean;
   leadName: string;
@@ -30,51 +36,107 @@ export interface LeadConversionFormData {
 @Component({
   selector: 'app-lead-conversion-review',
   imports: [CommonModule, ReactiveFormsModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-conversion-review.html',
   styleUrl: './lead-conversion-review.css'
 })
 export class LeadConversionReview implements OnInit, OnChanges {
-  @Input() leadId: string = '';
-  @Input() leadData: LeadData | null = null;
+  @Input() leadId: string | null = null;
+  leadData: Lead | null = null;
   @Output() formSubmit = new EventEmitter<LeadConversionFormData>();
 
   conversionForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  accounts: Account[] = [];
+  contacts: Contact[] = [];
+
+  selectedAccountIdForContactDropdown: string | null = null;
+
+  private fb = inject(FormBuilder);
+  private leadService = inject(LeadsService);
+  private accountsService = inject(AccountsService);
+  private contactsService = inject(ContactsService);
 
   ngOnInit(): void {
     this.initializeForm();
-    this.populateFormWithLeadData();
+    if (this.leadId) {
+      this.fetchLeadData(this.leadId);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['leadData'] && !changes['leadData'].firstChange) {
-      this.populateFormWithLeadData();
+    if (changes['leadId'] && !changes['leadId'].firstChange) {
+      const newLeadId = changes['leadId'].currentValue;
+      this.fetchLeadData(newLeadId);
+      this.initializeForm();
+    }
+
+    // changes for the form field account name to load contacts based on selected account
+    if (changes['conversionForm']) {
+      const accountNameControl = this.conversionForm.get('accountName');
+      if (accountNameControl) {
+        accountNameControl.valueChanges.subscribe(value => {
+          const selectedAccount = this.accounts.find(acc => acc.companyName === value);
+          this.selectedAccountIdForContactDropdown = selectedAccount ? selectedAccount.accountId : null;
+          this.loadContacts('');
+        });
+      }
     }
   }
 
   private initializeForm(): void {
     this.conversionForm = this.fb.group({
-      // Company/Account Selection
       useExistingAccount: [false],
       companyName: [''],
       accountName: [''],
-      
-      // Lead/Contact Selection
+
       useExistingContact: [false],
       leadName: [''],
       contactName: ['']
     }, { validators: [this.customValidator.bind(this)] });
+    this.loadAccounts('');
+    this.loadContacts('');
   }
 
+  private fetchLeadData(leadId: string): void {
+    this.leadService.getLeadById(leadId).subscribe({
+      next: (lead) => {
+        this.leadData = lead;
+        this.populateFormWithLeadData();
+      },
+      error: (error) => {
+        console.error('Error fetching lead data:', error);
+      }
+    });
+  }
 
+  loadAccounts(searchTerm: string): void {
+    this.accountsService.searchAccountsForAutocomplete(searchTerm).subscribe({
+      next: (accounts) => {
+        this.accounts = accounts;
+      },
+      error: (error) => {
+        console.error('Error loading accounts:', error);
+      }
+    });
+  }
+
+  loadContacts(searchTerm: string): void {
+    this.contactsService.searchContactsForAutocomplete(searchTerm, 10, this.selectedAccountIdForContactDropdown).subscribe({
+      next: (contacts) => {
+        this.contacts = contacts;
+      },
+      error: (error) => {
+        console.error('Error loading contacts:', error);
+      }
+    });
+  }
 
   private populateFormWithLeadData(): void {
     if (this.leadData && this.conversionForm) {
-      // Pre-populate form with lead data
       this.conversionForm.patchValue({
         companyName: this.leadData.companyName || '',
-        leadName: this.leadData.leadName || '',
+        leadName: this.leadData.firstName || '',
         // Set default to use lead data (not existing system data)
         useExistingAccount: false,
         useExistingContact: false
@@ -92,6 +154,11 @@ export class LeadConversionReview implements OnInit, OnChanges {
         this.conversionForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  cancel(): void {
+    this.initializeForm();
+    this.formSubmit.emit();
   }
 
   // Helper method to check if field has error

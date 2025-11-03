@@ -42,7 +42,7 @@ export class MenuService {
         },
         {
           title: 'Contacts',
-          link: '/contacts',
+          link: '/contacts/list',
           isActive: false
         }
       ]
@@ -61,7 +61,7 @@ export class MenuService {
         },
         {
           title: 'Opportunities',
-          link: '/opportunities',
+          link: '/opportunities/list',
           isActive: false
         }
       ]

@@ -30,7 +30,21 @@ export const routes: Routes = [
                 loadChildren: () =>
                     import('./modules/accounts/accounts.routes')
                         .then(m => m.ACCOUNTS_ROUTES)
-            }
+            },
+            {
+                path: 'contacts',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/contacts/contacts.routes')
+                        .then(m => m.CONTACTS_ROUTES)
+            },
+            {
+                path: 'opportunities',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/opportunity/opportunity.routes')
+                        .then(m => m.OPPORTUNITY_ROUTES)
+            },
         ]
     },
     

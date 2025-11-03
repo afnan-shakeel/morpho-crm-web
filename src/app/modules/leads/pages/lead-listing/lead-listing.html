@@ -62,12 +62,9 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Review lead details before converting to opportunity:</p>
         </div>
         <div class="mt-4">
-            <app-lead-conversion-review [leadId]="selectedLeadIdForConversion"></app-lead-conversion-review>
+            <app-lead-conversion-review [leadId]="selectedLeadForConversion?.leadId || null" (formSubmit)="onLeadConversionSubmit($event)"></app-lead-conversion-review>
         </div>
     </div>
     <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-        <button type="button" (click)="closeLeadConversionReviewModal()"
-            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
-            Close</button>
     </div>
 </app-modal-medium>

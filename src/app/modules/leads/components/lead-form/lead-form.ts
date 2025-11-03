@@ -53,7 +53,7 @@ export class LeadForm {
     lastName: [''],
     phoneNumber: [''],
     email: ['', [Validators.email]],
-    company: [''],
+    companyName: [''],
   });
 
   userList: LeadOwnerOption[] = []
@@ -134,7 +134,7 @@ export class LeadForm {
           lastName: leadData.lastName,
           phoneNumber: leadData.phoneNumber,
           email: leadData.email,
-          company: leadData.company
+          companyName: leadData.companyName
         });
         this.leadInfoForm.patchValue({ leadOwnerName: "admin admin" });
       },
@@ -153,7 +153,7 @@ export class LeadForm {
       const leadData = this.leadInfoForm.value;
 
       const submissionData: LeadFormData = {
-        leadOwnerId: leadData.leadOwnerId as number,
+        leadOwnerId: Number(leadData.leadOwnerId) as number,
         leadOwnerName: leadData.leadOwnerName || '',
         leadSourceId: leadData.leadSourceId || null,
         leadStatus: leadData.leadStatus || LeadStatus.NEW,
@@ -163,7 +163,7 @@ export class LeadForm {
         lastName: leadData.lastName,
         phoneNumber: leadData.phoneNumber,
         email: leadData.email,
-        company: leadData.company,
+        companyName: leadData.companyName,
         leadId: this.leadId || undefined,
       };
 

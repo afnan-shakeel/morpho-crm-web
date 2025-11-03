@@ -3,6 +3,7 @@
  */
 
 export interface SearchApiPayload {
+  eagerFetch?: boolean;
   globalSearch: {
     value: string;
   };

@@ -3,6 +3,8 @@ import { Contact } from "../../contacts/types";
 export interface Account {
     accountId: string;
     companyName: string;
+    companyPhone?: string;
+    companyWebsite?: string;
     industry: string;
     companyPhone?: string;
     companyWebsite?: string;
@@ -32,8 +34,14 @@ export interface AccountPrimaryContact {
 }
 
 export interface AccountActivityLog {
+    activityId: string;
+    relatedTo: string;
+    relatedEntityId: string;
+
     accountId: string;
     activityType: string;
+    activitHeader: string;
+
     activityLog: string;
     eventName: string;
     eventCategory: string;
@@ -41,4 +49,8 @@ export interface AccountActivityLog {
     performedById: number;
     performedByName?: string;
     timestamp: string;
+    performedBy: {
+        UserName: string;
+        Name: string;
+    }
 }

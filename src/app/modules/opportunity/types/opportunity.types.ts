@@ -1,3 +1,6 @@
+import { Account } from "../../accounts/types";
+import { Contact } from "../../contacts/types";
+
 /**
  * Base Opportunity interface representing the core opportunity entity
  */
@@ -23,22 +26,20 @@ export interface Opportunity {
   stageName?: string;
   amount?: number;
   probability?: number;
+  opportunityStage? : OpportunityStage;
+  account?: Account;
+  contact?: Contact;
 }
 
 /**
  * Opportunity stage enumeration
  */
-export enum OpportunityStage {
-  PROSPECTING = 'Prospecting',
-  QUALIFICATION = 'Qualification', 
-  NEEDS_ANALYSIS = 'Needs Analysis',
-  VALUE_PROPOSITION = 'Value Proposition',
-  DECISION_MAKERS = 'Decision Makers',
-  PERCEPTION_ANALYSIS = 'Perception Analysis',
-  PROPOSAL_QUOTE = 'Proposal/Quote',
-  NEGOTIATION_REVIEW = 'Negotiation/Review',
-  CLOSED_WON = 'Closed Won',
-  CLOSED_LOST = 'Closed Lost'
+export interface OpportunityStage {
+  stageId: string;
+  name: string;
+  probability: number;
+  is_closed: boolean;
+  sequence: number;
 }
 
 /**

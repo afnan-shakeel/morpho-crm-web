@@ -44,12 +44,12 @@ export interface UpdateContactPayload {
 /**
  * API response for contact operations
  */
-export interface ContactResponse extends ApiResponse<Contact> {}
+export interface ContactResponse extends ApiResponse<Contact> { }
 
 /**
  * API response for contact list operations
  */
-export interface ContactListResponse extends PaginatedResponse<Contact> {}
+export interface ContactListResponse extends PaginatedResponse<Contact> { }
 
 /**
  * Contact search parameters
@@ -88,7 +88,7 @@ export interface BulkContactOperationResponse extends ApiResponse<{
     success: boolean;
     error?: string;
   }>;
-}> {}
+}> { }
 
 /**
  * Contact autocomplete response
@@ -101,17 +101,15 @@ export interface ContactAutocompleteItem {
   jobTitle?: string;
 }
 
-export interface ContactAutocompleteResponse extends ApiResponse<ContactAutocompleteItem[]> {}
+export interface ContactAutocompleteResponse extends ApiResponse<ContactAutocompleteItem[]> { }
 
 /**
  * Contacts list data structure (similar to AccountsListData)
  */
 export interface ContactsListData {
   data: Contact[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    pages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+  count: number;
 }

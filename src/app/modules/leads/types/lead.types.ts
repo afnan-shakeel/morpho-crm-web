@@ -14,7 +14,7 @@ export interface Lead {
   lastName?: string;
   phoneNumber?: string;
   email?: string;
-  company?: string;
+  companyName?: string;
   createdAt?: string;
   updatedAt?: string;
   createdBy?: string;

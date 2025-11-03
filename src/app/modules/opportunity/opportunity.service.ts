@@ -16,10 +16,10 @@ import {
     OpportunityLookupData,
     OpportunityLookupDataResponse,
     OpportunityResponse,
-    OpportunityStageOption,
+    OpportunityStage,
     UpdateOpportunityActivityPayload,
     UpdateOpportunityPayload,
-    UpdateOpportunityStagePayload,
+    UpdateOpportunityStagePayload
 } from './types';
 
 @Injectable({
@@ -38,9 +38,11 @@ export class OpportunityService {
         filters?: any,
         sort?: any,
         page?: number,
-        pageSize?: number
+        pageSize?: number,
+        eagerFetch: boolean = false
     ): Observable<OpportunitiesListData> {
         const body: SearchApiPayload = {
+            eagerFetch: eagerFetch,
             globalSearch: { value: query || '' },
             filters: filters || [],
             sort: sort || {},
@@ -203,12 +205,12 @@ export class OpportunityService {
     /**
      * Get opportunity stages for dropdown
      */
-    getOpportunityStages(): Observable<OpportunityStageOption[]> {
-        return this.api.get<ApiResponse<OpportunityStageOption[]>>('opportunities/stages').pipe(
+    getOpportunityStages(): Observable<OpportunityStage[]> {
+        return this.api.get<ApiResponse<OpportunityStage[]>>('opportunities/stages').pipe(
             catchError((error) => {
                 console.error('Error fetching opportunity stages:', error);
                 this.toastService.error('Failed to fetch opportunity stages. Please try again later.');
-                return of([] as OpportunityStageOption[]);
+                return of([] as OpportunityStage[]);
             }),
             map((response: any) => response.data)
         );

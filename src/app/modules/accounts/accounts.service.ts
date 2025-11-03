@@ -95,7 +95,7 @@ export class AccountsService {
     const body: SearchApiPayload = {
       globalSearch: { value: searchQuery || '' },
       filters: [],
-      sort: { field: 'accountName', direction: SortDirection.ASC },
+      sort: { field: 'companyName', direction: SortDirection.ASC },
       pagination: {
         page: 1,
         limit: limit,
