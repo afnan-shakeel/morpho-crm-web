@@ -1,16 +1,17 @@
-import { Account } from "./account.types";
-
+import { Account } from './account.types';
 
 export interface createAccountRequest {
   companyName: string;
-  industry: string;
+  industry?: string;
+  companyPhone?: string;
+  companyWebsite?: string;
+  companySize?: string;
+  accountStatus?: string;
 }
-
 
 export interface updateAccountRequest extends Partial<createAccountRequest> {
   accountId: string;
 }
-
 
 export interface AccountsListData {
   data: Account[];
@@ -19,4 +20,3 @@ export interface AccountsListData {
   page: number;
   limit: number;
 }
-

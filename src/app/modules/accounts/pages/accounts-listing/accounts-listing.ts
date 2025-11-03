@@ -1,19 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { ModalMedium } from "@/shared/components/modal-medium/modal-medium";
+import { Component, inject, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import { CustomDatatable } from '../../../../shared/components/custom-datatable/custom-datatable';
 import { CellTemplate, ColorBadgeColor, DataTableColumn } from '../../../../shared/components/custom-datatable/types';
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
 import { AccountsService } from '../../accounts.service';
+import { AccountForm } from "../../components/account-form/account-form";
 import { Account } from '../../types';
 
 @Component({
   selector: 'app-accounts-listing',
-  imports: [PageHeading, CustomDatatable],
+  imports: [PageHeading, CustomDatatable, AccountForm, ModalMedium],
   templateUrl: './accounts-listing.html',
   styleUrl: './accounts-listing.css'
 })
 export class AccountsListing {
+   @ViewChild('accountForm') accountForm!: ModalMedium;
+
   private router = inject(Router);
   private accountsService = inject(AccountsService);
   private toastService = inject(ToastService);
@@ -23,6 +27,7 @@ export class AccountsListing {
   ];
 
   accounts: Account[] = [];
+  selectedAccountIdToUpdate: string | null = null;
   columns: DataTableColumn[] = [
     { field: 'accountId', label: 'Account ID', hidden: true },
     { field: 'companyName', label: 'Company Name', cellTemplate: CellTemplate.LINK, hrefField: 'accounts/:accountId/view' },
@@ -68,20 +73,18 @@ export class AccountsListing {
     {
       label: 'View',
       actionCallback: (rowData: Account) => {
-        console.log('View Details clicked for:', rowData);
       },
     },
     {
       label: 'Edit',
       actionCallback: (rowData: Account) => {
-        console.log('Edit clicked for:', rowData);
-        // navigate to the account edit page
+        this.selectedAccountIdToUpdate = rowData.accountId;
+        this.openAccountFormModal();
       },
     },
     {
       label: 'Update Status',
       actionCallback: (rowData: Account) => {
-        console.log('clicked for:', rowData);
       },
     },
   ];
@@ -165,6 +168,23 @@ export class AccountsListing {
     this.loadAccounts();
   }
 
-  onCreateAccount() {}
+  onCreateAccount() {
+    this.openAccountFormModal();
+  }
+
+  // start: accounts form modal
+  openAccountFormModal() {
+    this.accountForm.open();
+  }
+  closeAccountFormModal() {
+    this.accountForm.close();
+  }
+  onAccountFormSubmit() {
+    // call the create/update service
+    this.closeAccountFormModal();
+    this.loadAccounts();
+  }
+  // end: accounts form modal
+
 
 }

@@ -1,10 +1,16 @@
+import { Contact } from "../../contacts/types";
 
 export interface Account {
     accountId: string;
     companyName: string;
     industry: string;
+    companyPhone?: string;
+    companyWebsite?: string;
+    companySize?: string;
+    accountStatus?: string;
     addressDetails?: AccountAddress;
     primaryContact?: AccountPrimaryContact;
+    contacts?: Contact[];
 }
 
 export interface AccountAddress {
