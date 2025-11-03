@@ -25,7 +25,7 @@ export class MenuService {
       title: 'Dashboard',
       icon: 'home',
       link: '/dashboard',
-      isActive: true,
+      isActive: false,
       expanded: false
     },
     {
@@ -252,5 +252,77 @@ export class MenuService {
       return item;
     });
     this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Set active menu item based on current route
+   */
+  setActiveMenuByRoute(currentUrl: string): void {
+    const menuItems = this.getCurrentMenuItems();
+    let foundActiveMenu = false;
+
+    const updatedMenuItems = menuItems.map(item => {
+      // Reset all active states first
+      item.isActive = false;
+      
+      // Check if this main menu item matches the current URL
+      if (this.isRouteMatch(currentUrl, item.link)) {
+        item.isActive = true;
+        foundActiveMenu = true;
+      }
+      
+      // Handle submenu items
+      if (item.subMenu) {
+        let hasActiveSubmenu = false;
+        
+        item.subMenu = item.subMenu.map(subItem => {
+          subItem.isActive = false;
+          
+          // Check if submenu item matches current URL
+          if (this.isRouteMatch(currentUrl, subItem.link)) {
+            subItem.isActive = true;
+            hasActiveSubmenu = true;
+            foundActiveMenu = true;
+          }
+          
+          return subItem;
+        });
+        
+        // If a submenu item is active, also activate and expand the parent
+        if (hasActiveSubmenu) {
+          item.isActive = true;
+          item.expanded = true;
+        }
+      }
+      
+      return item;
+    });
+    
+    this.menuItemsSubject.next(updatedMenuItems);
+  }
+
+  /**
+   * Check if current route matches menu item route
+   */
+  private isRouteMatch(currentUrl: string, menuLink: string): boolean {
+    // Remove query parameters and fragments from current URL
+    const cleanCurrentUrl = currentUrl.split('?')[0].split('#')[0];
+    
+    // Handle exact matches
+    if (cleanCurrentUrl === menuLink) {
+      return true;
+    }
+    
+    // Handle parent route matches (e.g., /accounts should match /accounts/list)
+    if (menuLink !== '/' && cleanCurrentUrl.startsWith(menuLink + '/')) {
+      return true;
+    }
+    
+    // Handle root/dashboard special case
+    if (menuLink === '/dashboard' && (cleanCurrentUrl === '/' || cleanCurrentUrl === '/dashboard')) {
+      return true;
+    }
+    
+    return false;
   }
 }

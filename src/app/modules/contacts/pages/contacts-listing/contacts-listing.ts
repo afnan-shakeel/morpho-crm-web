@@ -1,20 +1,25 @@
 import { CustomDatatable } from "@/shared/components/custom-datatable/custom-datatable";
 import { PageHeading } from "@/shared/components/page-heading/page-heading";
 import { DataMappingUtils } from "@/shared/utils/data-mapping";
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
+import { ToastService } from "../../../../core";
 import { CellTemplate, ColorBadgeColor, DataTableColumn } from '../../../../shared/components/custom-datatable/types';
+import { ModalMedium } from "../../../../shared/components/modal-medium/modal-medium";
+import { ContactForm } from "../../components/contact-form/contact-form";
 import { ContactsService } from '../../contacts.service';
-import { Contact } from '../../types';
+import { Contact, CreateContactPayload, UpdateContactPayload } from '../../types';
 
 @Component({
   selector: 'app-contacts-listing',
-  imports: [CustomDatatable, PageHeading],
+  imports: [CustomDatatable, PageHeading, ModalMedium, ContactForm],
   templateUrl: './contacts-listing.html',
   styleUrl: './contacts-listing.css'
 })
 export class ContactsListing {
+  @ViewChild('contactForm') contactForm!: ModalMedium;
 
   private contactsService = inject(ContactsService);
+  private toastService = inject(ToastService);
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
     { label: 'Contacts', path: '/contacts/list' },
@@ -54,6 +59,7 @@ export class ContactsListing {
   };
   apiReadyFilterData: any[] = [];
 
+  selectedContactIdToUpdate = signal<string | null>(null);
   tableRowActions = [
     {
       label: 'View',
@@ -63,6 +69,8 @@ export class ContactsListing {
     {
       label: 'Edit',
       actionCallback: (rowData: Contact) => {
+        this.selectedContactIdToUpdate.set(rowData.contactId);
+        this.openContactFormModal();
       },
     },
   ];
@@ -132,5 +140,66 @@ export class ContactsListing {
     this.loadContacts();
   }
 
+  // start: contact form modal
+  resetFormEvent = signal<boolean>(false);
+  openContactFormModal() {
+    this.contactForm.open();
+  }
+  closeContactFormModal() {
+    this.contactForm.close();
+    this.resetFormEvent.set(true);
+    this.selectedContactIdToUpdate.set(null);
+  }
+  onContactFormSubmit(formData: any) {
+    console.log('Contact form submitted with data:', formData);
+    if (!formData) {
+      this.closeContactFormModal();
+      return;
+    }
+    // call the create/update service
+    if (formData.contactId) {
+      this.updateContact(formData.contactId, formData)
 
+    } else {
+      this.createContact(formData);
+    }
+  }
+  // end: contacts form modal
+
+  createContact(formData: CreateContactPayload) {
+    this.contactsService.createContact(formData).subscribe({
+      next: (response) => {
+        if (response.contactId) {
+          this.closeContactFormModal();
+          this.toastService.success('Contact created successfully!');
+          this.resetFormEvent.set(true);
+          this.loadContacts();
+        } else {
+          this.toastService.error('Failed to create contact. Please try again.');
+        }
+      },
+      error: (error) => {
+        console.error('Error creating contact:', error);
+      }
+    });
+  }
+  updateContact(contactId: string, formData: UpdateContactPayload) {
+    this.contactsService.updateContact(contactId, formData).subscribe({
+      next: (response) => {
+        if (response.contactId) {
+          this.closeContactFormModal();
+          this.toastService.success('Contact updated successfully!');
+          this.resetFormEvent.set(true);
+          this.loadContacts();
+          return;
+        }
+        else {
+          this.toastService.error('Failed to update contact. Please try again.');
+        }
+      },
+      error: (error) => {
+        console.error('Error updating contact:', error);
+      }
+    });
+  }
 }

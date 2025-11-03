@@ -47,6 +47,13 @@ export class ApiErrorHandlerService {
             case 404:
                 this.toastService.error('Not Found: The requested resource could not be found.');
                 break;
+            case 409:
+                if (error.error && error.error.message) {
+                    this.toastService.error(`${error.error.message}`);
+                } else {
+                    this.toastService.error('Conflict: The request could not be completed due to a conflict with the current state of the resource.');
+                }
+                break;
             case 500:
                 this.toastService.error('Server Error: Please try again later.');
                 break;

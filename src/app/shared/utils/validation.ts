@@ -1,4 +1,5 @@
 // src/app/shared/utils/validation.ts
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 export function isValidEmail(email: string): boolean {
   // Regex to check email validity
@@ -10,4 +11,15 @@ export function isGuid(id: string): boolean {
   // Regex to check standard GUID/UUID format
   const guidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return guidRegex.test(id);
+}
+
+
+export function urlValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+  try {
+    new URL(control.value);
+    return null;
+  } catch {
+    return { url: true };
+  }
 }

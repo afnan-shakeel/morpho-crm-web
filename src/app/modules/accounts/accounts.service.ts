@@ -45,7 +45,7 @@ export class AccountsService {
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
-          return of({} as Account);
+          return of(null);
         }),
         map((response: any) => response.data)
       );
@@ -57,14 +57,14 @@ export class AccountsService {
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
-          return of({} as Account);
+          return of(null);
         }),
         map((response: any) => response.data)
       );
   }
 
-  getAccountById(id: string): Observable<Account> {
-    return this.api.get<ApiResponse<Account>>(`accounts/${id}`).pipe(
+  getAccountById(id: string, eagerFetch: boolean = false): Observable<Account> {
+    return this.api.get<ApiResponse<Account>>(`accounts/${id}?eagerFetch=${eagerFetch}`).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
         return of({} as Account);

@@ -165,7 +165,6 @@ export class LeadListing {
           filters: this.filters,
           config: {},
         };
-        console.log('Lead Sources Options:', this.leadSourcesOptions);
       },
       error: (error) => {
         console.error('Error fetching lead sources:', error);

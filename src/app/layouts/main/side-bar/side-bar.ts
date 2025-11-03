@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { Observable, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AuthService, MenuItem, MenuService } from '../../../core';
 import { AuthUserInfo } from '../../../core/models/auth.model';
 import { Avatar } from '../../../shared/components/avatar/avatar';
@@ -19,6 +20,7 @@ export class SideBar implements OnInit, OnDestroy {
   userDetails: AuthUserInfo | null = null;
   private menuService = inject(MenuService);
   private authService = inject(AuthService);
+  private router = inject(Router);
   
   constructor() {
     this.menuItems$ = this.menuService.getMenuItems();
@@ -26,6 +28,18 @@ export class SideBar implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userDetails = this.authService.getUserInfo();
+    
+    // Set active menu based on current route
+    this.updateActiveMenuFromCurrentRoute();
+    
+    // Listen to route changes and update active menu
+    this.subscription.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
+          this.updateActiveMenuFromCurrentRoute();
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -36,7 +50,8 @@ export class SideBar implements OnInit, OnDestroy {
    * Handle menu item click
    */
   onMenuItemClick(link: string): void {
-    this.menuService.activateMenuItem(link);
+    // Navigation is handled by routerLink, active state will be updated automatically by router events
+    // No need to manually activate menu item
   }
 
   /**
@@ -44,7 +59,8 @@ export class SideBar implements OnInit, OnDestroy {
    */
   onSubMenuItemClick(link: string, event: Event): void {
     event.stopPropagation(); // Prevent parent menu item click
-    this.menuService.activateMenuItem(link);
+    // Navigation is handled by routerLink, active state will be updated automatically by router events
+    // No need to manually activate menu item
   }
 
   /**
@@ -54,6 +70,14 @@ export class SideBar implements OnInit, OnDestroy {
     event.preventDefault(); // Prevent navigation
     event.stopPropagation(); // Prevent other handlers
     this.menuService.toggleMenuExpansion(link);
+  }
+
+  /**
+   * Update active menu based on current route
+   */
+  private updateActiveMenuFromCurrentRoute(): void {
+    const currentUrl = this.router.url;
+    this.menuService.setActiveMenuByRoute(currentUrl);
   }
 
 }

@@ -1,4 +1,5 @@
 import { Contact } from "../../contacts/types";
+import { User } from "../../user/user.types";
 
 export interface Account {
     accountId: string;
@@ -7,20 +8,30 @@ export interface Account {
     companyPhone?: string;
     companyWebsite?: string;
     companySize?: string;
-    accountStatus?: string;
-    addressDetails?: AccountAddress;
+    accountStatus?: AccountStatusEnum;
+    accountOwnerId?: string;
+
+    accountAddress?: AccountAddress[];
     primaryContact?: AccountPrimaryContact;
     contacts?: Contact[];
+    accountOwner?: User;
+}
+
+export enum AccountStatusEnum {
+    ACTIVE = 'Active',
+    INACTIVE = 'Inactive',
+    PENDING = 'Pending',
 }
 
 export interface AccountAddress {
-    accountId: string;
+    addressId: string;
     addressLine1: string;
     addressLine2?: string;
     city: string;
     state: string;
     postalCode: string;
     country: string;
+    isPrimary: boolean;
 }
 
 export interface AccountPrimaryContact {

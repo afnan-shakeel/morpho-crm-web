@@ -1,5 +1,5 @@
 import { ModalMedium } from "@/shared/components/modal-medium/modal-medium";
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import { CustomDatatable } from '../../../../shared/components/custom-datatable/custom-datatable';
@@ -7,7 +7,7 @@ import { CellTemplate, ColorBadgeColor, DataTableColumn } from '../../../../shar
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
 import { AccountsService } from '../../accounts.service';
 import { AccountForm } from "../../components/account-form/account-form";
-import { Account } from '../../types';
+import { Account, createAccountRequest } from '../../types';
 
 @Component({
   selector: 'app-accounts-listing',
@@ -16,7 +16,7 @@ import { Account } from '../../types';
   styleUrl: './accounts-listing.css'
 })
 export class AccountsListing {
-   @ViewChild('accountForm') accountForm!: ModalMedium;
+  @ViewChild('accountForm') accountForm!: ModalMedium;
 
   private router = inject(Router);
   private accountsService = inject(AccountsService);
@@ -27,7 +27,7 @@ export class AccountsListing {
   ];
 
   accounts: Account[] = [];
-  selectedAccountIdToUpdate: string | null = null;
+  selectedAccountIdToUpdate = signal<string | null>(null);
   columns: DataTableColumn[] = [
     { field: 'accountId', label: 'Account ID', hidden: true },
     { field: 'companyName', label: 'Company Name', cellTemplate: CellTemplate.LINK, hrefField: 'accounts/:accountId/view' },
@@ -78,7 +78,8 @@ export class AccountsListing {
     {
       label: 'Edit',
       actionCallback: (rowData: Account) => {
-        this.selectedAccountIdToUpdate = rowData.accountId;
+        this.selectedAccountIdToUpdate.set(rowData.accountId);
+        console.log('Editing account:', this.selectedAccountIdToUpdate());
         this.openAccountFormModal();
       },
     },
@@ -127,7 +128,7 @@ export class AccountsListing {
       });
   }
 
-  
+
   onPageChangeHandler(event: any) {
     this.currentPage = event;
     this.loadAccounts();
@@ -139,7 +140,7 @@ export class AccountsListing {
     this.loadAccounts();
   }
 
-    onFilterChange(event: Filters[]) {
+  onFilterChange(event: Filters[]) {
 
     if (!event || event.length === 0) {
       this.apiReadyFilterData = [];
@@ -173,18 +174,59 @@ export class AccountsListing {
   }
 
   // start: accounts form modal
+  resetFormEvent = signal<boolean>(false);
   openAccountFormModal() {
     this.accountForm.open();
   }
   closeAccountFormModal() {
     this.accountForm.close();
+    this.selectedAccountIdToUpdate.set(null);
   }
-  onAccountFormSubmit() {
+  onAccountFormSubmit(formData: any) {
+    if (!formData) {
+      this.closeAccountFormModal();
+      return;
+    }
+    console.log('Account form submitted with data:', formData);
     // call the create/update service
-    this.closeAccountFormModal();
-    this.loadAccounts();
+    if (formData.accountId) {
+      this.updateAccount(formData.accountId, formData);
+    } else {
+      this.createAccount(formData);
+    }
   }
   // end: accounts form modal
 
+  createAccount(accountData: createAccountRequest) {
+    this.accountsService.createAccount(accountData).subscribe({
+      next: (response) => {
+        if (response && response.accountId) {
+          this.toastService.success('Account created successfully!');
+          this.resetFormEvent.set(true);
+          this.loadAccounts();
+          this.closeAccountFormModal();
+        }
+      },
+      error: (error) => {
+        console.error('Error creating account:', error);
+      }
+    });
+  }
 
+  updateAccount(accountId: string, accountData: createAccountRequest) {
+    this.accountsService.updateAccount(accountId, accountData).subscribe({
+      next: (response) => {
+        if (response && response.accountId) {
+          this.toastService.success('Account updated successfully!');
+          this.resetFormEvent.set(true);
+          this.loadAccounts();
+          this.closeAccountFormModal();
+        }
+      },
+      error: (error) => {
+        console.error('Error updating account:', error);
+      }
+    });
+
+  }
 }

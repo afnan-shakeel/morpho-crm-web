@@ -1,3 +1,6 @@
+import { Lead } from "../../leads/types";
+import { User } from "../../user/user.types";
+
 /**
  * Base Contact interface representing the core contact entity
  */
@@ -15,8 +18,11 @@ export interface Contact {
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
+
   account?: ContactAccount;
   opportunities?: ContactOpportunity[];
+  contactOwner?: User;
+  leads?: Lead[];
 }
 
 /**

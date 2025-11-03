@@ -65,8 +65,8 @@ export class ContactsService {
       );
   }
 
-  getContactById(id: string): Observable<Contact> {
-    return this.api.get<ApiResponse<Contact>>(`contacts/${id}`).pipe(
+  getContactById(id: string, eagerFetch: boolean = false): Observable<Contact> {
+    return this.api.get<ApiResponse<Contact>>(`contacts/${id}?eagerFetch=${eagerFetch}`).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
         return of({} as Contact);
