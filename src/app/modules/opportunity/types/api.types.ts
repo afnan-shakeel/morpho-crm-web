@@ -1,6 +1,6 @@
 import { ApiResponse } from '../../../core/services/http/types';
 import { OpportunityStageFormOption } from './form.types';
-import { Opportunity, OpportunityActivity, OpportunityLogs } from './opportunity.types';
+import { Opportunity, OpportunityActivity, OpportunityLogs, OpportunityStatus } from './opportunity.types';
 
 /**
  * Create opportunity API payload
@@ -8,12 +8,13 @@ import { Opportunity, OpportunityActivity, OpportunityLogs } from './opportunity
 export interface CreateOpportunityPayload {
   opportunityName: string;
   accountId: string;
-  opportunityOwnerId: string;
+  opportunityOwnerId: number;
   contactId?: string | null;
   stageId: string;
-  amount?: number | null;
-  probability?: number | null;
+  status: OpportunityStatus;
+  closedDate?: string | null;
   expectedCloseDate?: string | null;
+  lossReasonCode?: string | null;
   next_step?: string | null;
   notes?: string | null;
 }
@@ -24,11 +25,10 @@ export interface CreateOpportunityPayload {
 export interface UpdateOpportunityPayload {
   opportunityName?: string;
   accountId?: string;
-  opportunityOwnerId?: string;
+  opportunityOwnerId?: number;
   contactId?: string | null;
   stageId?: string;
-  amount?: number | null;
-  probability?: number | null;
+  status?: OpportunityStatus;
   closedDate?: string | null;
   expectedCloseDate?: string | null;
   lossReasonCode?: string | null;

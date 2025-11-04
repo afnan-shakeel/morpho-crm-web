@@ -1,0 +1,261 @@
+<form [formGroup]="opportunityForm" (ngSubmit)="onSubmit()" class="space-y-8  dark:divide-white/10">
+    <div class="dark:border-white/10">
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Opportunity Information</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Information about the opportunity.
+        </p>
+        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
+            <div class="sm:col-span-4">
+                <label for="opportunityName" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                    Opportunity Name <span class="text-red-500">*</span>
+                </label>
+                <div class="mt-2">
+                    <input id="opportunityName" type="text" name="opportunityName" formControlName="opportunityName"
+                        autocomplete="name" placeholder="Enter opportunity name"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    @if (opportunityForm.get('opportunityName')?.touched &&
+                    opportunityForm.get('opportunityName')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('opportunityName')?.errors?.['required'] ? 'Opportunity name is required.' : '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+                        <div class="sm:col-span-2">
+                <label for="opportunityOwnerName"
+                    class="block text-sm/6 font-medium text-gray-900 dark:text-white">Opportunity Owner
+                    <span class="text-red-500">*</span></label>
+                <div class="mt-2">
+                    <!-- <input type="hidden" formControlName="opportunityOwnerId" /> -->
+                    <el-autocomplete class="relative mt-2 block" id="account" appAutocomplete
+                        [targetForm]="opportunityForm" nameControl="opportunityOwnerName"
+                        idControl="opportunityOwnerId">
+                        <input id="opportunityOwnerName" type="text" formControlName="opportunityOwnerName"
+                            placeholder="Type owner name" (change)="loadUserList()"
+                            class="block w-full rounded-md bg-white py-1 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                        <button type="button"
+                            class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="size-5 text-gray-400">
+                                <path
+                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <el-options anchor="bottom end" popover
+                            class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+                            @for (user of userList; let uidx = $index; track uidx;) {
+                            <el-option [attr.value]="user.name" id="{{user.id}}"
+                                class="block px-3 py-1.5 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
+                                <div class="flex">
+                                    <span class="truncate">{{user.name}}</span>
+                                </div>
+                            </el-option>
+                            }
+                        </el-options>
+                    </el-autocomplete>
+                    @if (opportunityForm.get('opportunityOwnerName')?.touched &&
+                    opportunityForm.get('opportunityOwnerName')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('opportunityOwnerName')?.errors?.['required'] ? 'Owner name is required.'
+                        : ''
+                        }}
+                    </div>
+                    }
+                    @if (opportunityForm.get('opportunityOwnerId')?.touched &&
+                    opportunityForm.get('opportunityOwnerId')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('opportunityOwnerId')?.errors?.['required'] ? 'Please select a valid
+                        owner.' :
+                        '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="accountName" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Account
+                    (Company Name)
+                    <span class="text-red-500">*</span></label>
+                <div class="mt-2">
+                    <!-- <input type="hidden" formControlName="accountId" /> -->
+                    <el-autocomplete class="relative mt-2 block" id="account" appAutocomplete
+                        [targetForm]="opportunityForm" nameControl="accountName" idControl="accountId">
+                        <input id="combobox" type="text" formControlName="accountName" placeholder="Type account name"
+                            (change)="loadAccountList()"
+                            class="block w-full rounded-md bg-white py-1 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                        <button type="button"
+                            class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="size-5 text-gray-400">
+                                <path
+                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <el-options anchor="bottom end" popover
+                            class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+                            @for (account of accountList; let uidx = $index; track uidx;) {
+                            <el-option [attr.value]="account.companyName" id="{{account.accountId}}"
+                                class="block px-3 py-1.5 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
+                                <div class="flex">
+                                    <span class="truncate">{{account.companyName}}</span>
+                                </div>
+                            </el-option>
+                            }
+
+                        </el-options>
+                    </el-autocomplete>
+                    @if (opportunityForm.get('accountName')?.touched && opportunityForm.get('accountName')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('accountName')?.errors?.['required'] ? 'Account name is required.' : ''
+                        }}
+                    </div>
+                    }
+                    @if (opportunityForm.get('accountId')?.touched && opportunityForm.get('accountId')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('accountId')?.errors?.['required'] ? 'Please select a valid account owner.' :
+                        '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="contactName" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Account
+                    Contact
+                    <span class="text-red-500">*</span></label>
+                <div class="mt-2">
+                    <!-- <input type="hidden" formControlName="accountId" /> -->
+                    <el-autocomplete class="relative mt-2 block" id="account" appAutocomplete
+                        [targetForm]="opportunityForm" nameControl="contactName" idControl="contactId">
+                        <input id="combobox" type="text" formControlName="contactName" placeholder="Type contact name"
+                            (change)="loadAccountList()"
+                            class="block w-full rounded-md bg-white py-1 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                        <button type="button"
+                            class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
+                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="size-5 text-gray-400">
+                                <path
+                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <el-options anchor="bottom end" popover
+                            class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+                            @for (contact of contactList; let uidx = $index; track uidx;) {
+                            <el-option [attr.value]="contact.fullName" id="{{contact.contactId}}"
+                                class="block px-3 py-1.5 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
+                                <div class="flex">
+                                    <span class="truncate">{{contact.fullName}}</span>
+                                </div>
+                            </el-option>
+                            }
+
+                        </el-options>
+                    </el-autocomplete>
+                    @if (opportunityForm.get('contactName')?.touched && opportunityForm.get('contactName')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('contactName')?.errors?.['required'] ? 'Contact name is required.' : ''
+                        }}
+                    </div>
+                    }
+                    @if (opportunityForm.get('contactId')?.touched && opportunityForm.get('contactId')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('contactId')?.errors?.['required'] ? 'Please select a valid contact.' :
+                        '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+
+            <div class="sm:col-span-2">
+                <label for="opportunityStage"
+                    class="block text-sm/6 font-medium text-gray-900 dark:text-white">Opportunity Stage </label>
+                <div class="mt-2">
+                    <select id="opportunityStage" name="opportunityStage" formControlName="stageId"
+                        class="block w-full rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+                        @for (item of opportunityStages; let idx = $index; track idx) {
+                        <option value="{{item.stageId}}">{{item.name}}</option>
+                        }
+                    </select>
+                    @if (opportunityForm.get('stageId')?.touched &&
+                    opportunityForm.get('stageId')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('stageId')?.errors?.['required'] ? 'Opportunity stage is required.' : '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="status" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Status </label>
+                <div class="mt-2">
+                    <select id="status" name="status" formControlName="status"
+                        class="block w-full rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+                        @for (item of opportunityStatuses; let idx = $index; track idx) {
+                        <option value="{{item}}">{{item}}</option>
+                        }
+                    </select>
+                    @if (opportunityForm.get('status')?.touched && opportunityForm.get('status')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ opportunityForm.get('status')?.errors?.['required'] ? 'Status is required.' : '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="expectedCloseDate" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                    Expected Close Date
+                </label>
+                <div class="mt-2">
+                    <input id="expectedCloseDate" type="datetime-local" name="expectedCloseDate"
+                        formControlName="expectedCloseDate"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    @if ((opportunityForm.get('expectedCloseDate')?.touched ||
+                    opportunityForm.get('expectedCloseDate')?.dirty) &&
+                    opportunityForm.get('expectedCloseDate')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ 'Expected close date is required.' }}
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="closedDate" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                    Actual Close Date
+                </label>
+                <div class="mt-2">
+                    <input id="closedDate" type="datetime-local" name="closedDate" formControlName="closedDate"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    @if ((opportunityForm.get('closedDate')?.touched || opportunityForm.get('closedDate')?.dirty) &&
+                    opportunityForm.get('closedDate')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ 'Closed date is required.' }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <div class="sm:col-span-6">
+                <label for="notes" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Notes</label>
+                <div class="mt-2">
+                    <textarea id="notes" name="notes" formControlName="notes" autocomplete="off"
+                        placeholder="Enter notes"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"></textarea>
+                    @if (opportunityForm.get('notes')?.touched && opportunityForm.get('notes')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ 'Please enter a valid note.' }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-x-6">
+        <button (click)="closeForm()" type="button"
+            class="text-sm/6 font-semibold text-gray-900 dark:text-white">Cancel</button>
+        <button type="submit"
+            class="rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500">Save</button>
+    </div>
+</form>

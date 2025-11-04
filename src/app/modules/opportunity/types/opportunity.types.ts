@@ -9,9 +9,10 @@ export interface Opportunity {
   opportunityId: string;
   opportunityName: string;
   accountId: string;
-  opportunityOwnerId: string;
+  opportunityOwnerId: number;
   contactId: string;
   stageId: string;
+  status: OpportunityStatus;
   closedDate?: string | null;
   expectedCloseDate?: string | null;
   lossReasonCode?: string | null;
@@ -21,10 +22,6 @@ export interface Opportunity {
   updatedAt?: string;
   
   // Additional fields that might be populated from relationships
-  accountName?: string;
-  ownerName?: string;
-  contactName?: string;
-  stageName?: string;
   amount?: number;
   probability?: number;
   opportunityStage? : OpportunityStage;
@@ -42,6 +39,12 @@ export interface OpportunityStage {
   probability: number;
   is_closed: boolean;
   sequence: number;
+}
+
+export enum OpportunityStatus {
+  Active = 'Active',
+  Won = 'Won',
+  Lost = 'Lost'
 }
 
 /**
@@ -65,15 +68,6 @@ export enum LossReasonCode {
   OTHER = 'Other'
 }
 
-/**
- * Opportunity stage interface for dropdown options
- */
-export interface OpportunityStageOption {
-  stageId: string;
-  stageName: string;
-  probability: number;
-  sortOrder: number;
-}
 
 /**
  * Opportunity owner interface for dropdown options

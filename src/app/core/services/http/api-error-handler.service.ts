@@ -45,7 +45,11 @@ export class ApiErrorHandlerService {
                 this.toastService.error('Forbidden: You do not have permission to access this resource.');
                 break;
             case 404:
-                this.toastService.error('Not Found: The requested resource could not be found.');
+                if (error.error && error.error.message) {
+                    this.toastService.error(`${error.error.message}`);
+                } else {
+                    this.toastService.error('Not Found: The requested resource could not be found.');
+                }
                 break;
             case 409:
                 if (error.error && error.error.message) {
