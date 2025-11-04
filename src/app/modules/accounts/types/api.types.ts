@@ -4,6 +4,7 @@ export interface createAccountRequest {
   companyName: string;
   industry?: string;
   companyPhone?: string;
+  companyEmail?: string;
   companyWebsite?: string;
   companySize?: string;
   accountStatus?: string;
@@ -19,4 +20,33 @@ export interface AccountsListData {
   total: number;
   page: number;
   limit: number;
+}
+
+export interface CreateAccountActivityPayload {
+  relatedTo: string;
+  relatedEntityId: string;
+  accountId: string;
+  activityType: string;
+  activityHeader: string;
+  activityLog: string;
+  eventName?: string;
+  eventCategory?: string;
+  eventDetailNote?: string;
+  performedById: number;
+  timestamp: string;
+}
+
+export interface UpdateAccountActivityPayload {
+  activityId: string;
+  relatedTo: string;
+  relatedEntityId: string;
+  accountId?: string;
+  activityType?: string;
+  activityHeader?: string;
+  activityLog?: string;
+  eventName?: string;
+  eventCategory?: string;
+  eventDetailNote?: string;
+  performedById: number;
+  timestamp: string;
 }

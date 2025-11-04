@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import {
   CellTemplate,
-  ColorBadgeColor,
   DataTableColumn,
 } from '../../../../shared/components/custom-datatable/types';
 import { ModalMedium } from '../../../../shared/components/modal-medium/modal-medium';
@@ -16,6 +15,7 @@ import { LeadConversionReview } from "../../components/lead-conversion-review/le
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadsService } from '../../leads.service';
 import { Lead, UpdateLeadPayload } from '../../types';
+import { LEAD_STATUS_COLOR_MAPPING } from '../../utils';
 
 @Component({
   selector: 'app-lead-listing',
@@ -43,22 +43,17 @@ export class LeadListing {
   leads: any[] = [];
   columns: DataTableColumn[] = [
     { field: 'leadId', label: 'Lead ID', hidden: true },
-    { field: 'firstName', label: 'Name', cellTemplate: CellTemplate.LINK, hrefField: '/leads/detail/:leadId' },
-    { field: 'email', label: 'Email' },
+    { field: 'leadTopic', label: 'Lead Topic', cellTemplate: CellTemplate.LINK, hrefField: '/leads/detail/:leadId' },
+    { field: 'firstName', label: 'Name' },
+    // { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
     {
       field: 'leadStatus',
       label: 'Lead Status',
       cellTemplate: CellTemplate.COLOR_BADGE,
-      colorBadgeMapper: {
-        New: ColorBadgeColor.BLUE,
-        Contacted: ColorBadgeColor.ORANGE,
-        Interested: ColorBadgeColor.TEAL,
-        Converted: ColorBadgeColor.GREEN,
-        Disqualified: ColorBadgeColor.RED,
-      },
+      colorBadgeMapper: LEAD_STATUS_COLOR_MAPPING,
     },
-    { field: 'createdAt', label: 'Created At', cellTemplate: CellTemplate.DATETIME },
+    { field: 'createdAt', label: 'Created Time', cellTemplate: CellTemplate.DATETIME },
   ];
   loading: boolean = false;
   currentPage: number = 1;
@@ -278,9 +273,11 @@ export class LeadListing {
       )
       .subscribe({
         next: (response) => {
-          console.log('Lead status updated successfully:', response);
-          this.leadStatusChangeModal.close();
-          this.loadLeads(); // refresh the leads list
+          if(response && response.leadId){
+            this.leadStatusChangeModal.close();
+            this.loadLeads(); // refresh the leads list
+            return;
+          }
         },
         error: (error) => {
           console.error('Error updating lead status:', error);
@@ -304,7 +301,6 @@ export class LeadListing {
       },
       error: (error) => {
         console.error('Error creating lead interaction:', error);
-        this.toastService.error('Failed to create lead interaction. Please try again later.');
       },
     });
   }
@@ -352,6 +348,11 @@ export class LeadListing {
 
     this.leadsService.updateLead(updatePayload).subscribe({
       next: (response) => {
+        console.log('Lead update before conversion response:', response);
+        if(!response || !response.leadId) {
+          console.error('Lead update failed or invalid response:', response);
+          return;
+        }
         // after successful update, call the convert service
         if (!this.selectedLeadForConversion) {
           this.toastService.error('No lead selected for conversion.');

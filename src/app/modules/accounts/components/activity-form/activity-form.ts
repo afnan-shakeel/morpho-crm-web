@@ -28,8 +28,8 @@ export class ActivityForm {
 
   @Input() activityId: string | null = null;
   @Input() accountId: string | null = null;
+  @Input() relatedTo: string | null = AccountActivityRelatedToEnum.ACCOUNT;
   @Input() relatedEntityId: string | null = null;
-  @Input() relatedTo: string | null = null;
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Activity';
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
@@ -40,12 +40,11 @@ export class ActivityForm {
   activityTypeOptions: string[] = Object.values(AccountActivityTypeEnum);
   activityForm = this.fb.group({
     activityId: [''],
-    activityType: [AccountActivityTypeEnum.EVENT],
-    activitHeader: [this.getDefaultActivityHeader(AccountActivityTypeEnum.EVENT), Validators.required],
-    activityLog: [''],
+    activityType: [AccountActivityTypeEnum.EVENT, Validators.required],
+    activityHeader: [this.getDefaultActivityHeader(AccountActivityTypeEnum.EVENT), Validators.required],
+    activityLog: ['', Validators.required],
     performedById: [0, Validators.required],
-    performedByName: [''],
-    timestamp: [new Date().toISOString().slice(0, 16)],
+    performedByName: ['', Validators.required],
   });
   ngOnInit() {
     // load user list for contact owner selection
@@ -105,7 +104,7 @@ export class ActivityForm {
         relatedTo: this.relatedTo,
         accountId: this.accountId,
 
-      }
+      };
       this.formSubmit.emit(emitData);
     }
   }
@@ -121,6 +120,8 @@ export class ActivityForm {
   // a mapper to get activity header based on type
   getDefaultActivityHeader(type: string): string {
     switch (type) {
+      case AccountActivityTypeEnum.EVENT:
+        return 'Logged an event';
       case AccountActivityTypeEnum.CALL:
         return 'Logged a call';
       case AccountActivityTypeEnum.EMAIL:
@@ -140,6 +141,6 @@ export class ActivityForm {
     const activityType = this.activityForm.get('activityType')?.value;
     if(!activityType) return;
     const defaultHeader = this.getDefaultActivityHeader(activityType);
-    this.activityForm.patchValue({ activitHeader: defaultHeader });
+    this.activityForm.patchValue({ activityHeader: defaultHeader });
   }
 }

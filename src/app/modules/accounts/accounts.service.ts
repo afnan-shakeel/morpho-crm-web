@@ -3,7 +3,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { ApiBaseService } from '../../core';
 import { ApiErrorHandlerService } from '../../core/services/http/api-error-handler.service';
 import { ApiResponse, SearchApiPayload, SortDirection } from '../../core/services/http/types';
-import { Account, AccountActivityLog, AccountsListData, createAccountRequest } from './types';
+import { Account, AccountActivityLog, AccountsListData, CreateAccountActivityPayload, createAccountRequest, UpdateAccountActivityPayload } from './types';
 
 @Injectable({
   providedIn: 'root',
@@ -80,6 +80,30 @@ export class AccountsService {
         catchError((error) => {
           this.errorHandler.handleError(error);
           return of([] as AccountActivityLog[]);
+        }),
+        map((response: any) => response.data)
+      );
+  }
+
+  createActivityLog(payload: CreateAccountActivityPayload): Observable<AccountActivityLog> {
+    return this.api
+      .post<ApiResponse<AccountActivityLog>, any>('accounts-activities/create', payload)
+      .pipe(
+        catchError((error) => {
+          this.errorHandler.handleError(error);
+          return of(null);
+        }),
+        map((response: any) => response.data)
+      );
+  }
+
+  updateActivityLog(activityId: string, payload: Partial<UpdateAccountActivityPayload>): Observable<AccountActivityLog> {
+    return this.api
+      .put<ApiResponse<AccountActivityLog>, any>(`accounts-activities/${activityId}`, payload)
+      .pipe(
+        catchError((error) => {
+          this.errorHandler.handleError(error);
+          return of(null);
         }),
         map((response: any) => response.data)
       );

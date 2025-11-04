@@ -26,15 +26,8 @@ export class LeadInteractionsTable {
 
   private loadLeadInteractions() {
     if (this.leadId) {
-      this.leadService.getLeadInteractions(this.leadId).subscribe(interactions => {
+      this.leadService.getLeadInteractions(this.leadId, true).subscribe(interactions => {
         this.leadInteractions = interactions;
-        console.log('Loaded lead interactions:', this.leadInteractions.length);
-        // For each interaction, fetch user details for createdBy field
-        this.leadInteractions.forEach(interaction => {
-          this.userService.getUserById(interaction.createdBy).subscribe(user => {
-            interaction.createdByName = user.name;
-          });
-        });
       });
     }
   }

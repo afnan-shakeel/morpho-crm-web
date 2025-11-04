@@ -29,6 +29,7 @@ export class OpportunityMain {
 
   tabs = signal([
     { label: 'Summary', content: 'Summary' },
+    { label: 'Tasks', content: 'Tasks' },
     { label: 'File Attachments', content: 'Files' },
     { label: 'Related', content: 'Related' },
   ]);

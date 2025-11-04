@@ -6,6 +6,7 @@ export interface Account {
   companyName: string;
   industry: string;
   companyPhone?: string;
+  companyEmail?: string;
   companyWebsite?: string;
   companySize?: string;
   accountStatus?: AccountStatusEnum;
@@ -58,10 +59,7 @@ export interface AccountActivityLog {
   performedById: number;
   performedByName?: string;
   timestamp: string;
-  performedBy: {
-    UserName: string;
-    Name: string;
-  };
+  performedBy: User;
 }
 
 export enum AccountActivityRelatedToEnum {

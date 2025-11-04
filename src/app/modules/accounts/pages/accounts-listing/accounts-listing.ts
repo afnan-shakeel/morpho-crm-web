@@ -3,11 +3,12 @@ import { Component, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import { CustomDatatable } from '../../../../shared/components/custom-datatable/custom-datatable';
-import { CellTemplate, ColorBadgeColor, DataTableColumn } from '../../../../shared/components/custom-datatable/types';
+import { CellTemplate, DataTableColumn } from '../../../../shared/components/custom-datatable/types';
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
 import { AccountsService } from '../../accounts.service';
 import { AccountForm } from "../../components/account-form/account-form";
 import { Account, createAccountRequest } from '../../types';
+import { ACCOUNT_STATUS_COLOR_MAPPING } from "../../utils";
 
 @Component({
   selector: 'app-accounts-listing',
@@ -35,11 +36,7 @@ export class AccountsListing {
       field: 'accountStatus',
       label: 'Account Status',
       cellTemplate: CellTemplate.COLOR_BADGE,
-      colorBadgeMapper: {
-        'Active': ColorBadgeColor.GREEN,
-        'Inactive': ColorBadgeColor.RED,
-        'Pending': ColorBadgeColor.ORANGE,
-      },
+      colorBadgeMapper: ACCOUNT_STATUS_COLOR_MAPPING,
     },
     { field: 'createdAt', label: 'Created Time', cellTemplate: CellTemplate.DATETIME },
   ];

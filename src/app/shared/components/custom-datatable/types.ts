@@ -42,5 +42,6 @@ export interface DataTableColumn {
     cellTemplate?: CellTemplate; // Optional custom cell template identifier. eg: 'link', 'badge', etc.
     hrefField?: string; // Optional field to use for href in 'link' cellTemplate
     colorBadgeMapper?: { [key: string]: ColorBadgeColor };
-
+    // a option to map cell values to a different display value. mainly used for boolean fields. or enum fields. with badges.
+    valueMapper?: { [key: string]: string };
 }

@@ -2,7 +2,12 @@
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 items-center justify-between">
         <div class="sm:flex-1">
-            <h1 class="text-base font-semibold text-gray-900 dark:text-white">{{ opportunity?.opportunityName }}</h1>
+            <div class="flex items-center gap-3">
+                <h1 class="text-base font-semibold text-gray-900 dark:text-white">{{ opportunity?.opportunityName }}</h1>
+                @if (opportunity?.status) {
+                    <app-status-badge [status]="opportunity!.status"></app-status-badge>
+                }
+            </div>
             <p class="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">{{ "Account: " +
                 (opportunity?.account?.companyName) }}</p>
         </div>

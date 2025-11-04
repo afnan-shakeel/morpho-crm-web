@@ -134,12 +134,12 @@
                                         'text-green-600 bg-green-50 inset-ring inset-ring-green-500/10': column.colorBadgeMapper?.[record[column.field]] === 'green',
                                         'text-red-600 bg-red-50 inset-ring inset-ring-red-500/10': column.colorBadgeMapper?.[record[column.field]] === 'red',
                                          }">
-                                        {{ record[column.field] }}</span>
+                                        {{ getDisplayedValue(column, record[column.field]) }}</span>
                                 </td>
                             }
                             @else {
                                 <td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                    {{ record[column.field] }}</td>
+                                    {{ getDisplayedValue(column, record[column.field]) }}</td>
                             }
                             }
                             }

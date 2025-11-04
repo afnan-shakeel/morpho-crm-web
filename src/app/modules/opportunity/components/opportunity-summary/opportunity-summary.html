@@ -1,34 +1,39 @@
+<div class="pb-4">
 
-<div class="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2">
-    <div class="col-span-1 mt-6 border-gray-100 dark:border-white/10">
-        <dl class=" dark:divide-white/10">
-            <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Topic</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
-                    {{opportunity?.opportunityName}}</dd>
-            </div>
-            <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Contact</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
-                    {{opportunity?.contact?.fullName
-                    || 'NA'}}</dd>
-            </div>
-            <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Account</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
-                    {{opportunity?.account?.companyName
-                    || 'NA'}}</dd>
-            </div>
-            <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Opportunity Note</dt>
-                <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">{{opportunity?.notes
-                    || 'NA'}}</dd>
-            </div>
-        </dl>
+    <div class="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2">
+        <div class="col-span-1 mt-6 border-gray-100 dark:border-white/10">
+            <dl class=" dark:divide-white/10">
+                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Topic</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
+                        {{opportunity?.opportunityName}}</dd>
+                </div>
+                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Contact</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
+                        {{opportunity?.contact?.fullName
+                        || 'NA'}}</dd>
+                </div>
+                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Account</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
+                        {{opportunity?.account?.companyName
+                        || 'NA'}}</dd>
+                </div>
+                <div class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt class="text-sm/6 font-medium text-gray-900 dark:text-gray-100">Opportunity Note</dt>
+                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 dark:text-gray-400">
+                        {{opportunity?.notes
+                        || 'NA'}}</dd>
+                </div>
+            </dl>
+        </div>
     </div>
-</div>
-<div class="mt-8">
-    <!-- header -->
-    <!-- activity log component -->
-    <app-accounts-activity-log [accountId]="opportunity?.accountId || ''"></app-accounts-activity-log>
+    <div class="mt-8">
+        <!-- header -->
+        <!-- activity log component -->
+        <app-accounts-activity-log [accountId]="opportunity?.accountId || ''" [activityRelatedTo]="activityRelatedTo"
+            [activityRelatedEntityId]="activityRelatedEntityId"></app-accounts-activity-log>
+    </div>
+
 </div>

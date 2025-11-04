@@ -24,14 +24,7 @@ export class LeadLogsTimeline {
 
   private loadLeadLogs() {
     if (this.leadId) {
-      this.leadService.getLeadLogs(this.leadId).subscribe(logs => {
-        // logs has a field changedBy which is userId, we need to fetch user details for each log
-        logs.forEach(log => {
-          // TODO: Optimize this by fetching users after grouping unique userIds
-          this.userService.getUserById(log.changedBy).subscribe(user => {
-            log.changedByName = user.name;
-          });
-        });
+      this.leadService.getLeadLogs(this.leadId, true).subscribe(logs => {
         this.leadLogs = logs;
       });
     }

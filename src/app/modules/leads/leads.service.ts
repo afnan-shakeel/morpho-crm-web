@@ -85,7 +85,7 @@ export class LeadsService {
     );
   }
 
-  updateLead(updateleadData: UpdateLeadPayload): Observable<ApiResponse<Lead>> {
+  updateLead(updateleadData: UpdateLeadPayload): Observable<Lead> {
     return this.api.post<ApiResponse<Lead>, UpdateLeadPayload>(`leads/update`, updateleadData).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
@@ -127,8 +127,12 @@ export class LeadsService {
       );
   }
 
-  getLeadLogs(leadId: string): Observable<LeadLogs[]> {
-    return this.api.get<ApiResponse<LeadLogs[]>>(`leads/${leadId}/logs`).pipe(
+  getLeadLogs(leadId: string, eagerFetch: boolean = false): Observable<LeadLogs[]> {
+    let params = new HttpParams();
+    if (eagerFetch) {
+      params = params.set('eagerFetch', 'true');
+    }
+    return this.api.get<ApiResponse<LeadLogs[]>>(`leads/${leadId}/logs`, params).pipe(
       catchError((error) => {
         console.error('Error fetching lead logs:', error);
         this.toastService.error('Failed to fetch lead logs. Please try again later.');
@@ -167,14 +171,19 @@ export class LeadsService {
       )
       .pipe(
         catchError((error) => {
-          return this.errorHandler.handleError(error);
+          this.errorHandler.handleError(error);
+          return of(null);
         }),
         map((response: any) => response.data)
       );
   }
 
-  getLeadInteractions(leadId: string): Observable<LeadInteraction[]> {
-    return this.api.get<ApiResponse<LeadInteraction[]>>(`leads/${leadId}/interaction`).pipe(
+  getLeadInteractions(leadId: string, eagerFetch: boolean = false): Observable<LeadInteraction[]> {
+    let params = new HttpParams();
+    if (eagerFetch) {
+      params = params.set('eagerFetch', 'true');
+    }
+    return this.api.get<ApiResponse<LeadInteraction[]>>(`leads/${leadId}/interaction`, params).pipe(
       catchError((error) => {
         console.error('Error fetching lead interactions:', error);
         this.toastService.error('Failed to fetch lead interactions. Please try again later.');
@@ -203,7 +212,7 @@ export class LeadsService {
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
-          return of({} as ApiResponse<Lead>);
+          return of(null);
         }),
         map((response: any) => response.data)
       );

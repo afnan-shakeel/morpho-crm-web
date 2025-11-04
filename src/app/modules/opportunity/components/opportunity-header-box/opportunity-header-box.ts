@@ -2,16 +2,16 @@ import { ConfirmationBox } from '@/shared/components/confirmation-box/confirmati
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import flatpickr from 'flatpickr';
 import { ToastService } from '../../../../core';
 import { AutocompleteDirective } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { OpportunityService } from '../../opportunity.service';
-import { Opportunity } from '../../types';
+import { Opportunity, OpportunityStatus } from '../../types';
+import { StatusBadgeComponent } from '../status-badge/status-badge';
 
 @Component({
   selector: 'app-opportunity-header-box',
-  imports: [CommonModule, ConfirmationBox, FormsModule, ReactiveFormsModule, AutocompleteDirective],
+  imports: [CommonModule, ConfirmationBox, FormsModule, ReactiveFormsModule, AutocompleteDirective, StatusBadgeComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-header-box.html',
   styleUrl: './opportunity-header-box.css',
@@ -38,14 +38,14 @@ export class OpportunityHeaderBox {
       label: 'Close As Won',
       action: 'close_won',
       handler: () => {
-        console.log('Close As Won action triggered');
+        this.makeOpportunityCloseWon();
       },
     },
     {
       label: 'Close As Lost',
       action: 'close_lost',
       handler: () => {
-        console.log('Close As Lost action triggered');
+        this.makeOpportunityCloseLost();
       },
     },
     {
@@ -61,6 +61,7 @@ export class OpportunityHeaderBox {
   headerForm = this.fb.group({
     ownerId: [0],
     ownerName: [''],
+    stageId: [''],
     expectedCloseDate: [''],
   });
 
@@ -82,11 +83,6 @@ export class OpportunityHeaderBox {
     this.setupFormChangeListeners();
   }
   ngAfterViewInit() {
-    // Basic
-    flatpickr('#expected-close-date-time', {
-      enableTime: true,
-      dateFormat: 'Y-m-d H:i'
-    })
   }
 
   private setupFormChangeListeners() {
@@ -154,7 +150,7 @@ export class OpportunityHeaderBox {
         this.confirmationMessage = 'Are you sure you want to make this change?';
     }
 
-    // Open confirmation modal
+    // open confirmation modal
     this.changeConfirmationModal.open();
   }
 
@@ -274,7 +270,40 @@ export class OpportunityHeaderBox {
       });
   }
 
-  // start: standard confirmation modal handlers
+  makeOpportunityCloseWon() {
+    if (!this.opportunity) return;
 
-  // end: standard confirmation modal handlers
+    this.opportunityService.markOpportunityAsClosed(this.opportunity.opportunityId, OpportunityStatus.Won).subscribe({
+      next: (updatedOpportunity) => {
+        if (updatedOpportunity.opportunityId) {
+          this.toastService.success('Opportunity stage updated successfully!');
+          this.opportunity = updatedOpportunity;
+        } else {
+          this.toastService.error('Failed to update opportunity stage.');
+        }
+      },
+      error: (error) => {
+        console.error('Error updating opportunity stage:', error);
+      },
+    });
+  }
+
+  makeOpportunityCloseLost() {
+    if (!this.opportunity) return;
+
+    this.opportunityService.markOpportunityAsClosed(this.opportunity.opportunityId, OpportunityStatus.Lost).subscribe({
+      next: (updatedOpportunity) => {
+        if (updatedOpportunity.opportunityId) {
+          this.toastService.success('Opportunity stage updated successfully!');
+          this.opportunity = updatedOpportunity;
+        } else {
+          this.toastService.error('Failed to update opportunity stage.');
+        }
+      },
+      error: (error) => {
+        console.error('Error updating opportunity stage:', error);
+      },
+    });
+  }
+
 }

@@ -83,6 +83,8 @@ export class CustomDatatable {
     }
   }
 
+
+  // generate router link for a cell based on template and record data
   getColumnTemplateRouterLink(
     template: string,
     record: Record<string, any>,
@@ -110,5 +112,16 @@ export class CustomDatatable {
 
       return ['/', ...parts];
 
+  }
+
+  getDisplayedValue(column: DataTableColumn, cellValue: any): string {
+    if( cellValue === null || cellValue === undefined) {
+      return '';
+    }
+    const rawValue = cellValue.toString();
+    if (column.valueMapper && rawValue !== undefined) {
+      return column.valueMapper[rawValue] ?? rawValue;
+    }
+    return rawValue;
   }
 }

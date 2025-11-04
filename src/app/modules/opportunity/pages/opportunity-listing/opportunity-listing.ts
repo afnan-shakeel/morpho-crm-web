@@ -6,6 +6,7 @@ import { Component, inject, signal, ViewChild } from '@angular/core';
 import { ToastService } from '../../../../core';
 import {
   CellTemplate,
+  ColorBadgeColor,
   DataTableColumn,
 } from '../../../../shared/components/custom-datatable/types';
 import { OpportunityForm } from '../../components/opportunity-form/opportunity-form';
@@ -43,6 +44,13 @@ export class OpportunityListing {
       cellTemplate: CellTemplate.LINK,
       hrefField: '/opportunities/:opportunityId/view',
     },
+    { field: 'status', label: 'Status', cellTemplate: CellTemplate.COLOR_BADGE,
+      colorBadgeMapper: {
+        Active: ColorBadgeColor.BLUE,
+        Won: ColorBadgeColor.GREEN,
+        Lost: ColorBadgeColor.RED
+      }
+      },
     { field: 'opportunityStage.name', label: 'Opportunity Stage' },
     { field: 'contact.fullName', label: 'Contact Name' },
     { field: 'createdAt', label: 'Created Time', cellTemplate: CellTemplate.DATETIME },

@@ -1,25 +1,26 @@
+import { User } from "../../user/user.types";
+
 /**
  * Base Lead interface representing the core lead entity
  */
 export interface Lead {
   leadId: string;
   leadOwnerId: number;
-  leadOwnerName: string;
   leadSourceId: string;
-  leadSourceName?: string;
   leadStatus: LeadStatus;
   leadTopic?: string;
-  leadConversionDate?: string | null;
   firstName: string;
   lastName?: string;
-  phoneNumber?: string;
+  phone?: string;
   email?: string;
   companyName?: string;
+  convertedAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
   leadSource?: LeadSource;
+  leadOwner?: User;
 }
 
 /**
@@ -70,6 +71,7 @@ export interface LeadLogs {
   changedByName?: string;
   changedAt: string;
   changeType: LeadLogChangeType;
+  changeByUser?: User;
 }
 
 export enum LeadLogChangeType {
@@ -89,9 +91,10 @@ export interface LeadInteraction {
   notes?: string;
   createdAt: string;
   createdBy: number;
-  createdByName: string;
   updatedAt: string;
   updatedBy: number;
+  createdByUser?: User;
+  lead?: Lead;
 }
 
 export enum LeadInteractionType {

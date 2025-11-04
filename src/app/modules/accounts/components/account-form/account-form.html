@@ -4,8 +4,8 @@
         <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Details information about the company.
         </p>
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-            <div class="sm:col-span-6">
-                <label for="first-name" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+            <div class="sm:col-span-4">
+                <label for="companyName" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
                     Company Name <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-2">
@@ -19,40 +19,7 @@
                     }
                 </div>
             </div>
-
-            <div class="sm:col-span-3">
-                <label for="last-name" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
-                    Company Phone <span class="text-red-500">*</span>
-                </label>
-                <div class="mt-2">
-                    <input id="companyPhone" type="text" name="companyPhone" formControlName="companyPhone"
-                        autocomplete="tel" placeholder="Enter company phone"
-                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                    @if ((accountForm.get('companyPhone')?.touched || accountForm.get('companyPhone')?.dirty) &&
-                    accountForm.get('companyPhone')?.invalid) {
-                    <div class="mt-1 text-xs text-red-500">
-                        {{ 'Company phone is required.' }}
-                    </div>
-                    }
-                </div>
-            </div>
-
-            <div class="sm:col-span-3">
-                <label for="companyEmail" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Email
-                    address</label>
-                <div class="mt-2">
-                    <input id="companyEmail" type="email" name="companyEmail" formControlName="companyEmail"
-                        autocomplete="email" placeholder="Enter email address"
-                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                    @if (accountForm.get('companyEmail')?.touched && accountForm.get('companyEmail')?.invalid) {
-                    <div class="mt-1 text-xs text-red-500">
-                        {{ accountForm.get('companyEmail')?.errors?.['email'] ? 'Please enter a valid email address.' :
-                        '' }}
-                    </div>
-                    }
-                </div>
-            </div>
-            <div class="sm:col-span-2">
+                        <div class="sm:col-span-2">
                 <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Account
                     Owner <span class="text-red-500">*</span></label>
                 <div class="mt-2">
@@ -89,32 +56,51 @@
                     </el-autocomplete>
                     @if (accountForm.get('accountOwnerName')?.touched && accountForm.get('accountOwnerName')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
-                        {{ accountForm.get('accountOwnerName')?.errors?.['required'] ? 'Account owner is required.' : ''
-                        }}
+                        {{ accountForm.get('accountOwnerName')?.errors?.['required'] ? 'Account owner is required.' : '' }}
                     </div>
                     }
                     @if (accountForm.get('accountOwnerId')?.touched && accountForm.get('accountOwnerId')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
-                        {{ accountForm.get('accountOwnerId')?.errors?.['required'] ? 'Please select a valid account
-                        owner.' : '' }}
+                        {{ accountForm.get('accountOwnerId')?.errors?.['required'] ? 'Please select a valid account owner.' : '' }}
                     </div>
                     }
                 </div>
             </div>
+
             <div class="sm:col-span-2">
-                <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Company Size</label>
+                <label for="companyPhone" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                    Phone <span class="text-red-500">*</span>
+                </label>
                 <div class="mt-2">
-                    <input id="companySize" type="text" name="companySize" formControlName="companySize"
-                        autocomplete="off" placeholder="Enter company size"
+                    <input id="companyPhone" type="text" name="companyPhone" formControlName="companyPhone"
+                        autocomplete="tel" placeholder="Enter company phone"
                         class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                    @if (accountForm.get('companySize')?.touched && accountForm.get('companySize')?.invalid) {
+                    @if ((accountForm.get('companyPhone')?.touched || accountForm.get('companyPhone')?.dirty) &&
+                    accountForm.get('companyPhone')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
-                        {{ accountForm.get('companySize')?.errors?.['required'] ? 'Company size is required.' : '' }}
+                        {{ 'Company phone is required.' }}
                     </div>
                     }
                 </div>
             </div>
+
             <div class="sm:col-span-2">
+                <label for="companyEmail" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Business Mail</label>
+                <div class="mt-2">
+                    <input id="companyEmail" type="email" name="companyEmail" formControlName="companyEmail"
+                        autocomplete="email" placeholder="Enter email address"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    @if (accountForm.get('companyEmail')?.touched && accountForm.get('companyEmail')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ accountForm.get('companyEmail')?.errors?.['email'] ? 'Please enter a valid email address.' :
+                        '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+
+            <!-- <div class="sm:col-span-2">
                 <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Account
                     Status <span class="text-red-500">*</span></label>
                 <div class="mt-2">
@@ -131,19 +117,36 @@
                     </div>
                     }
                 </div>
-            </div>
+            </div> -->
 
             <div class="col-span-4">
-                <label for="street-address" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Company
+                <label for="companyWebsite" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Company
                     Website</label>
                 <div class="mt-2">
-                    <input id="companyWebsite" type="text" name="companyWebsite" formControlName="companyWebsite"
-                        autocomplete="url" placeholder="Enter company website"
-                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    <div class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600">
+                        <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400">https://</div>
+                        <input id="companyWebsite" type="text" name="companyWebsite" formControlName="companyWebsite"
+                            autocomplete="url" placeholder="Enter company website"
+                            class="block min-w-0 grow py-1 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 " />
+                    </div>
                     @if (accountForm.get('companyWebsite')?.touched && accountForm.get('companyWebsite')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
                         {{ accountForm.get('companyWebsite')?.errors?.['required'] ? 'Company website is required.' : '' }}
                         {{ accountForm.get('companyWebsite')?.errors?.['url'] ? 'Please enter a valid URL.' : '' }}
+                    </div>
+                    }
+                </div>
+            </div>
+
+                        <div class="sm:col-span-2">
+                <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Company Size</label>
+                <div class="mt-2">
+                    <input id="companySize" type="text" name="companySize" formControlName="companySize"
+                        autocomplete="off" placeholder="Enter company size"
+                        class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                    @if (accountForm.get('companySize')?.touched && accountForm.get('companySize')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ accountForm.get('companySize')?.errors?.['required'] ? 'Company size is required.' : '' }}
                     </div>
                     }
                 </div>
@@ -159,7 +162,7 @@
 
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
             <div class="col-span-full">
-                <label for="street-address" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Address
+                <label for="addressLine1" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Address
                     Line 1</label>
                 <div class="mt-2">
                     <input id="addressLine1" type="text" name="addressLine1" formControlName="addressLine1"
@@ -175,7 +178,7 @@
                 </div>
             </div>
             <div class="col-span-full">
-                <label for="street-address" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Address
+                <label for="addressLine2" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Address
                     Line 2</label>
                 <div class="mt-2">
                     <input id="addressLine2" type="text" name="addressLine2" formControlName="addressLine2"

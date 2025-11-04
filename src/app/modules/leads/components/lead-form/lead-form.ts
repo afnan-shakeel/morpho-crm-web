@@ -125,14 +125,14 @@ export class LeadForm {
         this.leadInfoForm.patchValue({
           leadId: leadData.leadId,
           leadOwnerId: leadData.leadOwnerId,
-          leadOwnerName: leadData.leadOwnerName,
+          leadOwnerName: leadData.leadOwner?.Name || '',
           leadSourceId: leadData.leadSourceId,
           leadStatus: leadData.leadStatus,
           leadTopic: leadData.leadTopic,
-          leadConversionDate: leadData.leadConversionDate,
+          leadConversionDate: leadData.convertedAt ? new Date(leadData.convertedAt).toISOString().slice(0, 16) : null,
           firstName: leadData.firstName,
           lastName: leadData.lastName,
-          phoneNumber: leadData.phoneNumber,
+          phoneNumber: leadData.phone,
           email: leadData.email,
           companyName: leadData.companyName
         });

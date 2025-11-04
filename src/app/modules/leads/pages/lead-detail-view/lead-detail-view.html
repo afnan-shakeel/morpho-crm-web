@@ -1,24 +1,57 @@
 <main>
     <div class="">
-        <app-page-heading [title]="'Lead Summary'" description="Complete details and information about the lead."
+        <app-page-heading [title]="'Lead Summary'"
+            description="Complete details and information about the lead captured."
             [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
     </div>
 
 
-    <div class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="px-4 py-8 sm:px-6 lg:px-4">
         <div
             class="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 items-start gap-x-8 gap-y-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            <!-- Invoice summary -->
-            <div class="lg:col-start-3 lg:row-end-1">
-                <h2 class="sr-only">Summary</h2>
-                <app-lead-summary-box [lead]="leadDetails"></app-lead-summary-box>
-            </div>
+            <!-- summary -->
 
-            <!-- Invoice -->
+            <!-- Detail -->
             <div
-                class="-mx-4 px-4 py-8 shadow-xs ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pt-16 xl:pb-20 dark:shadow-none dark:ring-white/10">
-                <h2 class="text-base font-semibold text-gray-900 dark:text-white">#{{ leadDetails?.leadId }}</h2>
-                <dl class="grid grid-cols-1 text-sm/6 sm:grid-cols-2">
+                class="-mx-4 px-4 py-8 shadow-xs ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-8 xl:pt-8 xl:pb-10 dark:shadow-none dark:ring-white/10">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ leadDetails?.leadTopic }}
+                        </h2>
+                        @if (leadDetails?.leadStatus) {
+                        <app-lead-status-badge [status]="leadDetails!.leadStatus"></app-lead-status-badge>
+                        }
+                    </div>
+                    <!-- Quick Actions Dropdown -->
+                    <div>
+                        <el-dropdown class="inline-block">
+                            <button
+                                class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
+                                Quick Actions
+                                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                    class="-mr-1 size-5 text-gray-400">
+                                    <path
+                                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                        clip-rule="evenodd" fill-rule="evenodd" />
+                                </svg>
+                            </button>
+
+                            <el-menu anchor="bottom end" popover
+                                class="w-56 origin-top-right rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+                                <div class="py-1">
+                                    @for (action of leadQuickActions; let i = $index; track i) {
+                                    <button type="button" (click)="action.handler()"
+                                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:focus:bg-white/5 dark:focus:text-white">
+                                        {{ action.label }}
+                                    </button>
+                                    }
+                                </div>
+                            </el-menu>
+                        </el-dropdown>
+                    </div>
+                </div>
+                <!-- <p class="text-sm text-gray-500 dark:text-gray-400">{{ `Lead obtained from ${leadDetails?.leadSource?.sourceName}` }}</p> -->
+                <dl class="grid grid-cols-1 text-sm/6 sm:grid-cols-2 2xl:grid-cols-3">
                     <!-- <div class="sm:pr-4">
                         <dt class="inline text-gray-500 dark:text-gray-400">Lead Created On </dt>
                         <dd class="inline text-gray-700 dark:text-gray-300"><time datetime="2023-23-01">January 23,
@@ -51,11 +84,23 @@
                             <a [href]="'mailto:' + leadDetails?.email"
                                 class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.firstName }}</a>
                             <br />{{ (leadDetails?.email ? leadDetails?.email : 'N/A') + " (email)" }}<br />
-                            {{ (leadDetails?.phoneNumber ? leadDetails?.phoneNumber : 'N/A') + " (phone)" }}
+                            {{ (leadDetails?.phone ? leadDetails?.phone : 'N/A') + " (phone)" }}
+                        </dd>
+                    </div>
+                    <div class="mt-8 sm:mt-6 sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
+                        <dt class="font-semibold text-gray-900 dark:text-white">Owner</dt>
+                        <dd class="mt-2 text-gray-500 dark:text-gray-400">
+                            <a class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.leadOwner?.Name }}</a>
+                            <br />{{ (leadDetails?.createdAt ? `Created On ${leadDetails?.createdAt | date:'mediumDate'}` :
+                            'N/A') }}
+                            <br />{{ (leadDetails?.convertedAt ? `Converted On ${leadDetails?.convertedAt |
+                            date:'mediumDate'}` : 'N/A') }}<br />
+                            {{ (leadDetails?.leadSource?.sourceName ? `Obtained through
+                            ${leadDetails?.leadSource?.sourceName}` : 'N/A') }}
                         </dd>
                     </div>
                 </dl>
-                <div class="mt-8 ">
+                <div class="mt-10">
                     <!-- <div class="sm:flex sm:items-center justify-end">
                         <div class="mt-4 sm:mt-0 sm:flex-none">
                             <button type="button"
@@ -63,14 +108,19 @@
                                 Create Interaction</button>
                         </div>
                     </div> -->
-                    <app-lead-interactions-table [leadId]="leadId"></app-lead-interactions-table>
+                    <a
+                        class="flex justify-end text-xs font-medium text-primary-500 hover:underline hover:text-primary-500/80 focus:outline-none">
+                        Add New Interaction?</a>
+                    <div class="px-2 pb-2">
+                        <app-lead-interactions-table [leadId]="leadId"></app-lead-interactions-table>
+                    </div>
                 </div>
 
             </div>
 
-            <div class="lg:col-start-3">
+            <div class="lg:col-start-3 lg:row-end-1 ">
                 <!-- Activity feed -->
-                <h2 class="text-sm/6 font-semibold text-gray-900 dark:text-white">Activity</h2>
+                <h2 class="ml-2 text-sm/6 font-semibold text-gray-900 dark:text-white">Activity Timeline</h2>
                 <app-lead-logs-timeline [leadId]="leadId"></app-lead-logs-timeline>
 
                 <!-- New comment form -->

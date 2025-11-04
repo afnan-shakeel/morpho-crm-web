@@ -17,6 +17,7 @@ import {
     OpportunityLookupDataResponse,
     OpportunityResponse,
     OpportunityStage,
+    OpportunityStatus,
     UpdateOpportunityActivityPayload,
     UpdateOpportunityPayload,
     UpdateOpportunityStagePayload
@@ -95,6 +96,19 @@ export class OpportunityService {
             catchError((error) => {
                 this.errorHandler.handleError(error);
                 return of({} as Opportunity);
+            }),
+            map((response: any) => response.data)
+        );
+    }
+
+    markOpportunityAsClosed(opportunityId: string, status: OpportunityStatus): Observable<Opportunity> {
+        const payload = {
+            status: status
+        };
+        return this.api.post<OpportunityResponse, any>(`opportunities/${opportunityId}/close`, payload).pipe(
+            catchError((error) => {
+                this.errorHandler.handleError(error);
+                return of(null);
             }),
             map((response: any) => response.data)
         );
@@ -254,4 +268,5 @@ export class OpportunityService {
             })
         );
     }
+    
 }

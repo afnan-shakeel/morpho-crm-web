@@ -34,7 +34,7 @@ export class AccountForm {
     companyEmail: ['', Validators.email],
     companyWebsite: [''],
     companySize: [''],
-    accountStatus: [AccountStatusEnum.ACTIVE, Validators.required],
+    accountStatus: [AccountStatusEnum.PENDING],
     accountOwnerId: [0, Validators.required],
     accountOwnerName: ['', Validators.required],
     address: this.fb.group({
@@ -81,7 +81,7 @@ export class AccountForm {
         companyName: account.companyName,
         industry: account.industry,
         companyPhone: account.companyPhone,
-        // companyEmail: account.companyEmail,
+        companyEmail: account.companyEmail,
         companyWebsite: account.companyWebsite,
         companySize: account.companySize,
         accountStatus: account.accountStatus,

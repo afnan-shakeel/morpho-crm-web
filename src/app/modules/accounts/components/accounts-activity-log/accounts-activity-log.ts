@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, signal, ViewChild } from '@angular/core';
+import { ToastService } from '../../../../core';
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
 import { AccountsService } from '../../accounts.service';
-import { AccountActivityLog } from '../../types';
+import { AccountActivityLog, AccountActivityRelatedToEnum, AccountActivityTypeEnum, CreateAccountActivityPayload, UpdateAccountActivityPayload } from '../../types';
 import { ActivityForm } from '../activity-form/activity-form';
 
 @Component({
@@ -16,21 +17,30 @@ export class AccountsActivityLog {
   @ViewChild('activityForm') activityForm!: ModalSmall;
 
   private accountService = inject(AccountsService);
+  private toastService = inject(ToastService);
   @Input() accountId: string = '';
+  @Input() activityRelatedTo: string = AccountActivityRelatedToEnum.ACCOUNT;
+  @Input() activityRelatedEntityId: string = '';
   accountActivities: AccountActivityLog[] = [];
   selectedActivityIdToUpdate = signal<string | null>(null);
 
-  activityTypeMapper: { [key: string]: string } = {
-    EVENT_LOGGED: 'Event Logged',
-    CALL_LOGGED: 'Call',
-    EMAIL_SENT: 'Email',
-    MEETING_SCHEDULED: 'Meeting',
-    MEETING: 'Meeting',
-    TASK_COMPLETED: 'Task Completed',
-    NOTE_ADDED: 'Note Added',
-  };
   getActivityTypeLabel(type: string): string {
-    return this.activityTypeMapper[type] || 'Activity';
+    switch (type) {
+      case AccountActivityTypeEnum.EVENT:
+        return 'Event';
+      case AccountActivityTypeEnum.CALL:
+        return 'Call';
+      case AccountActivityTypeEnum.EMAIL:
+        return 'Email';
+      case AccountActivityTypeEnum.MEETING:
+        return 'Meeting';
+      case AccountActivityTypeEnum.TASK:
+        return 'Task';
+      case AccountActivityTypeEnum.NOTE:
+        return 'Note';
+      default:
+        return 'Activity';
+    }
   }
 
   ngOnInit(): void {
@@ -48,11 +58,12 @@ export class AccountsActivityLog {
     });
   }
 
-  // start: contact form modal
+  // start: activity form modal
   onActivityToEdit(activityId: string) {
     this.selectedActivityIdToUpdate.set(activityId);
     this.openActivityFormModal();
   }
+  // resetFormEvent is used as a child to parent event trigger
   resetFormEvent = signal<boolean>(false);
   openActivityFormModal() {
     this.resetFormEvent.set(false);
@@ -71,13 +82,56 @@ export class AccountsActivityLog {
     }
     // call the create/update service
     if (formData.activityId) {
-      this.updateActivity(formData.activityId, formData);
+      this.updateActivity(formData.activityId, {
+        accountId: formData.accountId,
+        relatedTo: formData.relatedTo,
+        relatedEntityId: formData.relatedEntityId,
+        activityType: formData.activityType,
+        activityHeader: formData.activityHeader,
+        activityLog: formData.activityLog,
+        performedById: formData.performedById,
+        timestamp: formData.timestamp ? new Date(formData.timestamp).toISOString() : undefined,
+      });
     } else {
-      this.createActivity(formData);
+      this.createActivity({
+        accountId: formData.accountId,
+        relatedTo: formData.relatedTo,
+        relatedEntityId: formData.relatedEntityId,
+        activityType: formData.activityType,
+        activityHeader: formData.activityHeader,
+        activityLog: formData.activityLog,
+        performedById: formData.performedById,
+        timestamp: new Date().toISOString(),
+      });
     }
   }
-  // end: contacts form modal
+  // end: activity form modal
 
-  createActivity(formData: any) {}
-  updateActivity(activityId: string, formData: any) {}
+  createActivity(data: CreateAccountActivityPayload) {
+    this.accountService.createActivityLog(data).subscribe({
+      next: (response) => {
+        if (response.activityId) {
+          this.toastService.success('Activity created successfully');
+          this.fetchActivityLogs();
+          this.closeActivityFormModal();
+          return;
+        }
+        this.toastService.error('Failed to create activity');
+      },
+    });
+  }
+
+  updateActivity(activityId: string, data: Partial<UpdateAccountActivityPayload>) {
+    this.accountService.updateActivityLog(activityId, data).subscribe({
+      next: (response) => {
+        if (response.activityId) {
+          this.toastService.success('Activity updated successfully');
+          this.fetchActivityLogs();
+          this.closeActivityFormModal();
+          return;
+        }
+        this.toastService.error('Failed to update activity');
+      },
+    });
+  }
 }

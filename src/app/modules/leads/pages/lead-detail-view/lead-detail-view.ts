@@ -1,18 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { ToastService } from '../../../../core';
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
-import { UsersService } from '../../../user/users.service';
 import { LeadInteractionsTable } from "../../components/lead-interactions-table/lead-interactions-table";
 import { LeadLogsTimeline } from "../../components/lead-logs-timeline/lead-logs-timeline";
 import { LeadSummaryBox } from "../../components/lead-summary-box/lead-summary-box";
+import { LeadStatusBadgeComponent } from "../../components/status-badge/status-badge";
 import { LeadsService } from '../../leads.service';
 import { Lead, LeadAddress } from '../../types';
 
 @Component({
   selector: 'app-lead-detail-view',
-  imports: [PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadSummaryBox],
+  imports: [CommonModule, PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadSummaryBox, LeadStatusBadgeComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-detail-view.html',
   styleUrl: './lead-detail-view.css'
@@ -20,7 +20,6 @@ import { Lead, LeadAddress } from '../../types';
 export class LeadDetailView {
   private router = inject(Router)
   private leadsService = inject(LeadsService)
-  private userService = inject(UsersService)
   private toastService = inject(ToastService)
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
@@ -32,6 +31,11 @@ export class LeadDetailView {
   leadDetails: Lead | null = null;
   leadAddressDetails: LeadAddress | null = null;
 
+  leadQuickActions: any[] = [
+    { label: 'Edit Lead', action: () => {} },
+    { label: 'Update Status', action: () => {} },
+    { label: 'Convert Lead', action: () => {} },
+  ];
   ngOnInit() {
     // extract leadId from the URL
     const urlSegments = this.router.url.split('/');
@@ -57,36 +61,11 @@ export class LeadDetailView {
   fetchLeadDetails() {
     if (!this.leadId) return;
     
-    this.leadsService.getLeadById(this.leadId, true).pipe(
-      switchMap((lead) => {
-        if (!lead) return of(null);
-        
-        const leadOwner$ = this.userService.getUserById(lead.leadOwnerId).pipe(
-          map(user => user?.fullName || null),
-          catchError(() => of(null))
-        );
-        
-        // Use forkJoin to execute both requests in parallel
-        return forkJoin({
-          leadOwnerName: leadOwner$
-        }).pipe(
-          map(({ leadOwnerName }) => ({
-            ...lead,
-            leadSourceName: lead.leadSource?.sourceName || undefined,
-            leadOwnerName: leadOwnerName || undefined
-          }))
-        );
-      }),
-      catchError((err) => {
-        console.error('Error fetching lead details:', err);
-        this.toastService.error('Failed to load lead details.');
-        return of(null);
-      })
-    ).subscribe({
-      next: (enrichedLead) => {
-        if (enrichedLead) {
-          console.log('Fetched enriched lead details:', enrichedLead);
-          this.leadDetails = enrichedLead;
+    this.leadsService.getLeadById(this.leadId, true).subscribe({
+      next: (leads) => {
+        if (leads) {
+          console.log('Fetched enriched lead details:', leads);
+          this.leadDetails = leads;
         }
       },
       error: (err) => {

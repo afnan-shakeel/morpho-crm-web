@@ -39,6 +39,10 @@ export class ContactsListing {
         'true': ColorBadgeColor.BLUE,
         'false': ColorBadgeColor.GRAY,
       },
+      valueMapper: {
+        'true': 'Yes',
+        'false': 'No',
+      }
     },
     { field: 'createdAt', label: 'Created Time', cellTemplate: CellTemplate.DATETIME },
   ];
