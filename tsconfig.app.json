@@ -4,7 +4,16 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["app/*"],
+      "@/core/*": ["app/core/*"],
+      "@/shared/*": ["app/shared/*"],
+      "@/features/*": ["app/features/*"],
+      "@/layouts/*": ["app/layouts/*"],
+      "@/environments/*": ["environments/*"]
+    }
   },
   "include": [
     "src/**/*.ts"

@@ -1,0 +1,70 @@
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <div class="">
+                <app-page-heading [title]="'Leads'"
+                    description="A list of all the leads in your account including received from various sources and more."
+                    [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
+            </div>
+        </div>
+        <div class="sm:mt-0 sm:ml-16 sm:flex-none">
+            <button type="button" (click)="onCreateLead()"
+                class="block rounded-md bg-primary-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-primary-500">Add
+                lead</button>
+        </div>
+    </div>
+    <app-custom-datatable [records]="leads" [columns]="columns" [currentPage]="currentPage" [pageSize]="pageSize"
+        [totalRecords]="totalRecords" (pageChange)="onPageChangeHandler($event)" (search)="onSearchChange($event)"
+        [filterData]="filterData" (filterChange)="onFilterChange($event)" [rowActions]="tableRowActions"
+        [tableConfig]="{ multiSelect: false, rowReferenceField: 'leadId' }">
+    </app-custom-datatable>
+</div>
+
+<app-modal-small #leadStatusChangeModal [modalId]="'lead-status-change-modal'">
+    <div class="mt-3 text-center sm:mt-0 sm:text-left">
+        <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Update Lead Status</h3>
+        <div class="mt-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Choose the new status for the lead:</p>
+            <div class="mt-4">
+                <select [(ngModel)]="leadStatusUpdateFormData.newStatus"
+                    class="w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:focus:outline-primary-500">
+                    @for (option of leadStatusOptions; let i = $index; track i) {
+                    <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+        <button type="button" (click)="handleLeadStatusUpdate()"
+            class="inline-flex w-full justify-center rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500/90 sm:ml-3 sm:w-auto dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400">Submit</button>
+        <button type="button" (click)="closeLeadStatusChangeDialog()"
+            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
+            Discard</button>
+    </div>
+</app-modal-small>
+<app-modal-small #leadInteractionModal [modalId]="'lead-interaction-modal'">
+    <div class="mt-3 text-center sm:mt-0 sm:text-left">
+        <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Create Interaction</h3>
+        <div class="mt-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the details for the interaction:</p>
+        </div>
+        <div class="mt-2">
+            <app-lead-interaction-form [leadId]="selectedLeadIdForInteraction" (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form> 
+        </div>
+    </div>
+</app-modal-small>
+
+<app-modal-medium #leadConversionReviewModal [modalId]="'lead-conversion-review-modal'">
+    <div class="mt-3 text-center sm:mt-0 sm:text-left">
+        <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Lead Conversion Review</h3>
+        <div class="mt-2">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Review lead details before converting to opportunity:</p>
+        </div>
+        <div class="mt-4">
+            <app-lead-conversion-review [leadId]="selectedLeadForConversion?.leadId || null" (formSubmit)="onLeadConversionSubmit($event)"></app-lead-conversion-review>
+        </div>
+    </div>
+    <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+    </div>
+</app-modal-medium>

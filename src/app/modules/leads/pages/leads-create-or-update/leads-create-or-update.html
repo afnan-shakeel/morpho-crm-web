@@ -1,0 +1,14 @@
+<app-lead-form 
+  [leadStatusOptions]="leadStatuses" 
+  [leadSourceOptions]="leadSources"
+  [isEditMode]="isEditMode()"
+  [formTitle]="formTitle()"
+  [leadId]="leadId()"
+  [isLoading]="isLoading()"
+  [showAddressForm]="showAddressForm()"
+  [saveButtonText]="saveButtonText"
+  [saveAndExitButtonText]="saveAndExitButtonText"
+  (formSubmit)="onFormSubmit($event.data, $event.action)"
+  (formCancel)="onFormCancel()"
+  (addressFormSubmit)="onAddressFormSubmit($event.data, $event.action)">
+</app-lead-form>
