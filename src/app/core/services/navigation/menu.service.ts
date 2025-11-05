@@ -67,25 +67,6 @@ export class MenuService {
       ]
     },
     {
-      title: 'Sample II',
-      icon: 'sample II',
-      link: '/sample ii',
-      isActive: false,
-      expanded: false,
-      subMenu: [
-        {
-          title: 'List',
-          link: '/sample-ii/list',
-          isActive: false
-        },
-        {
-          title: 'Create',
-          link: '/sample-ii/create',
-          isActive: false
-        }
-      ]
-    },
-    {
       title: 'Settings',
       icon: 'settings',
       link: '/settings',

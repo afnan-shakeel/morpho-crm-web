@@ -13,13 +13,14 @@ import { ModalMedium } from '../../../../shared/components/modal-medium/modal-me
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
+import { LeadStatusChangeBox } from "../../components/lead-status-change-box/lead-status-change-box";
 import { LeadsService } from '../../leads.service';
-import { Lead, UpdateLeadPayload } from '../../types';
+import { Lead, LeadStatus, UpdateLeadPayload } from '../../types';
 import { LEAD_STATUS_COLOR_MAPPING } from '../../utils';
 
 @Component({
   selector: 'app-lead-listing',
-  imports: [PageHeading, CustomDatatable, ModalSmall, ModalMedium, FormsModule, LeadInteractionForm, LeadConversionReview],
+  imports: [PageHeading, CustomDatatable, ModalSmall, ModalMedium, FormsModule, LeadInteractionForm, LeadConversionReview, LeadStatusChangeBox],
   templateUrl: './lead-listing.html',
   styleUrl: './lead-listing.css',
 })
@@ -86,6 +87,7 @@ export class LeadListing {
   };
   apiReadyFilterData: any[] = [];
 
+  selectedLeadForAction: Lead | null = null;
   tableRowActions = [
     {
       label: 'View',
@@ -107,8 +109,7 @@ export class LeadListing {
       label: 'Update Status',
       actionCallback: (rowData: Lead) => {
         console.log('clicked for:', rowData);
-        this.leadStatusUpdateFormData.leadId = rowData.leadId;
-        this.leadStatusUpdateFormData.newStatus = rowData.leadStatus;
+        this.selectedLeadForAction = rowData;
         this.openLeadStatusChangeDialog();
       },
     },
@@ -128,11 +129,6 @@ export class LeadListing {
       },
     },
   ];
-
-  leadStatusUpdateFormData = {
-    leadId: '',
-    newStatus: '',
-  };
 
   ngOnInit() {
     this.loadLeads();
@@ -264,17 +260,27 @@ export class LeadListing {
   }
   closeLeadStatusChangeDialog() {
     this.leadStatusChangeModal.close();
+    this.selectedLeadForAction = null;
   }
-  handleLeadStatusUpdate() {
+  handleLeadStatusUpdate(status: LeadStatus | null) {
+    if(!this.selectedLeadForAction) {
+      this.toastService.error('No lead selected for status update.');
+      return;
+    }
+    if (!status) {
+      this.toastService.error('Please select a valid status.');
+      return;
+    }
+
     this.leadsService
       .updateLeadStatus(
-        this.leadStatusUpdateFormData.leadId,
-        this.leadStatusUpdateFormData.newStatus
+        this.selectedLeadForAction.leadId,
+        status
       )
       .subscribe({
         next: (response) => {
           if(response && response.leadId){
-            this.leadStatusChangeModal.close();
+            this.closeLeadStatusChangeDialog();
             this.loadLeads(); // refresh the leads list
             return;
           }

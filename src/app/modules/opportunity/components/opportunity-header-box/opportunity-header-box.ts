@@ -1,12 +1,12 @@
 import { ConfirmationBox } from '@/shared/components/confirmation-box/confirmation-box';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../../../core';
 import { AutocompleteDirective } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { OpportunityService } from '../../opportunity.service';
-import { Opportunity, OpportunityStatus } from '../../types';
+import { Opportunity } from '../../types';
 import { StatusBadgeComponent } from '../status-badge/status-badge';
 
 @Component({
@@ -24,6 +24,11 @@ export class OpportunityHeaderBox {
   private opportunityService = inject(OpportunityService);
   private toastService = inject(ToastService);
   @Input() opportunity: Opportunity | null = null;
+  @Output() markAsLost: EventEmitter<void> = new EventEmitter<void>();
+  @Output() markAsWon: EventEmitter<void> = new EventEmitter<void>();
+  @Output() ownerChanged: EventEmitter<number> = new EventEmitter<number>();
+  @Output() expectedCloseDateChanged: EventEmitter<string> = new EventEmitter<string>();
+
   userList: any[] = [];
 
   // Pending change data
@@ -38,21 +43,14 @@ export class OpportunityHeaderBox {
       label: 'Close As Won',
       action: 'close_won',
       handler: () => {
-        this.makeOpportunityCloseWon();
+        this.markAsWon.emit();
       },
     },
     {
       label: 'Close As Lost',
       action: 'close_lost',
       handler: () => {
-        this.makeOpportunityCloseLost();
-      },
-    },
-    {
-      label: 'Add Activity',
-      action: 'add_activity',
-      handler: () => {
-        console.log('Add Activity action triggered');
+        this.markAsLost.emit();
       },
     },
   ];
@@ -270,40 +268,5 @@ export class OpportunityHeaderBox {
       });
   }
 
-  makeOpportunityCloseWon() {
-    if (!this.opportunity) return;
-
-    this.opportunityService.markOpportunityAsClosed(this.opportunity.opportunityId, OpportunityStatus.Won).subscribe({
-      next: (updatedOpportunity) => {
-        if (updatedOpportunity.opportunityId) {
-          this.toastService.success('Opportunity stage updated successfully!');
-          this.opportunity = updatedOpportunity;
-        } else {
-          this.toastService.error('Failed to update opportunity stage.');
-        }
-      },
-      error: (error) => {
-        console.error('Error updating opportunity stage:', error);
-      },
-    });
-  }
-
-  makeOpportunityCloseLost() {
-    if (!this.opportunity) return;
-
-    this.opportunityService.markOpportunityAsClosed(this.opportunity.opportunityId, OpportunityStatus.Lost).subscribe({
-      next: (updatedOpportunity) => {
-        if (updatedOpportunity.opportunityId) {
-          this.toastService.success('Opportunity stage updated successfully!');
-          this.opportunity = updatedOpportunity;
-        } else {
-          this.toastService.error('Failed to update opportunity stage.');
-        }
-      },
-      error: (error) => {
-        console.error('Error updating opportunity stage:', error);
-      },
-    });
-  }
 
 }

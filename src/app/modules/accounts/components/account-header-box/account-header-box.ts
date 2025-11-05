@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from '../../../user/users.service';
 import { Account } from '../../types';
@@ -17,12 +17,15 @@ export class AccountHeaderBox {
   private userService = inject(UsersService);
 
   @Input() account: Account | null = null;
+  @Output() openEditAccountModal: EventEmitter<void> = new EventEmitter<void>();
   userList: any[] = [];
 
   quickActions = [
     {
-      label: 'Action One',
-      handler: () => {},
+      label: 'Edit Account',
+      handler: () => {
+        this.openEditAccountModal.emit();
+      },
     },
   ];
   
@@ -37,4 +40,5 @@ export class AccountHeaderBox {
       this.userList = users;
     });
   }
+
 }

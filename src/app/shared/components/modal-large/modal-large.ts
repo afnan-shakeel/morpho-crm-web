@@ -2,32 +2,24 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-modal-medium',
+  selector: 'app-modal-large',
   imports: [CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './modal-medium.html',
-  styleUrl: './modal-medium.css'
+  templateUrl: './modal-large.html',
+  styleUrl: './modal-large.css'
 })
-export class ModalMedium implements AfterViewInit {
+export class ModalLarge implements AfterViewInit {
 
   @Input() modalId: string = 'dialog';
   @Input() preventAutoClose: boolean = false; // Flag to prevent auto-closing on outside click
   @Output() closeModal: EventEmitter<void> = new EventEmitter();
-
-
+  
+  dialogElement: any;
   ngAfterViewInit() {
-    // const backdropEl = document.getElementById('modal-backdrop');
-    // if (this.preventAutoClose) {
-    //   // Disable closing on backdrop click
-    //   if (backdropEl) {
-    //     backdropEl.style.display = 'block';
-    //   }
-    // } else {
-    //   // Enable closing on backdrop click
-    //   if (backdropEl) {
-    //     backdropEl.style.display = 'none';
-    //   }
-    // }
+    this.dialogElement = document.getElementById(this.modalId);
+    this.dialogElement.addEventListener('open', () => {
+      console.log('Modal opened');
+    });
   }
 
   ngOnDestroy() {

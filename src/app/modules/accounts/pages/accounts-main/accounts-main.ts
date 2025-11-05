@@ -1,26 +1,32 @@
 import { ContactInfoBox } from "@/modules/contacts/components/contact-info-box/contact-info-box";
 import { PageHeading } from '@/shared/components/page-heading/page-heading';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from "../../../../core";
+import { ModalMedium } from "../../../../shared/components/modal-medium/modal-medium";
 import { Contact } from '../../../contacts/types';
 import { AccountsService } from '../../accounts.service';
+import { AccountForm } from "../../components/account-form/account-form";
 import { AccountHeaderBox } from '../../components/account-header-box/account-header-box';
 import { AccountSummary } from "../../components/account-summary/account-summary";
-import { AccountsActivityLog } from "../../components/accounts-activity-log/accounts-activity-log";
-import { Account } from '../../types';
+import { Account, createAccountRequest } from '../../types';
 
 @Component({
   selector: 'app-accounts-main',
-  imports: [PageHeading, AccountHeaderBox, CommonModule, AccountSummary, AccountsActivityLog, ContactInfoBox],
+  imports: [PageHeading, AccountHeaderBox, CommonModule, AccountSummary, ContactInfoBox, ModalMedium, AccountForm],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './accounts-main.html',
   styleUrl: './accounts-main.css',
 })
 export class AccountsMain {
+  @ViewChild('accountForm') accountForm!: ModalMedium;
+  
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private accountsService = inject(AccountsService);
+  private toastService = inject(ToastService);
 
   accountId: string = '';
   account: Account | null = null;
@@ -58,5 +64,42 @@ export class AccountsMain {
         path: `/accounts/${this.accountId}/view`,
       });
     });
+  }
+
+
+  // start: accounts form modal
+  resetFormEvent = signal<boolean>(false);
+  openAccountFormModal() {
+    this.accountForm.open();
+  }
+  closeAccountFormModal() {
+    this.accountForm.close();
+  }
+  onAccountFormSubmit(formData: any) {
+    if (!formData) {
+      this.closeAccountFormModal();
+      return;
+    }
+    if (formData.accountId) {
+      this.updateAccount(formData.accountId, formData);
+    }
+  }
+  // end: accounts form modal
+
+  updateAccount(accountId: string, accountData: createAccountRequest) {
+    this.accountsService.updateAccount(accountId, accountData).subscribe({
+      next: (response) => {
+        if (response && response.accountId) {
+          this.toastService.success('Account updated successfully!');
+          this.resetFormEvent.set(true);
+          this.getAccountDetails();
+          this.closeAccountFormModal();
+        }
+      },
+      error: (error) => {
+        console.error('Error updating account:', error);
+      }
+    });
+
   }
 }

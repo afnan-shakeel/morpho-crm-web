@@ -59,14 +59,14 @@ export class OpportunityForm {
   });
 
   ngOnInit() {
+    console.log('Opportunity Form Init');
     // load user list for contact owner selection
     this.loadUserList();
     this.loadAccountList();
     this.loadOpportunityStages();
 
-    // value changs for account id, to load contacts based on account
+    // value changes for account id, to load contacts based on account
     this.opportunityForm.get('accountId')?.valueChanges.subscribe((accountId) => {
-      console.log('Selected Account ID:', accountId);
       if (accountId) {
         this.loadAccountContacts(accountId);
       } else {
@@ -79,14 +79,11 @@ export class OpportunityForm {
     // keep reseting for any change in opportunityId input
     if (changes['opportunityId']) {
       console.log('Opportunity ID changed:', this.opportunityId);
-      // if opportunityId is provided, populate the form for editing
       if (this.opportunityId) {
         this.populateForm(this.opportunityId);
       }
 
-      // load user list for account owner selection
       this.loadUserList();
-      // load account list for account selection
       this.loadAccountList();
     }
 
@@ -162,14 +159,19 @@ export class OpportunityForm {
 
   closeForm() {
     this.formSubmit.emit(null);
-    // destroy component instance if needed
+    this.resetForm();
+  }
+
+  resetForm () {
     this.opportunityForm.reset();
+    this.opportunityId = null;
     this.isEditMode = false;
     this.formTitle = 'Create Opportunity';
   }
+
   private formatDateForInput(isoString: string): string {
     const date = new Date(isoString);
-    // Format to YYYY-MM-DDTHH:mm
+    // to YYYY-MM-DDTHH:mm
     return date.toISOString().slice(0, 16);
   }
 }
