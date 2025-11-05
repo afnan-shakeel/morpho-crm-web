@@ -1,0 +1,10 @@
+<div class="grid grid-cols-1">
+    <div class="col-span-1">
+    </div>
+    <div class="col-span-1 border-b pb-8 border-gray-100">
+        <app-account-info-box [account]="account || null" [accountAddress]="(account && account.accountAddress && account.accountAddress.length > 0 ? account.accountAddress[0] : null)"></app-account-info-box>
+    </div>
+    <div class="mt-6 col-span-1">
+        <app-accounts-activity-log [accountId]="account?.accountId || ''"></app-accounts-activity-log>
+    </div>
+</div>

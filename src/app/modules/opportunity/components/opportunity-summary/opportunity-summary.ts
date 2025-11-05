@@ -1,4 +1,5 @@
 import { AccountsActivityLog } from "@/modules/accounts/components/accounts-activity-log/accounts-activity-log";
+import { ContactInfoBox } from "@/modules/contacts/components/contact-info-box/contact-info-box";
 import { CommonModule } from '@angular/common';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { AccountActivityRelatedToEnum } from "../../../accounts/types";
@@ -7,7 +8,7 @@ import { OpportunityStageProgress } from "../opportunity-stage-progress/opportun
 
 @Component({
   selector: 'app-opportunity-summary',
-  imports: [CommonModule, OpportunityStageProgress, AccountsActivityLog],
+  imports: [CommonModule, OpportunityStageProgress, AccountsActivityLog, ContactInfoBox],
   templateUrl: './opportunity-summary.html',
   styleUrl: './opportunity-summary.css'
 })

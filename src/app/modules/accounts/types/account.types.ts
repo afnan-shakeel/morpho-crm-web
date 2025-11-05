@@ -12,6 +12,8 @@ export interface Account {
   accountStatus?: AccountStatusEnum;
   accountOwnerId?: string;
 
+  createdAt: Date;
+
   accountAddress?: AccountAddress[];
   primaryContact?: AccountPrimaryContact;
   contacts?: Contact[];

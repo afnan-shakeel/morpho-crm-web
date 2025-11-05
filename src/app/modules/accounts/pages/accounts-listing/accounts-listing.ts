@@ -31,13 +31,14 @@ export class AccountsListing {
   selectedAccountIdToUpdate = signal<string | null>(null);
   columns: DataTableColumn[] = [
     { field: 'accountId', label: 'Account ID', hidden: true },
-    { field: 'companyName', label: 'Company Name', cellTemplate: CellTemplate.LINK, hrefField: 'accounts/:accountId/view' },
+    { field: 'companyName', label: 'Company Name', cellTemplate: CellTemplate.LINK, hrefField: 'accounts/:accountId' },
     {
       field: 'accountStatus',
       label: 'Account Status',
       cellTemplate: CellTemplate.COLOR_BADGE,
       colorBadgeMapper: ACCOUNT_STATUS_COLOR_MAPPING,
     },
+    { field: 'companyEmail', label: 'Company Mail' },
     { field: 'createdAt', label: 'Created Time', cellTemplate: CellTemplate.DATETIME },
   ];
   loading: boolean = false;
