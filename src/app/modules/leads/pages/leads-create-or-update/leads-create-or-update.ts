@@ -2,6 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
+import { LeadAddressForm as LeadAddressFormComponent } from '../../components/lead-address-form/lead-address-form';
 import { LeadForm } from "../../components/lead-form/lead-form";
 import { LeadsService } from '../../leads.service';
 import {
@@ -14,9 +15,27 @@ import {
   UpdateLeadPayload
 } from '../../types';
 
+/**
+ * Leads Create or Update Component
+ * 
+ * This component demonstrates how to use the LeadForm component with configurable submit buttons.
+ * The LeadForm component now supports flexible button configurations:
+ * 
+ * Button Configuration Options:
+ * - showNextButton: boolean (default: true) - Shows the "Next" button
+ * - showSaveAndExitButton: boolean (default: true) - Shows the "Save and Exit" button
+ * - saveButtonText: string (default: 'Save') - Text for the Next button during loading
+ * - saveAndExitButtonText: string (default: 'Save and Exit') - Text for the Save and Exit button
+ * 
+ * Usage Examples:
+ * 1. Both buttons (default): [showNextButton]="true" [showSaveAndExitButton]="true"
+ * 2. Only Next button: [showNextButton]="true" [showSaveAndExitButton]="false"
+ * 3. Only Save and Exit: [showNextButton]="false" [showSaveAndExitButton]="true"
+ * 4. Custom text: [saveButtonText]="'Continue'" [saveAndExitButtonText]="'Save Draft'"
+ */
 @Component({
   selector: 'app-leads-create-or-update',
-  imports: [LeadForm],
+  imports: [LeadForm, LeadAddressFormComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './leads-create-or-update.html',
   styleUrl: './leads-create-or-update.css'
@@ -40,7 +59,7 @@ export class LeadsCreateOrUpdate {
 
   // Button text based on mode
   get saveButtonText(): string {
-    return this.isEditMode() ? 'Update' : 'Save';
+    return this.isEditMode() ? 'Update and Continue' : 'Save and Continue';
   }
 
   get saveAndExitButtonText(): string {
@@ -86,7 +105,8 @@ export class LeadsCreateOrUpdate {
     });
   }
 
-  onFormSubmit(formData: LeadFormData, action: 'next' | 'saveAndExit' = 'next') {
+  onFormSubmit(eventData: {data: LeadFormData, action: 'next' | 'saveAndExit'}) {
+    const { data: formData, action } = eventData;
     if (this.isLoading()) return; // Prevent multiple submissions
 
     this.isLoading.set(true);
@@ -138,7 +158,7 @@ export class LeadsCreateOrUpdate {
               if (addressSection) {
                 addressSection.scrollIntoView({ behavior: 'smooth' });
               }
-            }, 2000);
+            }, 1500);
           } else if (action === 'saveAndExit') {
             this.router.navigate(['/leads']);
           }

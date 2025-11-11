@@ -1,14 +1,46 @@
-<app-lead-form 
-  [leadStatusOptions]="leadStatuses" 
-  [leadSourceOptions]="leadSources"
-  [isEditMode]="isEditMode()"
-  [formTitle]="formTitle()"
-  [leadId]="leadId()"
-  [isLoading]="isLoading()"
-  [showAddressForm]="showAddressForm()"
-  [saveButtonText]="saveButtonText"
-  [saveAndExitButtonText]="saveAndExitButtonText"
-  (formSubmit)="onFormSubmit($event.data, $event.action)"
-  (formCancel)="onFormCancel()"
-  (addressFormSubmit)="onAddressFormSubmit($event.data, $event.action)">
-</app-lead-form>
+<div class="divide-y divide-gray-900/10 dark:divide-white/10">
+  <div class="grid grid-cols-1 gap-x-8 gap-y-8 py-10 md:grid-cols-3">
+    <div class="px-4 sm:px-0">
+      <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Lead Information</h2>
+      <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">This information will be used as
+        part of the lead profile.</p>
+    </div>
+    <div class="md:col-span-2 bg-white shadow-xs outline outline-gray-900/5 sm:rounded-xl dark:bg-gray-800/50 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+      <app-lead-form [leadStatusOptions]="leadStatuses" [leadSourceOptions]="leadSources" [isEditMode]="isEditMode()"
+        [formTitle]="formTitle()" [leadId]="leadId()" [isLoading]="isLoading()"
+        [saveButtonText]="saveButtonText" [saveAndExitButtonText]="saveAndExitButtonText"
+        [showNextButton]="true" [showSaveAndExitButton]="true"
+        (formSubmit)="onFormSubmit($event)" (formCancel)="onFormCancel()"
+        (addressFormSubmit)="onAddressFormSubmit($event.data, $event.action)">
+      </app-lead-form>
+      
+      <!-- 
+      Button Configuration Examples:
+      
+      1. Show both buttons (default):
+      [showNextButton]="true" [showSaveAndExitButton]="true"
+      
+      2. Show only Next button:
+      [showNextButton]="true" [showSaveAndExitButton]="false"
+      
+      3. Show only Save and Exit button:
+      [showNextButton]="false" [showSaveAndExitButton]="true"
+      
+      4. Custom button text:
+      [saveButtonText]="'Continue'" [saveAndExitButtonText]="'Save Draft'"
+      -->
+    </div>
+  </div>
+</div>
+<div class="grid grid-cols-1 gap-x-8 gap-y-8 py-10 md:grid-cols-3" id="lead-address-form">
+  <div class="px-4 sm:px-0">
+    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Lead Address Information</h2>
+    <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">A primary address of your Lead.</p>
+  </div>
+  <div class="md:col-span-2 px-4 sm:px-0 bg-white shadow-xs outline outline-gray-900/5 sm:rounded-xl dark:bg-gray-800/50 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+    <app-lead-address-form [setLeadId]="leadId()" [isEditMode]="isEditMode()" [isLoading]="isLoading()"
+      [saveButtonText]="saveButtonText" [saveAndExitButtonText]="saveAndExitButtonText" [showNextButton]="true" [showSaveAndExitButton]="true"
+      (submitAddress)="onAddressFormSubmit($event.data, $event.action)"
+      (cancelAddress)="onFormCancel()"></app-lead-address-form>
+  </div>
+</div>

@@ -14,11 +14,10 @@ import {
   LeadStatus,
   LeadStatusOption
 } from '../../types';
-import { LeadAddressForm } from "../lead-address-form/lead-address-form";
 
 @Component({
   selector: 'app-lead-form',
-  imports: [LeadAddressForm, ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, AutocompleteDirective],
+  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, AutocompleteDirective],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.css'
@@ -32,12 +31,13 @@ export class LeadForm {
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Lead';
   @Input() leadId: string | null = null;
-  @Input() leadSourceOptions: LeadSource[] = [];
-  @Input() leadStatusOptions: LeadStatusOption[] = [];
+  @Input() leadSourceOptions!: LeadSource[];
+  @Input() leadStatusOptions!: LeadStatusOption[];
   @Input() isLoading: boolean = false;
-  @Input() showAddressForm: boolean = false;
   @Input() saveButtonText: string = 'Save';
   @Input() saveAndExitButtonText: string = 'Save and Exit';
+  @Input() showNextButton: boolean = true;
+  @Input() showSaveAndExitButton: boolean = true;
 
   @Output() formSubmit = new EventEmitter<{data: LeadFormData, action: 'next' | 'saveAndExit'}>();
   @Output() formCancel = new EventEmitter<void>();
@@ -142,6 +142,13 @@ export class LeadForm {
       // Mark all fields as touched to show validation errors
       this.leadInfoForm.markAllAsTouched();
     }
+  }
+
+  /**
+   * Check if at least one submit button is visible
+   */
+  get hasSubmitButton(): boolean {
+    return this.showNextButton || this.showSaveAndExitButton;
   }
 
   onCancel() {

@@ -23,6 +23,8 @@ export class LeadAddressForm {
   @Input() isLoading: boolean = false;
   @Input() saveButtonText: string = 'Save';
   @Input() saveAndExitButtonText: string = 'Save and Exit';
+  @Input() showNextButton: boolean = false;
+  @Input() showSaveAndExitButton: boolean = true;
   @Output() submitAddress: EventEmitter<{data: LeadAddressFormType, action: 'save' | 'saveAndExit'}> = new EventEmitter();
   @Output() cancelAddress: EventEmitter<void> = new EventEmitter();
 
@@ -38,7 +40,8 @@ export class LeadAddressForm {
     city: [''],
     postalCode: [''],
     state: ['', Validators.required],
-    country: ['Oman', Validators.required]
+    country: ['Oman', Validators.required],
+    isPrimary: [true]
   });
 
   onSubmit(action: 'save' | 'saveAndExit' = 'save') {
@@ -74,5 +77,12 @@ export class LeadAddressForm {
 
   populateAddressForm(addressData: LeadAddressFormType) {
     this.addressForm.patchValue(addressData);
+  }
+
+  /**
+   * Check if at least one submit button is visible
+   */
+  get hasSubmitButton(): boolean {
+    return this.showNextButton || this.showSaveAndExitButton;
   }
 }

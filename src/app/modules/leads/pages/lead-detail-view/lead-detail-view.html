@@ -77,6 +77,15 @@
                             <span class="italic text-gray-400">No address available</span>
                             }
                         </dd>
+                        <a (click)="openLeadAddressUpdateFormModal()"
+                            class="flex justify-start text-xs font-medium text-primary-500 hover:underline hover:text-primary-500/80 focus:outline-none">
+                        @if( leadAddressDetails != null ) {
+                            Update location?
+                        }
+                        @else {
+                            Add location?
+                        }
+                        </a>
                     </div>
                     <div class="mt-8 sm:mt-6 sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
                         <dt class="font-semibold text-gray-900 dark:text-white">Contact</dt>
@@ -90,8 +99,10 @@
                     <div class="mt-8 sm:mt-6 sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
                         <dt class="font-semibold text-gray-900 dark:text-white">Owner</dt>
                         <dd class="mt-2 text-gray-500 dark:text-gray-400">
-                            <a class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.leadOwner?.firstName + (leadDetails?.leadOwner?.lastName ? ' ' + leadDetails?.leadOwner?.lastName : '') }}</a>
-                            <br />{{ (leadDetails?.createdAt ? `Created On ${leadDetails?.createdAt | date:'mediumDate'}` :
+                            <a class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.leadOwner?.firstName +
+                                (leadDetails?.leadOwner?.lastName ? ' ' + leadDetails?.leadOwner?.lastName : '') }}</a>
+                            <br />{{ (leadDetails?.createdAt ? `Created On ${leadDetails?.createdAt |
+                            date:'mediumDate'}` :
                             'N/A') }}
                             <br />{{ (leadDetails?.convertedAt ? `Converted On ${leadDetails?.convertedAt |
                             date:'mediumDate'}` : 'N/A') }}<br />
@@ -112,7 +123,8 @@
                         class="flex justify-end text-xs font-medium text-primary-500 hover:underline hover:text-primary-500/80 focus:outline-none">
                         Add New Interaction?</a>
                     <div class="px-2 pb-2">
-                        <app-lead-interactions-table [leadId]="leadId" [refreshTrigger]="interactionRefreshTrigger()"></app-lead-interactions-table>
+                        <app-lead-interactions-table [leadId]="leadId"
+                            [refreshTrigger]="interactionRefreshTrigger()"></app-lead-interactions-table>
                     </div>
                 </div>
 
@@ -121,28 +133,44 @@
             <div class="lg:col-start-3 lg:row-end-1 ">
                 <!-- Activity feed -->
                 <h2 class="ml-2 text-sm/6 font-semibold text-gray-900 dark:text-white">Activity Timeline</h2>
-                <app-lead-logs-timeline [leadId]="leadId" [refreshTrigger]="leadActivityLogRefreshTrigger()"></app-lead-logs-timeline>
+                <app-lead-logs-timeline [leadId]="leadId"
+                    [refreshTrigger]="leadActivityLogRefreshTrigger()"></app-lead-logs-timeline>
             </div>
         </div>
     </div>
 </main>
 
 <!-- START: MODALS  -->
-<app-modal-large #leadUpdateFormModal [modalId]="'lead-form-modal'">
-    <app-lead-form [isEditMode]="true" [leadId]="leadId || null" (formSubmit)="onLeadUpdateSubmit($event)"></app-lead-form>
-</app-modal-large>
+<app-modal-medium #leadUpdateFormModal [modalId]="'lead-form-modal'">
+    <app-lead-form [isEditMode]="true" [leadId]="leadId || null" [leadStatusOptions]="leadStatuses"
+        [leadSourceOptions]="leadSources" [showNextButton]="true" [showSaveAndExitButton]="false"
+        [saveButtonText]="'Save'" (formSubmit)="onLeadUpdateSubmit($event)"
+        (formCancel)="closeLeadUpdateFormModal()"></app-lead-form>
+</app-modal-medium>
+
+<app-modal-medium #leadAddressUpdateFormModal [modalId]="'lead-address-form-modal'">
+    <app-lead-address-form [setLeadId]="leadId" [isEditMode]="true" [isLoading]="isLoading()"
+      [saveButtonText]="'save'" [saveAndExitButtonText]="'save and exit'" [showNextButton]="true" [showSaveAndExitButton]="false"
+      (submitAddress)="onLeadAddressUpdateSubmit($event)"
+      (cancelAddress)="closeLeadAddressUpdateFormModal()"></app-lead-address-form>
+</app-modal-medium>
+
 <app-modal-small #leadStatusChangeModal [modalId]="'lead-status-change-modal'">
-    <app-lead-status-change-box [lead]="leadDetails" [leadStatusOptions]="leadStatusOptions" (statusChange)="handleLeadStatusUpdate($event)" (cancel)="closeLeadStatusChangeDialog()"></app-lead-status-change-box>
+    <app-lead-status-change-box [lead]="leadDetails" [leadStatusOptions]="leadStatusOptions"
+        (statusChange)="handleLeadStatusUpdate($event)"
+        (cancel)="closeLeadStatusChangeDialog()"></app-lead-status-change-box>
 </app-modal-small>
 
 <app-modal-medium #leadConversionReviewModal [modalId]="'lead-conversion-review-modal'">
     <div class="mt-3 text-center sm:mt-0 sm:text-left">
         <h3 id="dialog-title" class="text-base font-semibold text-gray-900 dark:text-white">Lead Conversion Review</h3>
         <div class="mt-2">
-            <p class="text-sm text-gray-500 dark:text-gray-400">Review lead details before converting to opportunity:</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Review lead details before converting to opportunity:
+            </p>
         </div>
         <div class="mt-4">
-            <app-lead-conversion-review [leadId]="leadDetails?.leadId || null" (formSubmit)="onLeadConversionSubmit($event)"></app-lead-conversion-review>
+            <app-lead-conversion-review [leadId]="leadDetails?.leadId || null"
+                (formSubmit)="onLeadConversionSubmit($event)"></app-lead-conversion-review>
         </div>
     </div>
     <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
@@ -156,7 +184,8 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the details for the interaction:</p>
         </div>
         <div class="mt-2">
-            <app-lead-interaction-form [leadId]="leadDetails?.leadId || ''" (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form>
+            <app-lead-interaction-form [leadId]="leadDetails?.leadId || ''"
+                (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form>
         </div>
     </div>
 </app-modal-small>

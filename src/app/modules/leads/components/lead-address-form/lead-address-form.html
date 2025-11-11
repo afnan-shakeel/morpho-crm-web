@@ -1,5 +1,5 @@
-<form [formGroup]="addressForm" (ngSubmit)="onSubmit('saveAndExit')" id="lead-address-form"
-    class="bg-white shadow-xs outline outline-gray-900/5 sm:rounded-xl md:col-span-2 dark:bg-gray-800/50 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+<form [formGroup]="addressForm" (ngSubmit)="onSubmit()" id="lead-address-form"
+    class="">
     <div class="px-4 py-6 sm:p-8">
         <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div class="sm:col-span-full">
@@ -89,9 +89,16 @@
 
     <div
         class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 px-4 py-4 sm:px-8 dark:border-white/10">
-        <button type="button" (click)="onCancel()"
+        @if (!hasSubmitButton) {
+        <div class="text-sm text-orange-600 dark:text-orange-400 mr-4">
+            Warning: No submit buttons are configured. Set showNextButton or showSaveAndExitButton to true.
+        </div>
+        }
+        
+        <button type="button" (click)="onCancel()" [disabled]="isLoading"
             class="text-sm/6 font-semibold text-gray-900 dark:text-white disabled:opacity-50">Cancel</button>
-        <button type="submit"
+        @if (showNextButton) {
+        <button type="button" (click)="onSubmit('save')" [disabled]="isLoading"
             class="rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-primary-500 disabled:opacity-50 disabled:cursor-not-allowed">
             @if (isLoading) {
             <span class="flex items-center">
@@ -108,5 +115,26 @@
             {{ saveAndExitButtonText }}
             }
         </button>
+        }
+        
+        @if (showSaveAndExitButton) {
+        <button type="button" (click)="onSubmit('saveAndExit')" [disabled]="isLoading"
+            class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 dark:bg-gray-600 dark:shadow-none dark:hover:bg-gray-500 dark:focus-visible:outline-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (isLoading) {
+            <span class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 818-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 714 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                {{ saveAndExitButtonText }}...
+            </span>
+            } @else {
+            {{ saveAndExitButtonText }}
+            }
+        </button>
+        }
     </div>
 </form>

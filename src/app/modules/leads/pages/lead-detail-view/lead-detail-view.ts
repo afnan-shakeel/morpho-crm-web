@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import { ModalMedium } from "../../../../shared/components/modal-medium/modal-medium";
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
+import { LeadAddressForm } from "../../components/lead-address-form/lead-address-form";
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadForm } from '../../components/lead-form/lead-form';
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
@@ -14,17 +15,18 @@ import { LeadLogsTimeline } from "../../components/lead-logs-timeline/lead-logs-
 import { LeadStatusChangeBox } from "../../components/lead-status-change-box/lead-status-change-box";
 import { LeadStatusBadgeComponent } from "../../components/status-badge/status-badge";
 import { LeadsService } from '../../leads.service';
-import { Lead, LeadAddress, LeadSource, LeadStatus, LeadStatusOption } from '../../types';
+import { CreateLeadAddressPayload, Lead, LeadAddress, LeadAddressForm as LeadAddressFormType, LeadFormData, LeadSource, LeadStatus, LeadStatusOption, UpdateLeadAddressPayload, UpdateLeadPayload } from '../../types';
 
 @Component({
   selector: 'app-lead-detail-view',
-  imports: [CommonModule, PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadForm, LeadStatusBadgeComponent, ModalLarge, ModalMedium, ModalSmall, LeadStatusChangeBox, LeadConversionReview, LeadInteractionForm],
+  imports: [CommonModule, PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadForm, LeadStatusBadgeComponent, ModalLarge, ModalMedium, ModalSmall, LeadStatusChangeBox, LeadConversionReview, LeadInteractionForm, LeadAddressForm],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-detail-view.html',
   styleUrl: './lead-detail-view.css'
 })
 export class LeadDetailView {
   @ViewChild('leadUpdateFormModal') leadUpdateFormModal!: ModalLarge;
+  @ViewChild('leadAddressUpdateFormModal') leadAddressUpdateFormModal!: ModalMedium;
   @ViewChild('leadStatusChangeModal') leadStatusChangeModal!: ModalSmall;
   @ViewChild('leadConversionReviewModal') leadConversionReviewModal!: ModalMedium;
   @ViewChild('leadInteractionModal') leadInteractionModal!: ModalMedium;
@@ -41,11 +43,11 @@ export class LeadDetailView {
   @Input() leadId: string | null = null;
   leadDetails: Lead | null = null;
   leadAddressDetails: LeadAddress | null = null;
-  leadSources: LeadSource[] = [];
-  leadStatuses: LeadStatusOption[] = [];
+  leadSources!: LeadSource[];
+  leadStatuses!: LeadStatusOption[];
   isLoading = signal<boolean>(false);
 
-  leadStatusOptions: Array<{ label: string; value: string }> = [];
+  leadStatusOptions!: LeadStatusOption[];
 
   leadActivityLogRefreshTrigger = signal<number>(0);
 
@@ -79,6 +81,7 @@ export class LeadDetailView {
 
 
     this.getLeadStatuses();
+    this.getLeadSources();
     this.fetchLeadDetails();
   }
 
@@ -88,10 +91,17 @@ export class LeadDetailView {
   getLeadStatuses() {
     this.leadsService.getLeadsLookupData().subscribe({
       next: (response) => {
-        this.leadStatusOptions = response.leadStatuses.map(status => ({ label: status.label, value: status.value }));
+        this.leadStatuses = response.leadStatuses.map(status => ({ label: status.label, value: status.value }));
       },
       error: (error) => {
         console.error('Error fetching lead statuses:', error);
+      },
+    });
+  }
+  getLeadSources() {
+    this.leadsService.getLeadSources().subscribe({
+      next: (sources) => {
+        this.leadSources = sources;
       },
     });
   }
@@ -133,22 +143,134 @@ export class LeadDetailView {
   // start: lead update form modal
   openLeadUpdateFormModal() {
     this.leadUpdateFormModal.open();
-    console.log('Lead details to update:', this.leadDetails);
   }
   closeLeadUpdateFormModal() {
     this.leadUpdateFormModal.close();
   }
-  onLeadUpdateSubmit(formData: any) {
+  onLeadUpdateSubmit(data: any) {
+    const formData = data.data as LeadFormData;
     if (!formData) {
       this.closeLeadUpdateFormModal();
       return;
     }
 
     if (formData.leadId) {
-      // this.updateLead(formData.leadId, formData);
+      this.updateLead(formData);
     }
   }
+  private updateLead(leadData: LeadFormData) {
+
+    const updatePayload: UpdateLeadPayload = {
+      leadId: leadData.leadId!,
+      leadOwnerId: leadData.leadOwnerId || undefined,
+      leadOwnerName: leadData.leadOwnerName || undefined,
+      leadSourceId: leadData.leadSourceId || undefined,
+      leadStatus: leadData.leadStatus || undefined,
+      leadTopic: leadData.leadTopic || undefined,
+      leadConversionDate: leadData.leadConversionDate || undefined,
+      firstName: leadData.firstName || undefined,
+      lastName: leadData.lastName || undefined,
+      phone: leadData.phoneNumber || undefined,
+      email: leadData.email || undefined,
+      companyName: leadData.companyName || undefined
+    };
+
+    this.leadsService.updateLead(updatePayload).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        if (response && response.leadId) {
+          this.toastService.success('Lead updated successfully');
+          this.closeLeadUpdateFormModal();
+          this.fetchLeadDetails();
+        }
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        console.error('Error updating lead:', error);
+      }
+    });
+  }
   // end: lead update form modal
+
+  // start: lead address update form modal
+  openLeadAddressUpdateFormModal() {
+    this.leadAddressUpdateFormModal.open();
+  }
+  closeLeadAddressUpdateFormModal() {
+    this.leadAddressUpdateFormModal.close();
+  }
+  onLeadAddressUpdateSubmit(data: any) {
+    // data is of type { data: LeadFormData, action: 'save' | 'saveAndExit' }
+    console.log('Lead address form submitted with data:', data);
+    const formData = data.data as LeadAddressFormType;
+    if (!formData) {
+      this.closeLeadAddressUpdateFormModal();
+      return;
+    }
+
+    if (formData.addressId) {
+      this.updateLeadAddress(formData);
+    } else {
+      this.createLeadAddress(formData);
+    }
+  }
+  private updateLeadAddress(leadAddressData: LeadAddressFormType) {
+    const updatePayload: UpdateLeadAddressPayload = {
+      addressId: this.leadAddressDetails?.addressId!,
+      addressLine1: leadAddressData.addressLine1 || undefined,
+      addressLine2: leadAddressData.addressLine2 || undefined,
+      city: leadAddressData.city || undefined,
+      state: leadAddressData.state || undefined,
+      postalCode: leadAddressData.postalCode || undefined,
+      leadId: this.leadDetails?.leadId!,
+      country: leadAddressData.country || undefined,
+      isPrimary: leadAddressData.isPrimary
+    };
+
+    this.leadsService.updateLeadAddress(this.leadDetails?.leadId!, updatePayload).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        if (response && response.addressId) {
+          this.toastService.success('Lead address updated successfully');
+          this.closeLeadAddressUpdateFormModal();
+          this.fetchLeadDetails();
+        }
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        console.error('Error updating lead address:', error);
+      }
+    });
+  }
+  private createLeadAddress(leadAddressData: LeadAddressFormType) {
+    const createPayload: CreateLeadAddressPayload = {
+      addressLine1: leadAddressData.addressLine1 || undefined,
+      addressLine2: leadAddressData.addressLine2 || undefined,
+      city: leadAddressData.city || undefined,
+      state: leadAddressData.state || undefined,
+      postalCode: leadAddressData.postalCode || undefined,
+      leadId: this.leadDetails?.leadId!,
+      country: leadAddressData.country || undefined,
+      isPrimary: true
+    };
+
+    this.leadsService.createLeadAddress(this.leadDetails?.leadId!, createPayload).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        if (response && response.addressId) {
+          console.log('Lead address created successfully:', response);
+          this.toastService.success('Lead address created successfully');
+          this.closeLeadAddressUpdateFormModal();
+          this.fetchLeadDetails();
+        }
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        console.error('Error creating lead address:', error);
+      }
+    });
+  }
+  // end: lead address update form modal
 
   // start: lead status change modal
   openLeadStatusChangeDialog() {

@@ -134,4 +134,10 @@ export class AccountsActivityLog {
       },
     });
   }
+
+  getPerformedByFullName(activity: AccountActivityLog): string | null {
+    return `${activity.performedBy?.firstName} ${activity.performedBy?.lastName}`;
+  }
 }
+
+
