@@ -90,13 +90,13 @@
                     <div class="mt-8 sm:mt-6 sm:border-gray-900/5 sm:pt-6 sm:pl-4 dark:sm:border-white/10">
                         <dt class="font-semibold text-gray-900 dark:text-white">Owner</dt>
                         <dd class="mt-2 text-gray-500 dark:text-gray-400">
-                            <a class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.leadOwner?.Name }}</a>
+                            <a class="font-medium text-gray-900 dark:text-white">{{ leadDetails?.leadOwner?.firstName + (leadDetails?.leadOwner?.lastName ? ' ' + leadDetails?.leadOwner?.lastName : '') }}</a>
                             <br />{{ (leadDetails?.createdAt ? `Created On ${leadDetails?.createdAt | date:'mediumDate'}` :
                             'N/A') }}
                             <br />{{ (leadDetails?.convertedAt ? `Converted On ${leadDetails?.convertedAt |
                             date:'mediumDate'}` : 'N/A') }}<br />
                             {{ (leadDetails?.leadSource?.sourceName ? `Obtained through
-                            ${leadDetails?.leadSource?.sourceName}` : 'N/A') }}
+                            ${leadDetails?.leadSource?.sourceName}` : 'Unknown source') }}
                         </dd>
                     </div>
                 </dl>

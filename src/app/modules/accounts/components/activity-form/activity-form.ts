@@ -85,8 +85,8 @@ export class ActivityForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe((users) => {
-      this.userList = users.map((user: any) => ({
-        name: `${user.name}`,
+      this.userList = users.data.map((user: any) => ({
+        name: user.fullName || user.name || '',
         id: user.id,
         userName: user.userName,
       }));

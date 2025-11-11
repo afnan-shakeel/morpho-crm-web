@@ -35,7 +35,7 @@ export class AccountForm {
     companyWebsite: [''],
     companySize: [''],
     accountStatus: [AccountStatusEnum.PENDING],
-    accountOwnerId: [0, Validators.required],
+    accountOwnerId: ['', Validators.required],
     accountOwnerName: ['', Validators.required],
     address: this.fb.group({
       addressLine1: [''],
@@ -85,8 +85,8 @@ export class AccountForm {
         companyWebsite: account.companyWebsite,
         companySize: account.companySize,
         accountStatus: account.accountStatus,
-        accountOwnerId: Number(account.accountOwner?.Id),
-        accountOwnerName: account.accountOwner?.Name,
+        accountOwnerId: account.accountOwnerId,
+        accountOwnerName: account.accountOwner?.fullName || '',
       });
 
       if (account.accountAddress && account.accountAddress.length > 0) {
@@ -108,8 +108,8 @@ export class AccountForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe(users => {
-      this.userList = users.map((user: any) => ({
-        name: `${user.name}`,
+      this.userList = users.data.map((user: any) => ({
+        name: user.fullName || user.name || '',
         id: user.id,
         userName: user.userName,
       }));

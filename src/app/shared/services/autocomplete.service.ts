@@ -29,8 +29,8 @@ export class AutocompleteService {
           
           if (optionValue.includes(selectedValue)) {
             const selectedId = option.getAttribute(config.idAttribute || 'id');
-            const numericId = isNaN(Number(selectedId)) ? 0 : Number(selectedId);
-            config.form.patchValue({ [config.idControl]: numericId });
+            const formattedId = selectedId; // Keep as string since IDs are now UUIDs
+            config.form.patchValue({ [config.idControl]: formattedId });
             break;
           }
         }

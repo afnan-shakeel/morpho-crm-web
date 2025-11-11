@@ -5,7 +5,7 @@ import { LeadInteractionType, LeadSource, LeadStatus } from './lead.types';
  */
 export interface LeadFormData {
   leadId?: string;
-  leadOwnerId: number;
+  leadOwnerId: string;
   leadOwnerName: string;
   leadSourceId?: string | null;
   leadStatus?: LeadStatus | null;
@@ -30,9 +30,9 @@ export interface LeadFormSubmissionData extends LeadFormData {
  * Lead owner option for dropdown
  */
 export interface LeadOwnerOption {
-  id: number;
+  id: string;
   fullName: string;
-  userName: string;
+  userName?: string;
 }
 
 /**

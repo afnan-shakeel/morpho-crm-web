@@ -58,7 +58,7 @@ export interface AccountActivityLog {
   eventName: string;
   eventCategory: string;
   eventDetailNote: string;
-  performedById: number;
+  performedById: string;
   performedByName?: string;
   timestamp: string;
   performedBy: User;

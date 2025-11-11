@@ -9,7 +9,7 @@ export interface Opportunity {
   opportunityId: string;
   opportunityName: string;
   accountId: string;
-  opportunityOwnerId: number;
+  opportunityOwnerId: string;
   contactId: string;
   stageId: string;
   status: OpportunityStatus;

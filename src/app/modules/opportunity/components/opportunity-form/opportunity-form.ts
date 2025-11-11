@@ -54,7 +54,7 @@ export class OpportunityForm {
     closedDate: [''],
     expectedCloseDate: [''],
     notes: [''],
-    opportunityOwnerId: [0],
+    opportunityOwnerId: [''],
     opportunityOwnerName: [''],
   });
 
@@ -109,8 +109,8 @@ export class OpportunityForm {
         closedDate: opportunity.closedDate ? this.formatDateForInput(opportunity.closedDate) : null,
         expectedCloseDate: opportunity.expectedCloseDate ? this.formatDateForInput(opportunity.expectedCloseDate) : null,
         notes: opportunity.notes,
-        opportunityOwnerId: opportunity.opportunityOwnerId ? Number(opportunity.opportunityOwnerId) : 0,
-        opportunityOwnerName: opportunity.opportunityOwner?.Name,
+        opportunityOwnerId: opportunity.opportunityOwnerId || '',
+        opportunityOwnerName: opportunity.opportunityOwner?.fullName || '',
       });
     });
   }
@@ -120,8 +120,8 @@ export class OpportunityForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe((users) => {
-      this.userList = users.map((user: any) => ({
-        name: `${user.name}`,
+      this.userList = users.data.map((user: any) => ({
+        name: user.fullName || user.name || '',
         id: user.id,
         userName: user.userName,
       }));

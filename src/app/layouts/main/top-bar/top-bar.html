@@ -24,7 +24,7 @@
           <button class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500">
             <span class="absolute -inset-1.5"></span>
             <span class="sr-only">Open user menu</span>
-            <app-avatar [name]="userDetails?.name || ''" size="md"></app-avatar>
+            <app-avatar [name]="userDetails?.fullName || ''" size="md"></app-avatar>
           </button>
 
           <el-menu anchor="bottom end" popover class="w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
@@ -61,11 +61,11 @@
     <div class="border-t border-gray-200 pt-4 pb-3 dark:border-white/10">
       <div class="flex items-center px-4">
         <div class="shrink-0">
-            <app-avatar [name]="userDetails?.name || ''" size="md"></app-avatar>
+            <app-avatar [name]="userDetails?.fullName || ''" size="md"></app-avatar>
         </div>
         <div class="ml-3">
-          <div class="text-base font-medium text-gray-800 dark:text-white">{{ userDetails?.name }}</div>
-          <div class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ userDetails?.emailAddress }}</div>
+          <div class="text-base font-medium text-gray-800 dark:text-white">{{ userDetails?.fullName }}</div>
+          <div class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ userDetails?.email }}</div>
         </div>
         <button type="button" class="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:hover:text-white dark:focus:outline-indigo-500">
           <span class="absolute -inset-1.5"></span>

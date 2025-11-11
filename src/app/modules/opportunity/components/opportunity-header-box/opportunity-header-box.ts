@@ -26,7 +26,7 @@ export class OpportunityHeaderBox {
   @Input() opportunity: Opportunity | null = null;
   @Output() markAsLost: EventEmitter<void> = new EventEmitter<void>();
   @Output() markAsWon: EventEmitter<void> = new EventEmitter<void>();
-  @Output() ownerChanged: EventEmitter<number> = new EventEmitter<number>();
+  @Output() ownerChanged: EventEmitter<string> = new EventEmitter<string>();
   @Output() expectedCloseDateChanged: EventEmitter<string> = new EventEmitter<string>();
 
   userList: any[] = [];
@@ -57,7 +57,7 @@ export class OpportunityHeaderBox {
   confirmationTitle: string = 'Confirm Change';
   confirmationMessage: string = 'Are you sure you want to change?';
   headerForm = this.fb.group({
-    ownerId: [0],
+    ownerId: [''],
     ownerName: [''],
     stageId: [''],
     expectedCloseDate: [''],
@@ -68,8 +68,8 @@ export class OpportunityHeaderBox {
       // populate header form when opportunity input changes
       if (this.opportunity) {
         this.headerForm.patchValue({
-          ownerId: this.opportunity.opportunityOwner?.Id || 0,
-          ownerName: this.opportunity.opportunityOwner?.Name,
+          ownerId: this.opportunity.opportunityOwner?.id || '',
+          ownerName: this.opportunity.opportunityOwner?.fullName || '',
           expectedCloseDate: this.opportunity.expectedCloseDate
             ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 16)
             : '',
@@ -116,9 +116,9 @@ export class OpportunityHeaderBox {
           ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 16)
           : '';
       case 'ownerName':
-        return this.opportunity.opportunityOwner?.Name || '';
+        return this.opportunity.opportunityOwner?.fullName || '';
       case 'ownerId':
-        return this.opportunity.opportunityOwner?.Id || 0;
+        return this.opportunity?.opportunityOwner?.id || '';
       default:
         return null;
     }
@@ -155,7 +155,7 @@ export class OpportunityHeaderBox {
   // load user list for opportunity owner display
   loadUserList(searchTerm: string = ''): void {
     this.userService.getUsers(searchTerm, 5, 0).subscribe((users) => {
-      this.userList = users;
+      this.userList = users.data
     });
   }
 
@@ -259,8 +259,8 @@ export class OpportunityHeaderBox {
           // Revert the form on error
           this.headerForm.patchValue(
             {
-              ownerId: this.opportunity?.opportunityOwner?.Id || 0,
-              ownerName: this.opportunity?.opportunityOwner?.Name || '',
+              ownerId: this.opportunity?.opportunityOwner?.id || '',
+              ownerName: this.opportunity?.opportunityOwner?.fullName || '',
             },
             { emitEvent: false }
           );

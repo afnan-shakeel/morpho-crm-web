@@ -219,9 +219,9 @@
                 <li class="-mx-6 mt-auto p-2">
                     <a
                         class="flex items-center gap-x-4 rounded-md px-6 py-3 text-sm/6 font-semibold text-gray-100 hover:bg-primary-400/40 dark:text-white dark:hover:bg-white/5">
-                        <app-avatar [name]="userDetails?.name || ''" size="md"></app-avatar>
+                        <app-avatar [name]="userDetails?.fullName || ''" size="md"></app-avatar>
                         <span class="sr-only">Your profile</span>
-                        <span aria-hidden="true">{{ userDetails?.name }}</span>
+                        <span aria-hidden="true">{{ userDetails?.fullName }}</span>
                     </a>
                 </li>
             </ul>

@@ -35,9 +35,11 @@ export class LeadsService {
     filters?: any,
     sort?: any,
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    eagerFetch: boolean = false
   ): Observable<LeadsListData> {
     const body: SearchApiPayload = {
+      eagerFetch: eagerFetch,
       globalSearch: { value: query || '' },
       filters: filters || [],
       sort: sort || {},

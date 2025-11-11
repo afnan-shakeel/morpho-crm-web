@@ -5,7 +5,7 @@ import { User } from "../../user/user.types";
  */
 export interface Lead {
   leadId: string;
-  leadOwnerId: number;
+  leadOwnerId: string;
   leadSourceId: string;
   leadStatus: LeadStatus;
   leadTopic?: string;
@@ -67,7 +67,7 @@ export interface LeadLogs {
   logId: string;
   leadId: string;
   logMessage: string;
-  changedBy: number;
+  changedBy: string;
   changedByName?: string;
   changedAt: string;
   changeType: LeadLogChangeType;
@@ -90,9 +90,9 @@ export interface LeadInteraction {
   interactionDate: string;
   notes?: string;
   createdAt: string;
-  createdBy: number;
+  createdBy: string;
   updatedAt: string;
-  updatedBy: number;
+  updatedBy: string;
   createdByUser?: User;
   lead?: Lead;
 }

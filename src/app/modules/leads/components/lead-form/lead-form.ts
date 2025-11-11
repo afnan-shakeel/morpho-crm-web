@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
+import { AutocompleteDirective } from '../../../../shared';
+import { User } from '../../../user/user.types';
 import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
 import {
@@ -16,7 +18,7 @@ import { LeadAddressForm } from "../lead-address-form/lead-address-form";
 
 @Component({
   selector: 'app-lead-form',
-  imports: [LeadAddressForm, ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule],
+  imports: [LeadAddressForm, ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, AutocompleteDirective],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.css'
@@ -44,7 +46,7 @@ export class LeadForm {
   leadInfoForm = this.fb.group({
     leadId: [''],
     leadTopic: ['', Validators.required],
-    leadOwnerId: [0, Validators.required], // is a integer
+    leadOwnerId: ['', Validators.required], // is a string UUID
     leadOwnerName: ['', Validators.required],
     leadSourceId: [''],
     leadStatus: [LeadStatus.NEW, Validators.required],
@@ -56,7 +58,7 @@ export class LeadForm {
     companyName: [''],
   });
 
-  userList: LeadOwnerOption[] = []
+  userList: User[] = []
 
   ngOnInit() {
     if (this.isEditMode && this.leadId) {
@@ -74,47 +76,15 @@ export class LeadForm {
       }
     });
   }
+
   ngAfterViewInit() {
-
-    // [custom event] handle input event for lead owner autocomplete
-    const leadOwnerElement = document.getElementById('leadOwner');
-    if (leadOwnerElement) {
-      leadOwnerElement.addEventListener('input', (event: any) => {
-        const optionsContainer = leadOwnerElement.querySelector('el-options');
-        const optionElements = optionsContainer?.getElementsByTagName('el-option');
-        if (optionElements) {
-          // filter elements based on user search
-          for (let i = 0; i < optionElements.length; i++) {
-            const option = optionElements[i];
-            const selectedUserName = this.leadInfoForm.get('leadOwnerName')?.value?.toLowerCase() || '';
-            const optionUserName = option.getAttribute('value')?.toLowerCase() || '';
-            if (optionUserName.includes(selectedUserName)) {
-              const selectedUserId = option.getAttribute('id');
-              this.leadInfoForm.patchValue({ leadOwnerId: isNaN(Number(selectedUserId)) ? 0 : Number(selectedUserId) });
-              break;
-            }
-          }
-        }
-
-        // if the input is cleared, reset leadOwnerId
-        if (!this.leadInfoForm.get('leadOwnerName')?.value) {
-          this.leadInfoForm.patchValue({ leadOwnerId: 0 });
-        }
-
-      });
-    }
   }
 
-  private loadUserList(_searchTerm: string = '') {
+  loadUserList(_searchTerm: string = '') {
     const searchTerm = _searchTerm ? _searchTerm.trim() : '';
     const maxResults = 20;
-    const skipCount = 0;
-    this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe(users => {
-      this.userList = users.map((user: any): LeadOwnerOption => ({
-        fullName: `${user.fullName}`,
-        id: user.id,
-        userName: user.userName,
-      }));
+    this.userService.getUsers(searchTerm, null, null, 1, maxResults).subscribe(res => {
+      this.userList = res.data
     });
   }
 
@@ -125,7 +95,7 @@ export class LeadForm {
         this.leadInfoForm.patchValue({
           leadId: leadData.leadId,
           leadOwnerId: leadData.leadOwnerId,
-          leadOwnerName: leadData.leadOwner?.Name || '',
+          leadOwnerName: leadData.leadOwner?.fullName || '',
           leadSourceId: leadData.leadSourceId,
           leadStatus: leadData.leadStatus,
           leadTopic: leadData.leadTopic,
@@ -153,7 +123,7 @@ export class LeadForm {
       const leadData = this.leadInfoForm.value;
 
       const submissionData: LeadFormData = {
-        leadOwnerId: Number(leadData.leadOwnerId) as number,
+        leadOwnerId: leadData.leadOwnerId || '',
         leadOwnerName: leadData.leadOwnerName || '',
         leadSourceId: leadData.leadSourceId || null,
         leadStatus: leadData.leadStatus || LeadStatus.NEW,

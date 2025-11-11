@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, SimpleChanges } from '@angular/core';
+import { User } from '../../../user/user.types';
 import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
 import { LeadLogs } from '../../types';
@@ -35,5 +36,9 @@ export class LeadLogsTimeline {
         this.leadLogs = logs;
       });
     }
+  }
+
+  formatFullName(data: User | null | undefined): string {
+    return `${data?.firstName || ''} ${data?.lastName || ''}`.trim();
   }
 }

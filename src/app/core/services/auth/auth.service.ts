@@ -33,8 +33,8 @@ export class AuthService {
 
             // 2. RxJs tap: Perform side effects upon successful response
             tap(response => {
-                this.storeToken(response?.data?.tokenDetails?.accessToken);
-                this.storeUserInfo(response?.data?.userDetails);
+                this.storeToken(response?.data?.token?.accessToken);
+                this.storeUserInfo(response?.data?.user);
                 this.isAuthenticatedSubject.next(true);
             }),
 

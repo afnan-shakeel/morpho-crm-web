@@ -6,7 +6,7 @@ import { Lead, LeadInteraction, LeadInteractionType, LeadStatus } from './lead.t
  * Create lead API payload
  */
 export interface CreateLeadPayload {
-  leadOwnerId: number;
+  leadOwnerId: string;
   leadOwnerName: string;
   leadSourceId: string | null;
   leadStatus: LeadStatus | null;
@@ -24,7 +24,7 @@ export interface CreateLeadPayload {
  */
 export interface UpdateLeadPayload {
   leadId: string;
-  leadOwnerId?: number;
+  leadOwnerId?: string;
   leadOwnerName?: string;
   leadSourceId?: string;
   leadStatus?: LeadStatus;

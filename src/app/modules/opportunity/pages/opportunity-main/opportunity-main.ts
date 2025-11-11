@@ -1,4 +1,3 @@
-import { ModalHeader } from "@/shared/components/modal-header/modal-header";
 import { ModalMedium } from "@/shared/components/modal-medium/modal-medium";
 import { PageHeading } from "@/shared/components/page-heading/page-heading";
 import { CommonModule } from '@angular/common';
@@ -14,7 +13,7 @@ import { Opportunity, OpportunityStatus, UpdateOpportunityPayload } from '../../
 
 @Component({
   selector: 'app-opportunity-main',
-  imports: [OpportunityHeaderBox, OpportunityStageProgress, CommonModule, OpportunitySummary, PageHeading, ModalMedium, OpportunityForm, ModalHeader],
+  imports: [OpportunityHeaderBox, OpportunityStageProgress, CommonModule, OpportunitySummary, PageHeading, ModalMedium, OpportunityForm],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-main.html',
   styleUrl: './opportunity-main.css'

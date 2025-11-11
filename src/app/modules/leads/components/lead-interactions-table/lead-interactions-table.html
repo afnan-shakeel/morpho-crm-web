@@ -29,7 +29,7 @@
                 </td>
                 <td
                     class="hidden py-5 pr-0 pl-8 text-right align-top text-gray-700 tabular-nums sm:table-cell dark:text-gray-300">
-                    {{ item.createdByUser?.Name }}</td>
+                    {{ item.createdByUser?.fullName || '' }}</td>
                 <td class="py-5 pr-0 pl-8 text-right align-top text-gray-700 tabular-nums dark:text-gray-300">
                     {{item.createdAt | date:'short'}}</td>
             </tr>

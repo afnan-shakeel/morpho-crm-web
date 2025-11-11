@@ -47,7 +47,7 @@ export class AutocompleteDirective implements OnInit, OnDestroy {
           
           if (optionValue.includes(selectedValue)) {
             const selectedId = option.getAttribute(this.optionIdAttribute);
-            const formatedId = isNaN(Number(selectedId)) ? selectedId : Number(selectedId);
+            const formatedId = selectedId; // Keep as string since IDs are now UUIDs
             this.targetForm.patchValue({ [this.idControl]: formatedId });
             break;
           }
@@ -84,7 +84,7 @@ export class AutocompleteDirective implements OnInit, OnDestroy {
         if (selectedId && selectedValue) {
           console.log('Selected ID:', selectedId);
           console.log('Selected Value:', selectedValue);
-          const formatedId = isNaN(Number(selectedId)) ? selectedId : Number(selectedId);
+          const formatedId = selectedId; // Keep as string since IDs are now UUIDs
           this.targetForm.patchValue({
             [this.nameControl]: selectedValue,
             [this.idControl]: formatedId

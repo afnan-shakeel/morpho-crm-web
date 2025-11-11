@@ -45,7 +45,7 @@ export class LeadListing {
   columns: DataTableColumn[] = [
     { field: 'leadId', label: 'Lead ID', hidden: true },
     { field: 'leadTopic', label: 'Lead Topic', cellTemplate: CellTemplate.LINK, hrefField: '/leads/detail/:leadId' },
-    { field: 'firstName', label: 'Name' },
+    { field: 'leadOwner.FirstName', label: 'Name' },
     // { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
     {
@@ -61,6 +61,7 @@ export class LeadListing {
   pageSize: number = 10;
   totalRecords: number = 0;
   searchQuery: string = '';
+  eagerFetch: boolean = true;
   leadSourcesOptions: Array<{ label: string; value: string }> = [];
   leadStatusOptions: Array<{ label: string; value: string }> = [];
   filters: Filters[] = [
@@ -194,7 +195,7 @@ export class LeadListing {
       order: 'desc',
     };
     this.leadsService
-      .getLeads(this.searchQuery, this.apiReadyFilterData, sort, this.currentPage, this.pageSize)
+      .getLeads(this.searchQuery, this.apiReadyFilterData, sort, this.currentPage, this.pageSize, this.eagerFetch)
       .subscribe({
         next: (response) => {
           let data = response?.data || [];

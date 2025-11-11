@@ -20,10 +20,12 @@
                     <div class="sm:col-span-3">
                         <label for="combobox"
                             class="block text-sm/6 font-medium text-gray-900 dark:text-white">Owner <span class="text-red-500">*</span></label>
-                        <input type="hidden" formControlName="leadOwnerId" />
-                        <el-autocomplete class="relative mt-2 block" id="leadOwner">
-                            <input id="combobox" type="text" formControlName="leadOwnerName" placeholder="Select or type owner name"
-                                class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+                        <!-- <input type="hidden" formControlName="leadOwnerId" /> -->
+                        <el-autocomplete class="relative mt-2 block" id="leadOwner" appAutocomplete
+                        [targetForm]="leadInfoForm" nameControl="leadOwnerName"
+                        idControl="leadOwnerId">
+                            <input id="leadOwnerName" type="text" formControlName="leadOwnerName" placeholder="Select or type owner name"
+                                (change)="loadUserList()" class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                             <button type="button"
                                 class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
                                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
@@ -36,13 +38,10 @@
                             <el-options anchor="bottom end" popover
                                 class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
                                 @for (user of userList; let uidx = $index; track uidx;) {
-                                <el-option [attr.value]="user.fullName" (click)="setOwnerName(user)" id="{{user.id}}"
+                                <el-option [attr.value]="user.fullName" id="{{user.id}}"
                                     class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
                                     <div class="flex">
                                         <span class="truncate">{{user.fullName}}</span>
-                                        <span
-                                            class="ml-2 truncate text-gray-500 in-aria-selected:text-white dark:text-gray-400 dark:in-aria-selected:text-white">{{
-                                            user.userName ? `@${user.userName}` : ''}}</span>
                                     </div>
                                 </el-option>
                                 }

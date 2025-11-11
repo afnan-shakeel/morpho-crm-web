@@ -1,29 +1,20 @@
+import { User } from "../../modules/user/user.types";
+
 export interface UserCredentials {
     email: string;
     password: string;
 }
 
-export interface AuthUserInfo {
-    id: number;
-    name: string;
-    surname?: string;
-    username: string;
-    emailAddress: string;
+export interface AuthUserInfo extends User {
 }
 
 export interface AuthTokenDetails {
     accessToken: string;
-    expiresIn: number;
-}
-
-export interface TenantDetails {
-    id: number;
-    name: string;
-    tenancyName: string;
+    expiresAt: string;
+    userId: string;
 }
 
 export interface AuthResponse {
-    tokenDetails: AuthTokenDetails;
-    userDetails: AuthUserInfo;
-    tenantDetails?: TenantDetails;
+    token: AuthTokenDetails;
+    user: AuthUserInfo;
 }

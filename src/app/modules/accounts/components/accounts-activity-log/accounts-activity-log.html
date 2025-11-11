@@ -38,7 +38,7 @@
             <div class="flex flex-none items-center gap-x-1 mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
                 <p class="whitespace-nowrap"><time datetime="2023-03-17T00:00Z">{{ item.timestamp | date: 'short'
                         }}</time></p>
-                <p class="whitespace-nowrap lowercase">{{ `(${item.performedBy.Name})` }}</p>
+                <p class="whitespace-nowrap lowercase">{{ `(${item.performedBy.fullName || ''})` }}</p>
             </div>
         </li>
         }

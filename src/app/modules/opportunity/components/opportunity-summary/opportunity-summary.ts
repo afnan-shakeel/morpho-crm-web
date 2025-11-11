@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { AccountActivityRelatedToEnum } from "../../../accounts/types";
 import { Opportunity } from '../../types';
-import { OpportunityStageProgress } from "../opportunity-stage-progress/opportunity-stage-progress";
 
 @Component({
   selector: 'app-opportunity-summary',
-  imports: [CommonModule, OpportunityStageProgress, AccountsActivityLog, ContactInfoBox],
+  imports: [CommonModule, AccountsActivityLog, ContactInfoBox],
   templateUrl: './opportunity-summary.html',
   styleUrl: './opportunity-summary.css'
 })

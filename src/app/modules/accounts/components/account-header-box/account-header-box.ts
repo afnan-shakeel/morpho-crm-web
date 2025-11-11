@@ -37,7 +37,7 @@ export class AccountHeaderBox {
 
   loadUserList(searchTerm: string = ''): void {
     this.userService.getUsers(searchTerm, 5, 0).subscribe((users) => {
-      this.userList = users;
+      this.userList = users.data;
     });
   }
 
