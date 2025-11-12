@@ -1,0 +1,65 @@
+/* Tabs Component Styles */
+
+/* Ensure smooth transitions for tab state changes */
+.tab-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom focus styles for better accessibility */
+.tab-focus:focus-visible {
+  /* outline: 2px solid theme('colors.indigo.500'); */
+  outline-offset: 2px;
+}
+
+/* Badge pulse animation for dynamic updates */
+.badge-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Mobile dropdown custom styles */
+.mobile-dropdown {
+  /* Ensure dropdown works well on different devices */
+  min-height: 44px; /* Minimum touch target size */
+}
+
+/* Loading state for tabs */
+.tab-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Dark mode specific adjustments */
+@media (prefers-color-scheme: dark) {
+  .badge-pulse {
+    filter: brightness(0.9);
+  }
+}

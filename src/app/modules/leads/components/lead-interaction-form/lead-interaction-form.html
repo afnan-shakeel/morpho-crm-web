@@ -4,14 +4,14 @@
             <label for="interaction-type" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Interaction
                 Type</label>
             <div class="mt-2">
-                <select id="interaction-type" formControlName="interactionType"
+                <select id="interaction-type" formControlName="interactionTypeId"
                     class="w-full rounded-md bg-white px-2 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:focus:outline-primary-500">
-                    @for (option of interactionTypes; let i = $index; track i) {
-                    <option [value]="option">{{ option }}</option>
+                    @for (option of leadInteractionTypes; let i = $index; track i) {
+                    <option [value]="option.interactionTypeId">{{ option.interactionTypeName }}</option>
                     }
                 </select>
             </div>
-            @if (interactionForm.get('interactionType')?.invalid && (interactionForm.get('interactionType')?.touched || interactionForm.get('interactionType')?.dirty)) {
+            @if (interactionForm.get('interactionTypeId')?.invalid && (interactionForm.get('interactionTypeId')?.touched || interactionForm.get('interactionTypeId')?.dirty)) {
                 <div class="text-xs text-red-500 mt-1">
                     Interaction type is required.
                 </div>

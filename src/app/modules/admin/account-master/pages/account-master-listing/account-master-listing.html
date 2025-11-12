@@ -1,0 +1,39 @@
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <div class="">
+                <app-page-heading [title]="'Account Master'"
+                    description="Manage the master list of all accounts including their activity types and details."
+                    [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
+            </div>
+        </div>
+        <div class="sm:mt-0 sm:ml-16 sm:flex-none">
+            <button type="button" (click)="onCreateMasterData()"
+                class="block rounded-md bg-primary-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-primary-500">
+                Create New Master
+            </button>
+        </div>
+    </div>
+        <div class="mt-6">
+        <app-tabs [tabs]="contentTabs" mode="content" (tabChange)="onContentTabChange($event)">
+        </app-tabs>
+        <div class="p-2 bg-gray-50/20 dark:bg-gray-800 rounded-lg">
+            @switch (currentContent) {
+            @case ('account-activity-type') {
+            <div>
+                <app-custom-datatable [records]="accountActivityTypes" [columns]="accountActivityTypeListColumns" [currentPage]="1"
+                    [pageSize]="accountActivityTypes.length" [totalRecords]="accountActivityTypes.length" [rowActions]="leadSourceRowActions"
+                    [disableSearch]="true">
+                </app-custom-datatable>
+            </div>
+            }
+            }
+        </div>
+
+    </div>
+</div>
+
+<app-modal-small #accountActivityTypeFormModal [modalId]="'account-activity-type-form-modal'" (closeModal)="closeAccountActivityTypeFormModal()">
+    <app-account-activity-type-form [formTitle]="accountActivityTypeFormTitle" [activityTypeData]="accountActivityTypeToEdit" [activityTypeId]="accountActivityTypeToEdit?.activityTypeId || null" 
+    (formCancel)="closeAccountActivityTypeFormModal()" (formSubmit)="onAccountActivityTypeFormSubmit($event)"></app-account-activity-type-form>
+</app-modal-small>

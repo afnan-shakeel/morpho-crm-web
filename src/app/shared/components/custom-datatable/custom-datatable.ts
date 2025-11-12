@@ -38,7 +38,7 @@ export class CustomDatatable {
   @Input() searchQuery: string = '';
   @Output() search: EventEmitter<string> = new EventEmitter<string>();
 
-  @Input() filterData: FilterData | null = null;
+  @Input() filterData: FilterData | null = { filters: [], config: {} };
   @Output() filterChange: EventEmitter<Filters[]> = new EventEmitter<Filters[]>();
 
   @Input() rowActions: RowAction[] = [];
@@ -52,6 +52,8 @@ export class CustomDatatable {
   @Input() showAddButton: boolean = false;
   @Input() addButtonLabel: string = 'Add New Record';
   @Output() addButtonClick: EventEmitter<void> = new EventEmitter<void>();
+
+  @Input() disableSearch: boolean = false;
 
   onAddButtonClick() {
     this.addButtonClick.emit();

@@ -1,4 +1,4 @@
-import { LeadInteractionType, LeadSource, LeadStatus } from './lead.types';
+import { LeadSource, LeadStatus } from './lead.types';
 
 /**
  * Form data interface for lead form component
@@ -67,7 +67,7 @@ export interface LeadAddressForm {
 export interface LeadInteractionForm {
   interactionId?: string;
   leadId: string;
-  interactionType: LeadInteractionType;
+  interactionTypeId: string; // Updated to use reference field
   interactionDate: string;
   notes?: string;
 }

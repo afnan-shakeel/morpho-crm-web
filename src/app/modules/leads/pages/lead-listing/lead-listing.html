@@ -31,7 +31,7 @@
             <p class="text-sm text-gray-500 dark:text-gray-400">Fill in the details for the interaction:</p>
         </div>
         <div class="mt-2">
-            <app-lead-interaction-form [leadId]="selectedLeadIdForInteraction" (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form> 
+            <app-lead-interaction-form [leadId]="selectedLeadIdForInteraction" [leadInteractionTypes]="leadInteractionTypes" (interactionSubmit)="onInteractionSubmit($event)"></app-lead-interaction-form> 
         </div>
     </div>
 </app-modal-small>

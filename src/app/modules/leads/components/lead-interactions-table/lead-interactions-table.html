@@ -24,7 +24,7 @@
             @for (item of leadInteractions; let i = $index; track i) {
             <tr class="border-b border-gray-100 dark:border-white/10">
                 <td class="max-w-0 px-0 py-5 align-top">
-                    <div class="truncate font-medium text-gray-900 dark:text-white">{{ item.interactionType }}</div>
+                    <div class="truncate font-medium text-gray-900 dark:text-white">{{ item.interactionType.interactionTypeName }}</div>
                     <div class="truncate text-gray-500 dark:text-gray-400">{{ item.notes }}</div>
                 </td>
                 <td

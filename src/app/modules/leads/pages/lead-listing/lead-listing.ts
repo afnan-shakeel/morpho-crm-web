@@ -11,6 +11,8 @@ import {
 } from '../../../../shared/components/custom-datatable/types';
 import { ModalMedium } from '../../../../shared/components/modal-medium/modal-medium';
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
+import { LeadsInteractionMasterService } from '../../../admin/leads-master/services/lead-interaction-master.service';
+import { LeadInteractionTypeTypes } from '../../../admin/leads-master/types';
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
 import { LeadStatusChangeBox } from "../../components/lead-status-change-box/lead-status-change-box";
@@ -28,6 +30,8 @@ export class LeadListing {
   @ViewChild('leadStatusChangeModal') leadStatusChangeModal!: ModalSmall;
   @ViewChild('leadInteractionModal') leadInteractionModal!: ModalSmall;
   @ViewChild('leadConversionReviewModal') leadConversionReviewModal!: ModalMedium;
+
+  private leadsInteractionMasterService = inject(LeadsInteractionMasterService);
 
   constructor() {
     this.setLeadLookupData();
@@ -131,11 +135,12 @@ export class LeadListing {
     },
   ];
 
+  leadInteractionTypes: LeadInteractionTypeTypes.LeadInteractionType[] = [];
+
   ngOnInit() {
+    this.loadLeadInteractionTypes();
     this.loadLeads();
   }
-
-
 
   setLeadLookupData() {
     this.getLeadStatuses();
@@ -209,6 +214,12 @@ export class LeadListing {
           this.loading = false;
         },
       });
+  }
+
+  loadLeadInteractionTypes() {
+    this.leadsInteractionMasterService.getLeadInteractionTypes().subscribe((types) => {
+      this.leadInteractionTypes = types;
+    });
   }
 
   onPageChangeHandler(event: any) {

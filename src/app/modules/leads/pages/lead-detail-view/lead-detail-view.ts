@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../../core';
 import { ModalMedium } from "../../../../shared/components/modal-medium/modal-medium";
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
+import { LeadsInteractionMasterService } from '../../../admin/leads-master/services/lead-interaction-master.service';
+import { LeadInteractionTypeTypes } from '../../../admin/leads-master/types';
 import { LeadAddressForm } from "../../components/lead-address-form/lead-address-form";
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadForm } from '../../components/lead-form/lead-form';
@@ -19,7 +21,7 @@ import { CreateLeadAddressPayload, Lead, LeadAddress, LeadAddressForm as LeadAdd
 
 @Component({
   selector: 'app-lead-detail-view',
-  imports: [CommonModule, PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadForm, LeadStatusBadgeComponent, ModalLarge, ModalMedium, ModalSmall, LeadStatusChangeBox, LeadConversionReview, LeadInteractionForm, LeadAddressForm],
+  imports: [CommonModule, PageHeading, LeadLogsTimeline, LeadInteractionsTable, LeadForm, LeadStatusBadgeComponent, ModalMedium, ModalSmall, LeadStatusChangeBox, LeadConversionReview, LeadInteractionForm, LeadAddressForm],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-detail-view.html',
   styleUrl: './lead-detail-view.css'
@@ -34,6 +36,8 @@ export class LeadDetailView {
   private router = inject(Router)
   private leadsService = inject(LeadsService)
   private toastService = inject(ToastService)
+  private leadsInteractionMasterService = inject(LeadsInteractionMasterService);
+
   pageBreadcrumbs = [
     { label: 'Home', path: '/' },
     { label: 'Leads', path: '/leads' },
@@ -65,7 +69,12 @@ export class LeadDetailView {
     },
     { label: 'Convert Lead', handler: () => { } },
   ];
+
+  leadInteractionTypes: LeadInteractionTypeTypes.LeadInteractionType[] = [];
+
   ngOnInit() {
+    this.loadLeadInteractionTypes();
+
     // extract leadId from the URL
     const urlSegments = this.router.url.split('/');
     this.leadId = urlSegments[urlSegments.length - 1];
@@ -139,6 +148,11 @@ export class LeadDetailView {
     });
   }
 
+  loadLeadInteractionTypes() {
+    this.leadsInteractionMasterService.getLeadInteractionTypes().subscribe((types) => {
+      this.leadInteractionTypes = types;
+    });
+  }
 
   // start: lead update form modal
   openLeadUpdateFormModal() {

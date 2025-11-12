@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AutocompleteDirective } from '../../../../shared';
+import { AutocompleteDirective, CountriesService, Country } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { AccountsService } from '../../accounts.service';
 import { AccountStatusEnum } from '../../types';
@@ -18,6 +18,7 @@ export class AccountForm {
   private fb = inject(FormBuilder);
   private accountsService = inject(AccountsService);
   private userService = inject(UsersService);
+  private countriesService = inject(CountriesService);
   @Input() accountId: string | null = null;
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Account';
@@ -25,6 +26,7 @@ export class AccountForm {
   @Input() resetFormEvent: boolean = false;
   userList: any[] = []
   accountStatuses = Object.values(AccountStatusEnum);
+  countries: Country[] = [];
 
   accountForm = this.fb.group({
     accountId: [this.accountId],
@@ -58,6 +60,9 @@ export class AccountForm {
 
       // load user list for account owner selection
       this.loadUserList();
+      
+      // load countries list
+      this.loadCountries();
     }
 
     // reset the form when resetFormEvent is true
@@ -113,6 +118,17 @@ export class AccountForm {
         id: user.id,
         userName: user.userName,
       }));
+    });
+  }
+
+  private loadCountries() {
+    this.countriesService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries = countries;
+      },
+      error: (error) => {
+        console.error('Error loading countries:', error);
+      }
     });
   }
 

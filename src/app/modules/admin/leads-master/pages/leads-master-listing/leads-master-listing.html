@@ -1,0 +1,51 @@
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <div class="">
+                <app-page-heading [title]="'Leads Master'"
+                    description="Manage the master list of all leads including their sources and details."
+                    [breadcrumbs]="pageBreadcrumbs"></app-page-heading>
+            </div>
+        </div>
+        <div class="sm:mt-0 sm:ml-16 sm:flex-none">
+            <button type="button" (click)="onCreateMaster()"
+                class="block rounded-md bg-primary-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:bg-primary-500 dark:hover:bg-indigo-400 dark:focus-visible:outline-primary-500">
+                Create New Master
+            </button>
+        </div>
+    </div>
+    <div class="mt-6">
+        <app-tabs [tabs]="contentTabs" mode="content" (tabChange)="onContentTabChange($event)">
+        </app-tabs>
+        <div class="p-2 bg-gray-50/20 dark:bg-gray-800 rounded-lg">
+            @switch (currentContent) {
+            @case ('lead-source') {
+            <div>
+                <app-custom-datatable [records]="leadSources" [columns]="leadSourceListColumns" [currentPage]="1"
+                    [pageSize]="leadSources.length" [totalRecords]="leadSources.length" [rowActions]="leadSourceRowActions"
+                    [disableSearch]="true">
+                </app-custom-datatable>
+            </div>
+            }
+            @case ('lead-interaction-type') {
+            <div>
+                <app-custom-datatable [records]="leadInteractionTypes" [columns]="leadInteractionTypeListColumns" [currentPage]="1"
+                    [pageSize]="leadInteractionTypes.length" [totalRecords]="leadInteractionTypes.length" [rowActions]="leadInteractionTypeRowActions"
+                    [disableSearch]="true">
+                </app-custom-datatable>
+            </div>
+            }
+            }
+        </div>
+
+    </div>
+</div>
+
+<app-modal-small #leadSourceFormModal [modalId]="'lead-source-form-modal'" (closeModal)="closeLeadSourceFormModal()">
+    <app-leads-source-form [formTitle]="leadSourceModalTitle" [leadSourceData]="selectedLeadSourceToUpdate" [sourceId]="selectedLeadSourceToUpdate?.sourceId || null" (formCancel)="onLeadSourceFormCancel()" (formSubmit)="onLeadSourceFormSubmit($event)"></app-leads-source-form>
+</app-modal-small>
+
+<app-modal-small #leadInteractionTypeFormModal [modalId]="'lead-interaction-type-form-modal'">
+    <app-leads-interaction-types-form [formTitle]="leadInteractionTypeModalTitle" [leadInteractionTypeData]="selectedLeadInteractionTypeToUpdate" [interactionTypeId]="selectedLeadInteractionTypeToUpdate?.interactionTypeId || null"
+    (formCancel)="onLeadInteractionTypeFormCancel()" (formSubmit)="onLeadInteractionTypeFormSubmit($event)"></app-leads-interaction-types-form>
+</app-modal-small>
