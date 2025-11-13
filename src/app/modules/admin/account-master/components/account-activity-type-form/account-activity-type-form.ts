@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AccountActivityTypeFormTypes, AccountActivityTypeTypes } from '../../types/account-activity-types';
+import { AccountActivityTypeMasterFormTypes, AccountActivityTypeMasterTypes } from '../../types/account-activity-types';
 
 @Component({
   selector: 'app-account-activity-type-form',
@@ -11,10 +11,10 @@ import { AccountActivityTypeFormTypes, AccountActivityTypeTypes } from '../../ty
 export class AccountActivityTypeForm {
   private fb = inject(FormBuilder);
   @Input() activityTypeId: string | null = null;
-  @Input() activityTypeData: AccountActivityTypeTypes.AccountActivityType | null = null;
+  @Input() activityTypeData: AccountActivityTypeMasterTypes.AccountActivityType | null = null;
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Lead Source';
-  @Output() formSubmit: EventEmitter<AccountActivityTypeFormTypes.AccountActivityTypeFormData> = new EventEmitter<AccountActivityTypeFormTypes.AccountActivityTypeFormData>();
+  @Output() formSubmit: EventEmitter<AccountActivityTypeMasterFormTypes.AccountActivityTypeFormData> = new EventEmitter<AccountActivityTypeMasterFormTypes.AccountActivityTypeFormData>();
   @Output() formCancel: EventEmitter<void> = new EventEmitter<void>();
   
   ngOnChanges(changes: SimpleChanges) {

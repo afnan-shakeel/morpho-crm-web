@@ -10,9 +10,11 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
+import { AccountActivityTypesService } from '../../../admin/account-master/services/account-activity-types.service';
+import { AccountActivityTypeMasterTypes } from '../../../admin/account-master/types/account-activity-types';
 import { UsersService } from '../../../user/users.service';
 import { AccountsService } from '../../accounts.service';
-import { AccountActivityRelatedToEnum, AccountActivityTypeEnum } from '../../types';
+import { AccountActivitiesTypes } from '../../types';
 
 @Component({
   selector: 'app-activity-form',
@@ -24,11 +26,12 @@ import { AccountActivityRelatedToEnum, AccountActivityTypeEnum } from '../../typ
 export class ActivityForm {
   private userService = inject(UsersService);
   private accountService = inject(AccountsService);
+  private accountActivitiesMasterService = inject(AccountActivityTypesService);
   private fb = inject(FormBuilder);
 
   @Input() activityId: string | null = null;
   @Input() accountId: string | null = null;
-  @Input() relatedTo: string | null = AccountActivityRelatedToEnum.ACCOUNT;
+  @Input() relatedTo: string | null = AccountActivitiesTypes.AccountActivityRelatedToEnum.ACCOUNT;
   @Input() relatedEntityId: string | null = null;
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Activity';
@@ -36,19 +39,22 @@ export class ActivityForm {
   @Input() resetFormEvent: boolean = false;
 
   userList: any[] = [];
-  activityRelatedToOptions: string[] = Object.values(AccountActivityRelatedToEnum);
-  activityTypeOptions: string[] = Object.values(AccountActivityTypeEnum);
+  activityRelatedToOptions: string[] = Object.values(AccountActivitiesTypes.AccountActivityRelatedToEnum);
+  activityTypes: AccountActivityTypeMasterTypes.AccountActivityType[] = [];
   activityForm = this.fb.group({
     activityId: [''],
-    activityType: [AccountActivityTypeEnum.EVENT, Validators.required],
-    activityHeader: [this.getDefaultActivityHeader(AccountActivityTypeEnum.EVENT), Validators.required],
+    activityTypeId: [AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT, Validators.required],
+    activityHeader: [this.getDefaultActivityHeader(AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT), Validators.required],
     activityLog: ['', Validators.required],
     performedById: [0, Validators.required],
     performedByName: ['', Validators.required],
   });
+
   ngOnInit() {
     // load user list for contact owner selection
     this.loadUserList();
+    // load activity types
+    this.loadActivityTypes();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -78,6 +84,12 @@ export class ActivityForm {
     //     // map activity fields to form controls
     //   });
     // });
+  }
+
+  loadActivityTypes() {
+    this.accountActivitiesMasterService.getAccountActivityTypes().subscribe((types) => {
+      this.activityTypes = types;
+    });
   }
 
   loadUserList(_searchTerm: string = '') {
@@ -120,17 +132,9 @@ export class ActivityForm {
   // a mapper to get activity header based on type
   getDefaultActivityHeader(type: string): string {
     switch (type) {
-      case AccountActivityTypeEnum.EVENT:
+      case AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT:
         return 'Logged an event';
-      case AccountActivityTypeEnum.CALL:
-        return 'Logged a call';
-      case AccountActivityTypeEnum.EMAIL:
-        return 'Sent an email';
-      case AccountActivityTypeEnum.MEETING:
-        return 'Scheduled a meeting';
-      case AccountActivityTypeEnum.TASK:
-        return 'Completed a task';
-      case AccountActivityTypeEnum.NOTE:
+      case AccountActivitiesTypes.AccountActivityDefaultTypes.NOTE:
         return 'Added a note';
       default:
         return '';
@@ -138,7 +142,7 @@ export class ActivityForm {
   }
 
   onActivityTypeChange() {
-    const activityType = this.activityForm.get('activityType')?.value;
+    const activityType = this.activityForm.get('activityTypeId')?.value;
     if(!activityType) return;
     const defaultHeader = this.getDefaultActivityHeader(activityType);
     this.activityForm.patchValue({ activityHeader: defaultHeader });

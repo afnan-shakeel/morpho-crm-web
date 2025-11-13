@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { ApiBaseService, ApiErrorHandlerService } from '../../../../core';
-import { AccountActivityTypeApiTypes, AccountActivityTypeTypes } from '../types/account-activity-types';
+import { AccountActivityTypeMasterApiTypes, AccountActivityTypeMasterTypes } from '../types/account-activity-types';
 
 @Injectable({
   providedIn: 'root'
@@ -10,18 +10,18 @@ export class AccountActivityTypesService {
   private api = inject(ApiBaseService);
   private errorHandler = inject(ApiErrorHandlerService);
 
-  getAccountActivityTypes(): Observable<AccountActivityTypeTypes.AccountActivityType[]> {
+  getAccountActivityTypes(): Observable<AccountActivityTypeMasterTypes.AccountActivityType[]> {
     return this.api.get<any>(`accounts-activity-types`).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
-        return of([] as AccountActivityTypeTypes.AccountActivityType[]);
+        return of([] as AccountActivityTypeMasterTypes.AccountActivityType[]);
       }),
       map((response) => response.data)
     );
   }
 
-  createAccountActivityType(request: AccountActivityTypeApiTypes.AccountActivityTypeCreateRequest): Observable<AccountActivityTypeTypes.AccountActivityType | null> {
-    return this.api.post<AccountActivityTypeTypes.AccountActivityType, AccountActivityTypeApiTypes.AccountActivityTypeCreateRequest>(`accounts-activity-types`, request).pipe(
+  createAccountActivityType(request: AccountActivityTypeMasterApiTypes.AccountActivityTypeCreateRequest): Observable<AccountActivityTypeMasterTypes.AccountActivityType | null> {
+    return this.api.post<AccountActivityTypeMasterTypes.AccountActivityType, AccountActivityTypeMasterApiTypes.AccountActivityTypeCreateRequest>(`accounts-activity-types`, request).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
         return of(null);
@@ -30,8 +30,8 @@ export class AccountActivityTypesService {
     );
   }
 
-  updateAccountActivityType(id : string, data: AccountActivityTypeApiTypes.AccountActivityTypeUpdateRequest): Observable<AccountActivityTypeTypes.AccountActivityType | null> {
-    return this.api.post<AccountActivityTypeTypes.AccountActivityType, AccountActivityTypeApiTypes.AccountActivityTypeUpdateRequest>(`accounts-activity-types/${id}/update`, data).pipe(
+  updateAccountActivityType(id : string, data: AccountActivityTypeMasterApiTypes.AccountActivityTypeUpdateRequest): Observable<AccountActivityTypeMasterTypes.AccountActivityType | null> {
+    return this.api.post<AccountActivityTypeMasterTypes.AccountActivityType, AccountActivityTypeMasterApiTypes.AccountActivityTypeUpdateRequest>(`accounts-activity-types/${id}/update`, data).pipe(
       catchError((error) => {
         this.errorHandler.handleError(error);
         return of(null);

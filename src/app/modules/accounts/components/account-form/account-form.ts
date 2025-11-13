@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AutocompleteDirective, CountriesService, Country } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { AccountsService } from '../../accounts.service';
-import { AccountStatusEnum } from '../../types';
+import { AccountStatusEnum } from '../../types/account';
 
 
 @Component({

@@ -1,0 +1,80 @@
+<form [formGroup]="opportunityStageForm" (ngSubmit)="onSubmit()">
+    <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">{{ formTitle }}</h2>
+    <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">A unique opportunity stage for your sales process
+    </p>
+    <div class="mt-4 grid grid-cols-2 gap-y-4 gap-x-4">
+        <div class="col-span-2">
+            <label for="stageName" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Stage Name</label>
+            <div class="mt-2">
+                <input id="stageName" type="text" formControlName="stageName" placeholder="Enter stage name"
+                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+            @if (opportunityStageForm.get('stageName')?.invalid && (opportunityStageForm.get('stageName')?.dirty ||
+            opportunityStageForm.get('stageName')?.touched)) {
+            <div class="mt-1 text-xs text-red-600 dark:text-red-400">
+                {{ opportunityStageForm.get('stageName')?.errors?.['required'] ? 'Stage name is required.' : '' }}
+            </div>
+            }
+        </div>
+        <div class="col-span-2">
+            <label for="probability"
+                class="block text-sm/6 font-medium text-gray-900 dark:text-white">Probability</label>
+            <div class="mt-2">
+                <input id="probability" type="number" formControlName="probability" placeholder="Enter probability"
+                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+            @if (opportunityStageForm.get('probability')?.invalid && (opportunityStageForm.get('probability')?.dirty ||
+            opportunityStageForm.get('probability')?.touched)) {
+            <div class="mt-1 text-xs text-red-600 dark:text-red-400">
+                {{ opportunityStageForm.get('probability')?.errors?.['required'] ? 'Probability is required.' : '' }}
+                {{ opportunityStageForm.get('probability')?.errors?.['min'] ? 'Minimum value is 0.' : '' }}
+                {{ opportunityStageForm.get('probability')?.errors?.['max'] ? 'Maximum value is 100.' : '' }}
+            </div>
+            }
+        </div>
+        <div class="col-span-2">
+            <label for="sequence" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Sequence</label>
+            <div class="mt-2">
+                <input id="sequence" type="number" formControlName="sequence" placeholder="Enter sequence"
+                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+            @if (opportunityStageForm.get('sequence')?.invalid && (opportunityStageForm.get('sequence')?.dirty ||
+            opportunityStageForm.get('sequence')?.touched)) {
+            <div class="mt-1 text-xs text-red-600 dark:text-red-400">
+                {{ opportunityStageForm.get('sequence')?.errors?.['required'] ? 'Sequence is required.' : '' }}
+                {{ opportunityStageForm.get('sequence')?.errors?.['min'] ? 'Minimum value is 0.' : '' }}
+            </div>
+            }
+        </div>
+        <div class="col-span-2">
+            <div class="flex gap-3">
+                <div class="flex h-6 shrink-0 items-center">
+                    <div class="group grid size-4 grid-cols-1">
+                        <input id="isClosed" type="checkbox" name="isClosed" formControlName="isClosed"
+                            aria-describedby="isClosed-description"
+                            class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto" />
+                        <svg viewBox="0 0 14 14" fill="none"
+                            class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+                            <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="opacity-0 group-has-checked:opacity-100" />
+                            <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="opacity-0 group-has-indeterminate:opacity-100" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-sm/6">
+                    <label for="isClosed" class="font-medium text-gray-900 dark:text-white">Is this a closed stage?</label>
+                    <p id="isClosed-description" class="text-gray-500 dark:text-gray-400">
+                        Indicates if this stage is a closed stage or final stage in the sales process.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-6 flex items-center justify-end gap-x-6">
+        <button (click)="onCancel()" type="button"
+            class="text-sm/6 font-semibold text-gray-900 dark:text-white">Cancel</button>
+        <button type="submit"
+            class="rounded-md bg-primary-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500">Save</button>
+    </div>
+</form>

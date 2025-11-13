@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from '../../../user/users.service';
-import { Account } from '../../types';
+import { Account } from '../../types/account';
 import { StatusBadge } from '../status-badge/status-badge';
 
 @Component({

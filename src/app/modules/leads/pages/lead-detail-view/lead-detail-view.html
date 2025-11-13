@@ -156,7 +156,7 @@
 </app-modal-medium>
 
 <app-modal-small #leadStatusChangeModal [modalId]="'lead-status-change-modal'">
-    <app-lead-status-change-box [lead]="leadDetails" [leadStatusOptions]="leadStatusOptions"
+    <app-lead-status-change-box [lead]="leadDetails" [leadStatusOptions]="leadStatuses"
         (statusChange)="handleLeadStatusUpdate($event)"
         (cancel)="closeLeadStatusChangeDialog()"></app-lead-status-change-box>
 </app-modal-small>

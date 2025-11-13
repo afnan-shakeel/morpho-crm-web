@@ -14,6 +14,7 @@ export interface SubMenuItem {
   title: string;
   link: string;
   isActive: boolean;
+  subMenu?: SubMenuItem[];
 }
 
 @Injectable({
@@ -28,6 +29,23 @@ export class MenuService {
       isActive: false,
       expanded: false,
       subMenu: [
+        {
+          title: 'Masters',
+          link: '',
+          isActive: false,
+          subMenu: [
+            {
+              title: 'Accounts Master',
+              link: '/admin/accounts-master/list',
+              isActive: false
+            },
+            {
+              title: 'Leads Master',
+              link: '/admin/leads-master/list',
+              isActive: false
+            }
+          ]
+        },
         {
           title: 'Accounts Master',
           link: '/admin/accounts-master/list',

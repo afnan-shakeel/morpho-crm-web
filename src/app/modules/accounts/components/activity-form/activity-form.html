@@ -5,14 +5,14 @@
         </p>
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
             <div class="sm:col-span-3">
-                <label for="activityType" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                <label for="activityTypeId" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
                     Activity Type <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-2 grid grid-cols-1">
-                    <select id="activityType" name="activityType" formControlName="activityType" (change)="onActivityTypeChange()"
+                    <select id="activityTypeId" name="activityTypeId" formControlName="activityTypeId" (change)="onActivityTypeChange()"
                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
-                        @for (item of activityTypeOptions; let atidx = $index; track atidx) {
-                        <option [value]="item">{{ item }}</option>
+                        @for (item of activityTypes; let atidx = $index; track atidx) {
+                        <option [value]="item.activityTypeId">{{ item.activityTypeName }}</option>
                         }
                     </select>
                     <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"
@@ -22,9 +22,9 @@
                             clip-rule="evenodd" fill-rule="evenodd" />
                     </svg>
                 </div>
-                @if (activityForm.get('activityType')?.touched && activityForm.get('activityType')?.invalid) {
+                @if (activityForm.get('activityTypeId')?.touched && activityForm.get('activityTypeId')?.invalid) {
                 <div class="mt-1 text-xs text-red-500">
-                    {{ activityForm.get('activityType')?.errors?.['required'] ? 'Relatation is required.' : '' }}
+                    {{ activityForm.get('activityTypeId')?.errors?.['required'] ? 'Relatation is required.' : '' }}
                 </div>
                 }
 

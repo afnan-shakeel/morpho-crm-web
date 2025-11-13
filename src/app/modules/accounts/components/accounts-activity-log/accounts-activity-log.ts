@@ -3,7 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Input, signal, ViewChild } f
 import { ToastService } from '../../../../core';
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
 import { AccountsService } from '../../accounts.service';
-import { AccountActivityLog, AccountActivityRelatedToEnum, AccountActivityTypeEnum, CreateAccountActivityPayload, UpdateAccountActivityPayload } from '../../types';
+import { AccountActivitiesFormTypes, AccountActivitiesTypes } from '../../types';
 import { ActivityForm } from '../activity-form/activity-form';
 
 @Component({
@@ -19,24 +19,16 @@ export class AccountsActivityLog {
   private accountService = inject(AccountsService);
   private toastService = inject(ToastService);
   @Input() accountId: string = '';
-  @Input() activityRelatedTo: string = AccountActivityRelatedToEnum.ACCOUNT;
+  @Input() activityRelatedTo: string = AccountActivitiesTypes.AccountActivityRelatedToEnum.ACCOUNT;
   @Input() activityRelatedEntityId: string = '';
-  accountActivities: AccountActivityLog[] = [];
+  accountActivities: AccountActivitiesTypes.AccountActivity[] = [];
   selectedActivityIdToUpdate = signal<string | null>(null);
 
   getActivityTypeLabel(type: string): string {
     switch (type) {
-      case AccountActivityTypeEnum.EVENT:
+      case AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT:
         return 'Event';
-      case AccountActivityTypeEnum.CALL:
-        return 'Call';
-      case AccountActivityTypeEnum.EMAIL:
-        return 'Email';
-      case AccountActivityTypeEnum.MEETING:
-        return 'Meeting';
-      case AccountActivityTypeEnum.TASK:
-        return 'Task';
-      case AccountActivityTypeEnum.NOTE:
+      case AccountActivitiesTypes.AccountActivityDefaultTypes.NOTE:
         return 'Note';
       default:
         return 'Activity';
@@ -82,33 +74,24 @@ export class AccountsActivityLog {
     }
     // call the create/update service
     if (formData.activityId) {
-      this.updateActivity(formData.activityId, {
-        accountId: formData.accountId,
-        relatedTo: formData.relatedTo,
-        relatedEntityId: formData.relatedEntityId,
-        activityType: formData.activityType,
-        activityHeader: formData.activityHeader,
-        activityLog: formData.activityLog,
-        performedById: formData.performedById,
-        timestamp: formData.timestamp ? new Date(formData.timestamp).toISOString() : undefined,
-      });
+      this.updateActivity(formData.activityId, formData);
     } else {
-      this.createActivity({
-        accountId: formData.accountId,
-        relatedTo: formData.relatedTo,
-        relatedEntityId: formData.relatedEntityId,
-        activityType: formData.activityType,
-        activityHeader: formData.activityHeader,
-        activityLog: formData.activityLog,
-        performedById: formData.performedById,
-        timestamp: new Date().toISOString(),
-      });
+      this.createActivity(formData);
     }
   }
   // end: activity form modal
 
-  createActivity(data: CreateAccountActivityPayload) {
-    this.accountService.createActivityLog(data).subscribe({
+  createActivity(formData: AccountActivitiesFormTypes.AccountActivitiesFormData) {
+    this.accountService.createActivityLog({
+      accountId: formData.accountId,
+      relatedTo: formData.relatedTo,
+      relatedEntityId: formData.relatedEntityId,
+      activityTypeId: formData.activityTypeId,
+      activityHeader: formData.activityHeader,
+      activityLog: formData.activityLog,
+      performedById: formData.performedById,
+      timestamp: new Date().toISOString(),
+    }).subscribe({
       next: (response) => {
         if (response.activityId) {
           this.toastService.success('Activity created successfully');
@@ -121,8 +104,17 @@ export class AccountsActivityLog {
     });
   }
 
-  updateActivity(activityId: string, data: Partial<UpdateAccountActivityPayload>) {
-    this.accountService.updateActivityLog(activityId, data).subscribe({
+  updateActivity(activityId: string, formData: AccountActivitiesFormTypes.AccountActivitiesFormData) {
+    this.accountService.updateActivityLog(activityId, {
+      accountId: formData.accountId,
+      relatedTo: formData.relatedTo,
+      relatedEntityId: formData.relatedEntityId,
+      activityTypeId: formData.activityTypeId,
+      activityHeader: formData.activityHeader,
+      activityLog: formData.activityLog,
+      performedById: formData.performedById,
+      timestamp: formData.timestamp ? new Date(formData.timestamp).toISOString() : undefined,
+    }).subscribe({
       next: (response) => {
         if (response.activityId) {
           this.toastService.success('Activity updated successfully');
@@ -135,7 +127,7 @@ export class AccountsActivityLog {
     });
   }
 
-  getPerformedByFullName(activity: AccountActivityLog): string | null {
+  getPerformedByFullName(activity: AccountActivitiesTypes.AccountActivity): string | null {
     return `${activity.performedBy?.firstName} ${activity.performedBy?.lastName}`;
   }
 }

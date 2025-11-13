@@ -26,13 +26,13 @@ export interface CreateAccountActivityPayload {
   relatedTo: string;
   relatedEntityId: string;
   accountId: string;
-  activityType: string;
+  activityTypeId: string;
   activityHeader: string;
   activityLog: string;
   eventName?: string;
   eventCategory?: string;
   eventDetailNote?: string;
-  performedById: number;
+  performedById: string;
   timestamp: string;
 }
 
@@ -41,12 +41,12 @@ export interface UpdateAccountActivityPayload {
   relatedTo: string;
   relatedEntityId: string;
   accountId?: string;
-  activityType?: string;
+  activityTypeId?: string;
   activityHeader?: string;
   activityLog?: string;
   eventName?: string;
   eventCategory?: string;
   eventDetailNote?: string;
-  performedById: number;
+  performedById: string;
   timestamp: string;
 }

@@ -51,8 +51,6 @@ export class LeadDetailView {
   leadStatuses!: LeadStatusOption[];
   isLoading = signal<boolean>(false);
 
-  leadStatusOptions!: LeadStatusOption[];
-
   leadActivityLogRefreshTrigger = signal<number>(0);
 
   leadQuickActions: any[] = [

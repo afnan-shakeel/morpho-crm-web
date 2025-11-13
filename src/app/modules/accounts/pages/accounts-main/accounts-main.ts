@@ -10,7 +10,7 @@ import { AccountsService } from '../../accounts.service';
 import { AccountForm } from "../../components/account-form/account-form";
 import { AccountHeaderBox } from '../../components/account-header-box/account-header-box';
 import { AccountSummary } from "../../components/account-summary/account-summary";
-import { Account, createAccountRequest } from '../../types';
+import { Account, createAccountRequest } from '../../types/account';
 
 @Component({
   selector: 'app-accounts-main',

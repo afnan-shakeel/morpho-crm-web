@@ -1,16 +1,16 @@
 import {
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  EventEmitter,
-  inject,
-  Input,
-  Output,
-  SimpleChanges,
+    Component,
+    CUSTOM_ELEMENTS_SCHEMA,
+    EventEmitter,
+    inject,
+    Input,
+    Output,
+    SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
 import { AccountsService } from '../../../accounts/accounts.service';
-import { Account } from '../../../accounts/types';
+import { Account } from '../../../accounts/types/account';
 import { ContactsService } from '../../../contacts/contacts.service';
 import { Contact } from '../../../contacts/types';
 import { UsersService } from '../../../user/users.service';

@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output,
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
 import { AccountsService } from '../../../accounts/accounts.service';
-import { Account } from '../../../accounts/types';
+import { Account } from '../../../accounts/types/account';
 import { UsersService } from '../../../user/users.service';
 import { ContactsService } from '../../contacts.service';
 

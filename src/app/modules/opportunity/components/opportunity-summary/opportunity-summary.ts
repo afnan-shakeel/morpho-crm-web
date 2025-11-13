@@ -2,7 +2,7 @@ import { AccountsActivityLog } from "@/modules/accounts/components/accounts-acti
 import { ContactInfoBox } from "@/modules/contacts/components/contact-info-box/contact-info-box";
 import { CommonModule } from '@angular/common';
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { AccountActivityRelatedToEnum } from "../../../accounts/types";
+import { AccountActivitiesTypes } from "../../../accounts/types";
 import { Opportunity } from '../../types';
 
 @Component({
@@ -14,7 +14,7 @@ import { Opportunity } from '../../types';
 export class OpportunitySummary {
 
   @Input() opportunity: Opportunity | null = null;
-  @Input() activityRelatedTo: string = AccountActivityRelatedToEnum.OPPORTUNITY;
+  @Input() activityRelatedTo: string = AccountActivitiesTypes.AccountActivityRelatedToEnum.OPPORTUNITY;
   @Input() activityRelatedEntityId: string = '';
 
   ngOnInit(): void {

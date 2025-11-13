@@ -1,4 +1,4 @@
-import { Account } from "../../accounts/types";
+import { Account } from "../../accounts/types/account";
 import { Contact } from "../../contacts/types";
 import { User } from "../../user/user.types";
 

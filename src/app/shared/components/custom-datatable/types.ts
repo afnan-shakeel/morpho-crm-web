@@ -6,6 +6,7 @@ export enum CellTemplate {
     DATE = 'date',
     TIME = 'time',
     DATETIME = 'datetime',
+    BOOLEAN = 'boolean',
 
     // custom cell template for more complex rendering
     CUSTOM = 'custom'

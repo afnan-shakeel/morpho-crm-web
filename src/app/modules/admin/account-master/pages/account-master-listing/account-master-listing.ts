@@ -7,7 +7,7 @@ import { CellTemplate, ColorBadgeColor, DataTableColumn, DataTableRowAction } fr
 import { ModalSmall } from '../../../../../shared/components/modal-small/modal-small';
 import { AccountActivityTypeForm } from "../../components/account-activity-type-form/account-activity-type-form";
 import { AccountActivityTypesService } from '../../services/account-activity-types.service';
-import { AccountActivityTypeTypes } from '../../types/account-activity-types';
+import { AccountActivityTypeMasterTypes } from '../../types/account-activity-types';
 
 @Component({
   selector: 'app-account-master-listing',
@@ -29,7 +29,7 @@ export class AccountMasterListing {
   ];
   currentContent = 'account-activity-type';
 
-  accountActivityTypes: AccountActivityTypeTypes.AccountActivityType[] = [];
+  accountActivityTypes: AccountActivityTypeMasterTypes.AccountActivityType[] = [];
   accountActivityTypeListColumns: DataTableColumn[] = [
     { field: 'activityTypeId', label: 'Activity Type ID', hidden: true },
     { field: 'activityTypeName', label: 'Activity Type Name' },
@@ -47,7 +47,7 @@ export class AccountMasterListing {
   leadSourceRowActions: DataTableRowAction[] = [
     {
       label: 'Edit',
-      actionCallback: (rowData: AccountActivityTypeTypes.AccountActivityType) => {
+      actionCallback: (rowData: AccountActivityTypeMasterTypes.AccountActivityType) => {
         this.openAccountActivityTypeFormModal(rowData);
       }
     }
@@ -83,11 +83,11 @@ export class AccountMasterListing {
   }
 
   // start: open modals for account activity type create/edit
-  accountActivityTypeToEdit: AccountActivityTypeTypes.AccountActivityType | null = null;
+  accountActivityTypeToEdit: AccountActivityTypeMasterTypes.AccountActivityType | null = null;
   accountActivityTypeFormTitle: string = 'Create Account Activity Type';
   @ViewChild('accountActivityTypeFormModal') accountActivityTypeFormModal!: ModalSmall;
 
-  openAccountActivityTypeFormModal(accountActivityType?: AccountActivityTypeTypes.AccountActivityType) {
+  openAccountActivityTypeFormModal(accountActivityType?: AccountActivityTypeMasterTypes.AccountActivityType) {
     if (accountActivityType && accountActivityType.activityTypeId) {
       this.accountActivityTypeToEdit = accountActivityType;
       this.accountActivityTypeFormTitle = 'Edit Account Activity Type';
