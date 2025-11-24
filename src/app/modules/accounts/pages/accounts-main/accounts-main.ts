@@ -59,10 +59,7 @@ export class AccountsMain {
     this.accountsService.getAccountById(this.accountId, true).subscribe((account) => {
       this.account = account;
       this.primaryContact = account?.contacts?.find((contact) => contact.isPrimary) || null;
-      this.pageBreadcrumbs.push({
-        label: `${this.account?.companyName}`,
-        path: `/accounts/${this.accountId}/view`,
-      });
+      this.pageBreadcrumbs[1] = { label: account.companyName, path: `/accounts/${account.accountId}` };
     });
   }
 

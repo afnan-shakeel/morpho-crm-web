@@ -13,40 +13,18 @@
             <div class="sm:col-span-3">
                 <label for="combobox" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Owner <span
                         class="text-red-500">*</span></label>
-                <!-- <input type="hidden" formControlName="leadOwnerId" /> -->
-                <el-autocomplete class="relative mt-2 block" id="leadOwner" appAutocomplete [targetForm]="leadInfoForm"
-                    nameControl="leadOwnerName" idControl="leadOwnerId">
-                    <input id="leadOwnerName" type="text" formControlName="leadOwnerName"
-                        placeholder="Select or type owner name" (change)="loadUserList()"
-                        class="block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                    <button type="button"
-                        class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
-                        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
-                            class="size-5 text-gray-400">
-                            <path
-                                d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                clip-rule="evenodd" fill-rule="evenodd" />
-                        </svg>
-                    </button>
-                    <el-options anchor="bottom end" popover
-                        class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-                        @for (user of userList; let uidx = $index; track uidx;) {
-                        <el-option [attr.value]="user.fullName" id="{{user.id}}"
-                            class="block px-3 py-2 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
-                            <div class="flex">
-                                <span class="truncate">{{user.fullName}}</span>
-                            </div>
-                        </el-option>
-                        }
 
-                    </el-options>
-                </el-autocomplete>
-                @if (leadInfoForm.get('leadOwnerName')?.invalid && (leadInfoForm.get('leadOwnerName')?.dirty ||
-                leadInfoForm.get('leadOwnerName')?.touched)) {
-                <div class="mt-1 text-xs text-red-600  dark:text-red-400">
-                    Field is required.
+                <div class="mt-2">
+                    <app-user-selection-input formControlName="leadOwnerId" [options]="userList"
+                        placeholder="Select User">
+                    </app-user-selection-input>
+                    @if (leadInfoForm.get('leadOwnerId')?.touched && leadInfoForm.get('leadOwnerId')?.invalid) {
+                    <div class="mt-1 text-xs text-red-500">
+                        {{ leadInfoForm.get('leadOwnerId')?.errors?.['required'] ? 'Performing User is required.' : ''
+                        }}
+                    </div>
+                    }
                 </div>
-                }
             </div>
 
             <div class="col-span-3">
@@ -163,7 +141,7 @@
             Warning: No submit buttons are configured. Set showNextButton or showSaveAndExitButton to true.
         </div>
         }
-        
+
         <button type="button" (click)="onCancel()" [disabled]="isLoading"
             class="text-sm/6 font-semibold text-gray-900 dark:text-white disabled:opacity-50">Cancel</button>
         @if (showNextButton) {

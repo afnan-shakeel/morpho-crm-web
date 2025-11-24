@@ -1,6 +1,7 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AutocompleteDirective, CountriesService, Country } from '../../../../shared';
+import { CountriesService, Country } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { AccountsService } from '../../accounts.service';
 import { AccountStatusEnum } from '../../types/account';
@@ -8,7 +9,7 @@ import { AccountStatusEnum } from '../../types/account';
 
 @Component({
   selector: 'app-account-form',
-  imports: [ReactiveFormsModule, AutocompleteDirective],
+  imports: [ReactiveFormsModule, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './account-form.html',
   styleUrl: './account-form.css'
@@ -38,7 +39,6 @@ export class AccountForm {
     companySize: [''],
     accountStatus: [AccountStatusEnum.PENDING],
     accountOwnerId: ['', Validators.required],
-    accountOwnerName: ['', Validators.required],
     address: this.fb.group({
       addressLine1: [''],
       addressLine2: [''],
@@ -73,7 +73,11 @@ export class AccountForm {
     }
   }
 
+  ngOnInit() {
+    this.loadCountries();
+  }
   ngAfterViewInit() {
+    this.loadUserList();
     // Autocomplete logic is now handled by the AutocompleteDirective
     // No manual event handling needed
   }
@@ -91,7 +95,6 @@ export class AccountForm {
         companySize: account.companySize,
         accountStatus: account.accountStatus,
         accountOwnerId: account.accountOwnerId,
-        accountOwnerName: account.accountOwner?.fullName || '',
       });
 
       if (account.accountAddress && account.accountAddress.length > 0) {
@@ -113,11 +116,7 @@ export class AccountForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe(users => {
-      this.userList = users.data.map((user: any) => ({
-        name: user.fullName || user.name || '',
-        id: user.id,
-        userName: user.userName,
-      }));
+      this.userList = users.data;
     });
   }
 
@@ -135,6 +134,8 @@ export class AccountForm {
 
   onSubmit() {
     // console.log('Account Form Data:', this.accountForm.value);
+    // mark all form fields as touched to trigger validation
+    this.accountForm.markAllAsTouched();
     if (this.accountForm.valid) {
       const formData = this.accountForm.value;
       this.formSubmit.emit(formData);

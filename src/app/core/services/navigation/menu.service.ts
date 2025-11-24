@@ -22,47 +22,7 @@ export interface SubMenuItem {
 })
 export class MenuService {
   private menuItemsSubject = new BehaviorSubject<MenuItem[]>([
-    {
-      title: 'Administration',
-      icon: '',
-      link: '/admin',
-      isActive: false,
-      expanded: false,
-      subMenu: [
-        {
-          title: 'Masters',
-          link: '',
-          isActive: false,
-          subMenu: [
-            {
-              title: 'Accounts Master',
-              link: '/admin/accounts-master/list',
-              isActive: false
-            },
-            {
-              title: 'Leads Master',
-              link: '/admin/leads-master/list',
-              isActive: false
-            }
-          ]
-        },
-        {
-          title: 'Accounts Master',
-          link: '/admin/accounts-master/list',
-          isActive: false
-        },
-        {
-          title: 'Leads Master',
-          link: '/admin/leads-master/list',
-          isActive: false
-        },
-        {
-          title: 'Opportunities Master',
-          link: '/admin/opportunities-master/list',
-          isActive: false
-        }
-      ]
-    },
+
     {
       title: 'Dashboard',
       icon: 'home',
@@ -108,13 +68,30 @@ export class MenuService {
         }
       ]
     },
-    {
-      title: 'Settings',
-      icon: 'settings',
-      link: '/settings',
+        {
+      title: 'Administration',
+      icon: '',
+      link: '/admin',
       isActive: false,
-      expanded: false
-    }
+      expanded: false,
+      subMenu: [
+        {
+          title: 'Accounts Master',
+          link: '/admin/accounts-master/list',
+          isActive: false
+        },
+        {
+          title: 'Leads Master',
+          link: '/admin/leads-master/list',
+          isActive: false
+        },
+        {
+          title: 'Opportunities Master',
+          link: '/admin/opportunities-master/list',
+          isActive: false
+        }
+      ]
+    },
   ]);
 
   constructor() { }

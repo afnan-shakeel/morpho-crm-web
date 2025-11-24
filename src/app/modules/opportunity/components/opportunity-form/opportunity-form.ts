@@ -1,11 +1,12 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import {
-    Component,
-    CUSTOM_ELEMENTS_SCHEMA,
-    EventEmitter,
-    inject,
-    Input,
-    Output,
-    SimpleChanges,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
@@ -19,7 +20,7 @@ import { OpportunityStage, OpportunityStatus } from '../../types';
 
 @Component({
   selector: 'app-opportunity-form',
-  imports: [ReactiveFormsModule, AutocompleteDirective],
+  imports: [ReactiveFormsModule, AutocompleteDirective, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-form.html',
   styleUrl: './opportunity-form.css',
@@ -59,7 +60,6 @@ export class OpportunityForm {
   });
 
   ngOnInit() {
-    console.log('Opportunity Form Init');
     // load user list for contact owner selection
     this.loadUserList();
     this.loadAccountList();
@@ -78,7 +78,6 @@ export class OpportunityForm {
   ngOnChanges(changes: SimpleChanges) {
     // keep reseting for any change in opportunityId input
     if (changes['opportunityId']) {
-      console.log('Opportunity ID changed:', this.opportunityId);
       if (this.opportunityId) {
         this.populateForm(this.opportunityId);
       }
@@ -120,11 +119,7 @@ export class OpportunityForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe((users) => {
-      this.userList = users.data.map((user: any) => ({
-        name: user.fullName || user.name || '',
-        id: user.id,
-        userName: user.userName,
-      }));
+      this.userList = users.data;
     });
   }
   loadAccountList(_searchTerm: string = '') {
@@ -143,7 +138,6 @@ export class OpportunityForm {
   }
   loadAccountContacts(accountId: string, _searchTerm: string = '') {
     this.contactsService.searchContactsForAutocomplete(_searchTerm, 20, accountId).subscribe(contacts => {
-      console.log('Loaded Contacts for Account ID', accountId, contacts);
       this.contactList = contacts;
     });
   }

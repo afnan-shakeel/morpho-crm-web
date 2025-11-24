@@ -1,7 +1,7 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
-import { AutocompleteDirective } from '../../../../shared';
 import { User } from '../../../user/user.types';
 import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
@@ -17,7 +17,7 @@ import {
 
 @Component({
   selector: 'app-lead-form',
-  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, AutocompleteDirective],
+  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.css'
@@ -47,7 +47,7 @@ export class LeadForm {
     leadId: [''],
     leadTopic: ['', Validators.required],
     leadOwnerId: ['', Validators.required], // is a string UUID
-    leadOwnerName: ['', Validators.required],
+    leadOwnerName: [''],
     leadSourceId: [''],
     leadStatus: [LeadStatus.NEW, Validators.required],
     leadConversionDate: [new Date().toISOString().slice(0, 16)],
@@ -119,6 +119,8 @@ export class LeadForm {
   }
 
   onSubmit(action: 'next' | 'saveAndExit' = 'next') {
+    // mark all fields as touched to trigger validation
+    this.leadInfoForm.markAllAsTouched();
     if (this.leadInfoForm.valid) {
       const leadData = this.leadInfoForm.value;
 

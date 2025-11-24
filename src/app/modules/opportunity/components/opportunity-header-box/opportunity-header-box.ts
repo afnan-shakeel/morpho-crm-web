@@ -1,9 +1,9 @@
 import { ConfirmationBox } from '@/shared/components/confirmation-box/confirmation-box';
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../../../core';
-import { AutocompleteDirective } from '../../../../shared';
 import { UsersService } from '../../../user/users.service';
 import { OpportunityService } from '../../opportunity.service';
 import { Opportunity } from '../../types';
@@ -11,7 +11,7 @@ import { StatusBadgeComponent } from '../status-badge/status-badge';
 
 @Component({
   selector: 'app-opportunity-header-box',
-  imports: [CommonModule, ConfirmationBox, FormsModule, ReactiveFormsModule, AutocompleteDirective, StatusBadgeComponent],
+  imports: [CommonModule, ConfirmationBox, FormsModule, ReactiveFormsModule, StatusBadgeComponent, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-header-box.html',
   styleUrl: './opportunity-header-box.css',
@@ -67,18 +67,20 @@ export class OpportunityHeaderBox {
     {
       // populate header form when opportunity input changes
       if (this.opportunity) {
-        this.headerForm.patchValue({
-          ownerId: this.opportunity.opportunityOwner?.id || '',
-          ownerName: this.opportunity.opportunityOwner?.fullName || '',
-          expectedCloseDate: this.opportunity.expectedCloseDate
-            ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 16)
-            : '',
-        });
+          this.headerForm.patchValue({
+            ownerId: this.opportunity.opportunityOwner?.id || '',
+            ownerName: this.opportunity.opportunityOwner?.fullName || '',
+            // Only date part (YYYY-MM-DD) for input
+            expectedCloseDate: this.opportunity.expectedCloseDate
+              ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 10)
+              : '',
+          });
       }
     }
   }
   ngOnInit() {
     this.setupFormChangeListeners();
+    this.loadUserList()
   }
   ngAfterViewInit() {
   }
@@ -87,10 +89,11 @@ export class OpportunityHeaderBox {
     // Listen to expected close date changes
     this.headerForm.get('expectedCloseDate')?.valueChanges.subscribe((newValue) => {
       if (this.opportunity && newValue !== this.getOriginalFieldValue('expectedCloseDate')) {
+        // newValue is now just 'YYYY-MM-DD', convert to ISO datetime for API
         this.requestFieldChangeConfirmation(
           'expectedCloseDate',
           this.getOriginalFieldValue('expectedCloseDate'),
-          new Date(newValue || '').toISOString()
+          newValue // keep as date for confirmation, conversion for API happens later
         );
       }
     });
@@ -113,7 +116,7 @@ export class OpportunityHeaderBox {
     switch (fieldName) {
       case 'expectedCloseDate':
         return this.opportunity.expectedCloseDate
-          ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 16)
+          ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 10)
           : '';
       case 'ownerName':
         return this.opportunity.opportunityOwner?.fullName || '';
@@ -138,7 +141,6 @@ export class OpportunityHeaderBox {
         this.confirmationTitle = 'Confirm Change';
         this.confirmationMessage = `Are you sure you want to change the expected close date?`;
         break;
-      case 'ownerName':
       case 'ownerId':
         this.confirmationTitle = 'Change Opportunity Owner';
         this.confirmationMessage = `Are you sure you want to change the opportunity owner?`;
@@ -170,7 +172,6 @@ export class OpportunityHeaderBox {
       case 'expectedCloseDate':
         this.updateExpectedCloseDate();
         break;
-      case 'ownerName':
       case 'ownerId':
         this.updateOwner();
         break;
@@ -198,8 +199,11 @@ export class OpportunityHeaderBox {
   }
 
   onOwnerSelected(event: any) {
-    console.log('Owner selected from autocomplete:', event);
-    // The valueChanges listener will handle the confirmation
+    this.headerForm.patchValue({
+      ownerId: event.id,
+      ownerName: event.fullName,
+    });
+    
   }
 
   // Update methods for different field types
@@ -207,9 +211,13 @@ export class OpportunityHeaderBox {
     if (!this.opportunity) return;
     if (!this.headerForm.value.expectedCloseDate) return;
 
+    // Convert date (YYYY-MM-DD) to ISO datetime (YYYY-MM-DDT00:00:00.000Z)
+    const dateValue = this.headerForm.value.expectedCloseDate;
+    const isoDateTime = new Date(dateValue + 'T00:00:00Z').toISOString();
+
     const updateData = {
       opportunityId: this.opportunity.opportunityId || '',
-      expectedCloseDate: new Date(this.headerForm.value.expectedCloseDate).toISOString(),
+      expectedCloseDate: isoDateTime,
     };
 
     this.opportunityService
@@ -228,7 +236,9 @@ export class OpportunityHeaderBox {
           // Revert the form on error
           this.headerForm.patchValue(
             {
-              expectedCloseDate: this.opportunity?.expectedCloseDate,
+              expectedCloseDate: this.opportunity?.expectedCloseDate
+                ? new Date(this.opportunity.expectedCloseDate).toISOString().substring(0, 10)
+                : '',
             },
             { emitEvent: false }
           );
@@ -240,8 +250,6 @@ export class OpportunityHeaderBox {
     if (!this.opportunity) return;
 
     const newOwnerId = this.headerForm.value.ownerId;
-    const newOwnerName = this.headerForm.value.ownerName;
-
     const updateData = {
       opportunityOwnerId: newOwnerId || undefined,
     };

@@ -45,7 +45,7 @@ export class AccountsActivityLog {
 
   fetchActivityLogs(): void {
     if (!this.accountId) return;
-    this.accountService.getActivityLogs(this.accountId).subscribe((logs) => {
+    this.accountService.getActivityLogs(this.accountId, true).subscribe((logs) => {
       this.accountActivities = logs;
     });
   }
@@ -82,6 +82,7 @@ export class AccountsActivityLog {
   // end: activity form modal
 
   createActivity(formData: AccountActivitiesFormTypes.AccountActivitiesFormData) {
+    console.log('Creating activity with data:', formData);
     this.accountService.createActivityLog({
       accountId: formData.accountId,
       relatedTo: formData.relatedTo,

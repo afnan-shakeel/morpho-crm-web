@@ -43,7 +43,7 @@
             <div class="mr-6">
                 <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Expected Close Date</h2>
                 <div>
-                    <input type="datetime-local" formControlName="expectedCloseDate"
+                    <input type="date" formControlName="expectedCloseDate"
                         class=" w-52 mt-1 rounded-md bg-white py-0.5 pr-2 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                 </div>
                 <!-- <p class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -53,33 +53,14 @@
                 <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">Owner</h2>
                 <div class="mt-1">
                     <!-- <input type="hidden" formControlName="accountId" /> -->
-                    <el-autocomplete class="relative block" id="account" appAutocomplete [targetForm]="headerForm"
-                        nameControl="ownerName" idControl="ownerId" (optionSelected)="onOwnerSelected($event)">
-                        <input id="combobox" type="text" formControlName="ownerName" placeholder="Type owner name"
-                            (input)="loadUserList()"
-                            class="block w-40 rounded-md bg-white py-0.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                        <button type="button"
-                            class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
-                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
-                                class="size-5 text-gray-400">
-                                <path
-                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                    clip-rule="evenodd" fill-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <el-options anchor="bottom end" popover
-                            class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-                            @for (user of userList; let uidx = $index; track uidx;) {
-                            <el-option [attr.value]="user.name" id="{{user.id}}"
-                                class="block px-3 py-1.5 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
-                                <div class="flex">
-                                    <span class="truncate">{{user.name}}</span>
-                                </div>
-                            </el-option>
-                            }
-
-                        </el-options>
-                    </el-autocomplete>
+                    <app-user-selection-input
+                        formControlName="ownerId"
+                        size="xs"
+                        [options]="userList"
+                        placeholder="Select user"
+                        (inputChange)="loadUserList($event)"
+                        (optionSelected)="onOwnerSelected($event)"
+                    ></app-user-selection-input>
                 </div>
             </div>
         </div>

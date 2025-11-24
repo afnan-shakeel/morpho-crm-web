@@ -1,3 +1,4 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -9,7 +10,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AutocompleteDirective } from '../../../../shared';
 import { AccountActivityTypesService } from '../../../admin/account-master/services/account-activity-types.service';
 import { AccountActivityTypeMasterTypes } from '../../../admin/account-master/types/account-activity-types';
 import { UsersService } from '../../../user/users.service';
@@ -18,7 +18,7 @@ import { AccountActivitiesTypes } from '../../types';
 
 @Component({
   selector: 'app-activity-form',
-  imports: [ReactiveFormsModule, CommonModule, AutocompleteDirective],
+  imports: [ReactiveFormsModule, CommonModule, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './activity-form.html',
   styleUrl: './activity-form.css',
@@ -43,11 +43,10 @@ export class ActivityForm {
   activityTypes: AccountActivityTypeMasterTypes.AccountActivityType[] = [];
   activityForm = this.fb.group({
     activityId: [''],
-    activityTypeId: [AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT, Validators.required],
+    activityTypeId: ['', Validators.required],
     activityHeader: [this.getDefaultActivityHeader(AccountActivitiesTypes.AccountActivityDefaultTypes.EVENT), Validators.required],
     activityLog: ['', Validators.required],
-    performedById: [0, Validators.required],
-    performedByName: ['', Validators.required],
+    performedById: ['', Validators.required],
   });
 
   ngOnInit() {
@@ -97,17 +96,14 @@ export class ActivityForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe((users) => {
-      this.userList = users.data.map((user: any) => ({
-        name: user.fullName || user.name || '',
-        id: user.id,
-        userName: user.userName,
-      }));
+      this.userList = users.data;
     });
   }
 
   onSubmit() {
     // populate all validation and check
     this.activityForm.markAllAsTouched();
+    // console log validation errors if any
     if (this.activityForm.valid) {
       const formData = this.activityForm.value;
       const emitData = {

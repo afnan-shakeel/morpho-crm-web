@@ -74,9 +74,9 @@ export class AccountsService {
     );
   }
 
-  getActivityLogs(accountId: string): Observable<AccountActivitiesTypes.AccountActivity[]> {
+  getActivityLogs(accountId: string, eagerFetch: boolean = false): Observable<AccountActivitiesTypes.AccountActivity[]> {
     return this.api
-      .get<ApiResponse<AccountActivitiesTypes.AccountActivity[]>>(`accounts-activities/account/${accountId}`)
+      .get<ApiResponse<AccountActivitiesTypes.AccountActivity[]>>(`accounts-activities/account/${accountId}?eagerFetch=${eagerFetch}`)
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
