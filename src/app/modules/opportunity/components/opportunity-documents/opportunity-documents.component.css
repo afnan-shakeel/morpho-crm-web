@@ -1,0 +1,4 @@
+.table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #e5e7eb; padding: 0.5rem; }
+.text-red-500 { color: #ef4444; }
+.bg-primary-500 { background: #3b82f6; }

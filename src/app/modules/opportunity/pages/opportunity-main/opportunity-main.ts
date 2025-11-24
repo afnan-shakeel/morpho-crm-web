@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from "../../../../core";
+import { OpportunityDocumentsComponent } from '../../components/opportunity-documents/opportunity-documents.component';
 import { OpportunityForm } from "../../components/opportunity-form/opportunity-form";
 import { OpportunityHeaderBox } from "../../components/opportunity-header-box/opportunity-header-box";
 import { OpportunityStageProgress } from "../../components/opportunity-stage-progress/opportunity-stage-progress";
@@ -13,7 +14,7 @@ import { Opportunity, OpportunityStatus, UpdateOpportunityPayload } from '../../
 
 @Component({
   selector: 'app-opportunity-main',
-  imports: [OpportunityHeaderBox, OpportunityStageProgress, CommonModule, OpportunitySummary, PageHeading, ModalMedium, OpportunityForm],
+  imports: [OpportunityHeaderBox, OpportunityStageProgress, CommonModule, OpportunitySummary, PageHeading, ModalMedium, OpportunityForm, OpportunityDocumentsComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-main.html',
   styleUrl: './opportunity-main.css'

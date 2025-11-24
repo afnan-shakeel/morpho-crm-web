@@ -42,4 +42,12 @@ export class ApiBaseService {
     // Angular handles the status codes internally. Use catchError in the feature service!
     return this.http.delete<T>(`${this.baseUrl}/${path}`);
   }
+
+  /**
+   * GET a binary/blob response. Useful for file downloads where responseType must be 'blob'.
+   * This keeps feature services consistent (they can call `api.getBlob(path)` instead of using HttpClient directly).
+   */
+  getBlob(path: string, params?: HttpParams): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${path}`, { params: params, responseType: 'blob' });
+  }
 }

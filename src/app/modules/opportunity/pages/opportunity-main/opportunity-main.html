@@ -55,7 +55,9 @@
                             </div>
                             }
                             @if(activeTabIndex() === 1) {
-                            <div>Files</div>
+                                <div class="mt-12">
+                                    <app-opportunity-documents [opportunityId]="opportunityId"></app-opportunity-documents>
+                                </div>
                             }
                         </el-tab-panels>
                     </el-tab-group>
