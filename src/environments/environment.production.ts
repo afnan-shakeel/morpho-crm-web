@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://localhost:3000/api',
   appName: 'Morpho CRM',
   version: '1.0.0',
   enableLogging: false,

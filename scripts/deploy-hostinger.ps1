@@ -20,3 +20,5 @@ Write-Host "Created $zipPath"
 # unzip site.zip
 
 Write-Host "Zip done. Use File Manager (Hostinger) or FTP to upload and extract 'site.zip' in public_html." 
+
+# run in powershell: powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-hostinger.ps1
