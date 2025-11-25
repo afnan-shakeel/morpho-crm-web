@@ -45,7 +45,3 @@ Troubleshooting
 - 404 on deep link: verify `.htaccess` and that `index.html` is present.
 - Wrong API: update `environment.production.ts` and rebuild with correct `apiUrl`.
 - Large initial bundle: consider moving large vendor scripts (listed in `angular.json` -> scripts) to CDN or dynamically load them.
-
-If you want, I can:
-- Prepare a shell/PowerShell script that zips and uploads via SCP (if you have SSH credentials).
-- Replace `flyonui` (or other large libs) in `angular.json` scripts to load from CDN in `index.html` to reduce bundle size.

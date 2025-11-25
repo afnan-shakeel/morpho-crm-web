@@ -19,12 +19,17 @@ export class Login {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading: boolean = false;
+  showPassword: boolean = false;
 
   constructor() {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {
@@ -54,5 +59,9 @@ export class Login {
         this.isLoading = false;
       }
     });
+  }
+
+  onForgotPassword(): void {
+    window.alert('Forgot Password functionality is not implemented yet.');
   }
 }
