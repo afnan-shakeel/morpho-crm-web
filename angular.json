@@ -30,14 +30,9 @@
               }
             ],
             "styles": [
-              "src/styles.css",
-                  "node_modules/flatpickr/dist/flatpickr.min.css"
-
+              "src/styles.css"
             ],
             "scripts": [
-              "node_modules/flyonui/flyonui.js",
-                  "node_modules/flatpickr/dist/flatpickr.min.js"
-
             ]
           },
           "configurations": {
@@ -51,8 +46,8 @@
               "budgets": [
                 {
                     "type": "initial",
-                    "maximumWarning": "1MB",
-                    "maximumError": "1.5MB"
+                    "maximumWarning": "500KB",
+                    "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",

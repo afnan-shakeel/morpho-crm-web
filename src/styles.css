@@ -1,26 +1,5 @@
 @import "tailwindcss";
-@plugin "flyonui";
-@import "flyonui/variants.css";
-@source "../node_modules/flyonui/flyonui.js"; 
-@import "flyonui/src/vendor/flatpickr.css";
-@plugin "flyonui" {
-    name: "light";
-    default: true;
-    --color-primary-300: #83E2F9;
-    --color-primary-400: #0FAAD1;
-    /* MAIN is 500 */
-    --color-primary-500: #0e98ba; 
-    --color-primary-600: #0e98ba;
-    --color-primary-700: #0e98ba;
 
-    --color-primary-light: #0e98ba;
-    --color-primary-dark: #00ffff;
-
-    --color-secondary: #00ffff;
-    --color-secondary-light: #34D399;
-    --color-secondary-dark: #059669;
-
-}
 @theme {
 
     --font-sans: InterVariable, sans-serif;
