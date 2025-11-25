@@ -5,14 +5,14 @@
         </p>
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
             <div class="sm:col-span-3">
-                <label for="activityType" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
+                <label for="activityTypeId" class="block text-sm/6 font-medium text-gray-900 dark:text-white">
                     Activity Type <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-2 grid grid-cols-1">
-                    <select id="activityType" name="activityType" formControlName="activityType" (change)="onActivityTypeChange()"
+                    <select id="activityTypeId" name="activityTypeId" formControlName="activityTypeId" (change)="onActivityTypeChange()"
                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus-visible:outline-primary-500">
-                        @for (item of activityTypeOptions; let atidx = $index; track atidx) {
-                        <option [value]="item">{{ item }}</option>
+                        @for (item of activityTypes; let atidx = $index; track atidx) {
+                        <option [value]="item.activityTypeId">{{ item.activityTypeName }}</option>
                         }
                     </select>
                     <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"
@@ -22,55 +22,27 @@
                             clip-rule="evenodd" fill-rule="evenodd" />
                     </svg>
                 </div>
-                @if (activityForm.get('activityType')?.touched && activityForm.get('activityType')?.invalid) {
+                @if (activityForm.get('activityTypeId')?.touched && activityForm.get('activityTypeId')?.invalid) {
                 <div class="mt-1 text-xs text-red-500">
-                    {{ activityForm.get('activityType')?.errors?.['required'] ? 'Relatation is required.' : '' }}
+                    {{ activityForm.get('activityTypeId')?.errors?.['required'] ? 'Relatation is required.' : '' }}
                 </div>
                 }
 
             </div>
             <div class="sm:col-span-3">
-                <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Performing User
+                <label for="performedById" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Performing User
                     <span class="text-red-500">*</span></label>
                 <div class="mt-2">
                     <!-- <input type="hidden" formControlName="performedById" /> -->
-                    <el-autocomplete class="relative mt-2 block" id="account" appAutocomplete
-                        [targetForm]="activityForm" nameControl="performedByName" idControl="performedById">
-                        <input id="combobox" type="text" formControlName="performedByName" placeholder="Type owner name"
-                            (change)="loadUserList()"
-                            class="block w-full rounded-md bg-white py-1 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-500 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
-                        <button type="button"
-                            class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-hidden">
-                            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true"
-                                class="size-5 text-gray-400">
-                                <path
-                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                                    clip-rule="evenodd" fill-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <el-options anchor="bottom end" popover
-                            class="max-h-60 w-(--input-width) overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 transition-discrete [--anchor-gap:--spacing(1)] data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
-                            @for (user of userList; let uidx = $index; track uidx;) {
-                            <el-option [attr.value]="user.name" id="{{user.id}}"
-                                class="block px-3 py-1.5 text-gray-900 select-none aria-selected:bg-primary-500 aria-selected:text-white dark:text-white dark:aria-selected:bg-primary-500">
-                                <div class="flex">
-                                    <span class="truncate">{{user.name}}</span>
-                                </div>
-                            </el-option>
-                            }
-
-                        </el-options>
-                    </el-autocomplete>
-                    @if (activityForm.get('performedByName')?.touched && activityForm.get('performedByName')?.invalid) {
+                    <app-user-selection-input formControlName="performedById"
+                        size="sm"
+                        [options]="userList"
+                        placeholder="Select User"
+                        >
+                    </app-user-selection-input>
+                    @if (activityForm.get('performedById')?.touched && activityForm.get('performedById')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
-                        {{ activityForm.get('performedByName')?.errors?.['required'] ? 'User name is required.' : ''
-                        }}
-                    </div>
-                    }
-                    @if (activityForm.get('performedByName')?.touched && activityForm.get('performedByName')?.invalid) {
-                    <div class="mt-1 text-xs text-red-500">
-                        {{ activityForm.get('performedByName')?.errors?.['required'] ? 'Please select a valid user.' :
-                        '' }}
+                        {{ activityForm.get('performedById')?.errors?.['required'] ? 'Performing User is required.' : '' }}
                     </div>
                     }
                 </div>
@@ -82,7 +54,7 @@
                 </label>
                 <div class="mt-2">
                     <input id="activityHeader" type="text" name="activityHeader" formControlName="activityHeader"
-                        autocomplete="name" placeholder="A title for your activity"
+                        placeholder="A title for your activity"
                         class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                     @if (activityForm.get('activityHeader')?.touched && activityForm.get('activityHeader')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">
@@ -97,7 +69,7 @@
                 </label>
                 <div class="mt-2">
                     <input id="activityLog" type="text" name="activityLog" formControlName="activityLog"
-                        autocomplete="name" placeholder="briefly describe what was done"
+                        placeholder="briefly describe what was done"
                         class="block w-full rounded-md bg-white px-3 py-1 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
                     @if (activityForm.get('activityLog')?.touched && activityForm.get('activityLog')?.invalid) {
                     <div class="mt-1 text-xs text-red-500">

@@ -1,10 +1,20 @@
 
 
 export interface User {
-    Id: number;
-    UserName: string;
-    Name: string;
-    Surname?: string;
-    PhoneNumber?: string;
-    EmailAddress?: string;
+    id: string;
+    firstName: string;
+    lastName?: string;
+    fullName?: string;
+    phoneNumber?: string;
+    email?: string;
+    isActive?: boolean;
+    roles?: string[];
+}
+
+export interface UserListData {
+  data: User[];
+  count: number;
+  total: number;
+  page: number;
+  limit: number;
 }

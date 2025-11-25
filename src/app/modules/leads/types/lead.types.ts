@@ -1,3 +1,4 @@
+import { LeadInteractionTypeTypes } from "../../admin/leads-master/types";
 import { User } from "../../user/user.types";
 
 /**
@@ -5,7 +6,7 @@ import { User } from "../../user/user.types";
  */
 export interface Lead {
   leadId: string;
-  leadOwnerId: number;
+  leadOwnerId: string;
   leadSourceId: string;
   leadStatus: LeadStatus;
   leadTopic?: string;
@@ -67,7 +68,7 @@ export interface LeadLogs {
   logId: string;
   leadId: string;
   logMessage: string;
-  changedBy: number;
+  changedBy: string;
   changedByName?: string;
   changedAt: string;
   changeType: LeadLogChangeType;
@@ -86,24 +87,17 @@ export enum LeadLogChangeType {
 export interface LeadInteraction {
   interactionId: string;
   leadId: string;
-  interactionType: LeadInteractionType;
+  interactionType: LeadInteractionTypeTypes.LeadInteractionType;
   interactionDate: string;
   notes?: string;
   createdAt: string;
-  createdBy: number;
+  createdBy: string;
   updatedAt: string;
-  updatedBy: number;
+  updatedBy: string;
   createdByUser?: User;
   lead?: Lead;
 }
 
-export enum LeadInteractionType {
-  CALL = 'Call',
-  EMAIL = 'Email',
-  MEETING = 'Meeting',
-  FOLLOW_UP = 'Follow-up',
-  OTHER = 'Other'
-}
 
 export interface LeadSource {
   sourceId: string;

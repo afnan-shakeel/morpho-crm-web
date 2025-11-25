@@ -18,6 +18,7 @@ import {
   LeadLookupDataResponse,
   LeadsListData,
   LeadSource,
+  UpdateLeadAddressPayload,
   UpdateLeadInteractionPayload,
   UpdateLeadPayload,
 } from './types';
@@ -35,9 +36,11 @@ export class LeadsService {
     filters?: any,
     sort?: any,
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    eagerFetch: boolean = false
   ): Observable<LeadsListData> {
     const body: SearchApiPayload = {
+      eagerFetch: eagerFetch,
       globalSearch: { value: query || '' },
       filters: filters || [],
       sort: sort || {},
@@ -121,7 +124,26 @@ export class LeadsService {
       )
       .pipe(
         catchError((error) => {
-          return this.errorHandler.handleError(error);
+          this.errorHandler.handleError(error);
+          return of(null);
+        }),
+        map((response: any) => response.data)
+      );
+  }
+
+  updateLeadAddress(
+    leadId: string,
+    addressData: UpdateLeadAddressPayload
+  ): Observable<LeadAddress> {
+    return this.api
+      .post<LeadAddressResponse, UpdateLeadAddressPayload>(
+        `leads/${leadId}/address/update`,
+        addressData
+      )
+      .pipe(
+        catchError((error) => {
+          this.errorHandler.handleError(error);
+          return of(null);
         }),
         map((response: any) => response.data)
       );

@@ -1,0 +1,87 @@
+<div [class]="containerClass">
+    <!-- Mobile dropdown view -->
+    @if (showMobileDropdown && tabs.length > 0) {
+    <div class="grid grid-cols-1 sm:hidden">
+        <select [attr.aria-label]="ariaLabel" [class]="getMobileDropdownClasses()"
+            (change)="onMobileDropdownChange($event)">
+            @for (tab of tabs; track trackByTabId($index, tab); let i = $index) {
+            <option [value]="i" [selected]="tab.active" [disabled]="tab.disabled">
+                {{ tab.label }}
+                @if (tab.badgeCount && tab.badgeCount > 0) {
+                <span> ({{ tab.badgeCount }})</span>
+                }
+            </option>
+            }
+        </select>
+        <!-- Dropdown arrow icon -->
+        <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"
+            class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500 dark:fill-gray-400">
+            <path
+                d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd" fill-rule="evenodd" />
+        </svg>
+    </div>
+    }
+
+    <!-- Desktop tab navigation -->
+    @if (tabs.length > 0) {
+    <div class="hidden sm:block">
+        <nav [attr.aria-label]="ariaLabel" class="flex space-x-4">
+            @for (tab of tabs; track trackByTabId($index, tab); let i = $index) {
+            <!-- Router link for navigation mode -->
+            @if (mode === 'navigation' && tab.route && !tab.disabled) {
+            <a [routerLink]="tab.route" [class]="getTabClasses(tab)" [attr.aria-current]="tab.active ? 'page' : null"
+                (click)="onTabClick(tab, i)" [title]="tab.label">
+
+                <!-- Icon -->
+                @if (tab.icon) {
+                <i [class]="tab.icon" class="mr-2"></i>
+                }
+
+                <!-- Label -->
+                {{ tab.label }}
+
+                <!-- Badge -->
+                @if (tab.badgeCount && tab.badgeCount > 0) {
+                <span
+                    class="ml-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    {{ tab.badgeCount }}
+                </span>
+                }
+            </a>
+            }
+
+            <!-- Button for content mode or disabled tabs -->
+            @if (mode === 'content' || tab.disabled || !tab.route) {
+            <button type="button" [class]="getTabClasses(tab)" [attr.aria-current]="tab.active ? 'page' : null"
+                [disabled]="tab.disabled" (click)="onTabClick(tab, i)" [title]="tab.label">
+
+                <!-- Icon -->
+                @if (tab.icon) {
+                <i [class]="tab.icon" class="mr-2"></i>
+                }
+
+                <!-- Label -->
+                {{ tab.label }}
+
+                <!-- Badge -->
+                @if (tab.badgeCount && tab.badgeCount > 0) {
+                <span
+                    class="ml-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    {{ tab.badgeCount }}
+                </span>
+                }
+            </button>
+            }
+            }
+        </nav>
+    </div>
+    }
+
+    <!-- Empty state -->
+    @if (tabs.length === 0) {
+    <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+        No tabs available
+    </div>
+    }
+</div>

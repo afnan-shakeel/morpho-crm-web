@@ -3,7 +3,8 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { ApiBaseService } from '../../core';
 import { ApiErrorHandlerService } from '../../core/services/http/api-error-handler.service';
 import { ApiResponse, SearchApiPayload, SortDirection } from '../../core/services/http/types';
-import { Account, AccountActivityLog, AccountsListData, CreateAccountActivityPayload, createAccountRequest, UpdateAccountActivityPayload } from './types';
+import { AccountActivitiesTypes } from './types';
+import { Account, AccountsListData, CreateAccountActivityPayload, createAccountRequest, UpdateAccountActivityPayload } from './types/account';
 
 @Injectable({
   providedIn: 'root',
@@ -73,21 +74,21 @@ export class AccountsService {
     );
   }
 
-  getActivityLogs(accountId: string): Observable<AccountActivityLog[]> {
+  getActivityLogs(accountId: string, eagerFetch: boolean = false): Observable<AccountActivitiesTypes.AccountActivity[]> {
     return this.api
-      .get<ApiResponse<AccountActivityLog[]>>(`accounts-activities/account/${accountId}`)
+      .get<ApiResponse<AccountActivitiesTypes.AccountActivity[]>>(`accounts-activities/account/${accountId}?eagerFetch=${eagerFetch}`)
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
-          return of([] as AccountActivityLog[]);
+          return of([] as AccountActivitiesTypes.AccountActivity[]);
         }),
         map((response: any) => response.data)
       );
   }
 
-  createActivityLog(payload: CreateAccountActivityPayload): Observable<AccountActivityLog> {
+  createActivityLog(payload: CreateAccountActivityPayload): Observable<AccountActivitiesTypes.AccountActivity> {
     return this.api
-      .post<ApiResponse<AccountActivityLog>, any>('accounts-activities/create', payload)
+      .post<ApiResponse<AccountActivitiesTypes.AccountActivity>, any>('accounts-activities/create', payload)
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);
@@ -97,9 +98,9 @@ export class AccountsService {
       );
   }
 
-  updateActivityLog(activityId: string, payload: Partial<UpdateAccountActivityPayload>): Observable<AccountActivityLog> {
+  updateActivityLog(activityId: string, payload: Partial<UpdateAccountActivityPayload>): Observable<AccountActivitiesTypes.AccountActivity> {
     return this.api
-      .put<ApiResponse<AccountActivityLog>, any>(`accounts-activities/${activityId}`, payload)
+      .put<ApiResponse<AccountActivitiesTypes.AccountActivity>, any>(`accounts-activities/${activityId}`, payload)
       .pipe(
         catchError((error) => {
           this.errorHandler.handleError(error);

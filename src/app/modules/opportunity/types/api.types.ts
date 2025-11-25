@@ -8,7 +8,7 @@ import { Opportunity, OpportunityActivity, OpportunityLogs, OpportunityStatus } 
 export interface CreateOpportunityPayload {
   opportunityName: string;
   accountId: string;
-  opportunityOwnerId: number;
+  opportunityOwnerId: string;
   contactId?: string | null;
   stageId: string;
   status: OpportunityStatus;
@@ -25,7 +25,7 @@ export interface CreateOpportunityPayload {
 export interface UpdateOpportunityPayload {
   opportunityName?: string;
   accountId?: string;
-  opportunityOwnerId?: number;
+  opportunityOwnerId?: string;
   contactId?: string | null;
   stageId?: string;
   status?: OpportunityStatus;

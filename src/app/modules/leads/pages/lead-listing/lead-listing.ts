@@ -11,15 +11,18 @@ import {
 } from '../../../../shared/components/custom-datatable/types';
 import { ModalMedium } from '../../../../shared/components/modal-medium/modal-medium';
 import { ModalSmall } from '../../../../shared/components/modal-small/modal-small';
+import { LeadsInteractionMasterService } from '../../../admin/leads-master/services/lead-interaction-master.service';
+import { LeadInteractionTypeTypes } from '../../../admin/leads-master/types';
 import { LeadConversionReview } from "../../components/lead-conversion-review/lead-conversion-review";
 import { LeadInteractionForm } from "../../components/lead-interaction-form/lead-interaction-form";
+import { LeadStatusChangeBox } from "../../components/lead-status-change-box/lead-status-change-box";
 import { LeadsService } from '../../leads.service';
-import { Lead, UpdateLeadPayload } from '../../types';
+import { Lead, LeadStatus, UpdateLeadPayload } from '../../types';
 import { LEAD_STATUS_COLOR_MAPPING } from '../../utils';
 
 @Component({
   selector: 'app-lead-listing',
-  imports: [PageHeading, CustomDatatable, ModalSmall, ModalMedium, FormsModule, LeadInteractionForm, LeadConversionReview],
+  imports: [PageHeading, CustomDatatable, ModalSmall, ModalMedium, FormsModule, LeadInteractionForm, LeadConversionReview, LeadStatusChangeBox],
   templateUrl: './lead-listing.html',
   styleUrl: './lead-listing.css',
 })
@@ -27,6 +30,8 @@ export class LeadListing {
   @ViewChild('leadStatusChangeModal') leadStatusChangeModal!: ModalSmall;
   @ViewChild('leadInteractionModal') leadInteractionModal!: ModalSmall;
   @ViewChild('leadConversionReviewModal') leadConversionReviewModal!: ModalMedium;
+
+  private leadsInteractionMasterService = inject(LeadsInteractionMasterService);
 
   constructor() {
     this.setLeadLookupData();
@@ -44,7 +49,7 @@ export class LeadListing {
   columns: DataTableColumn[] = [
     { field: 'leadId', label: 'Lead ID', hidden: true },
     { field: 'leadTopic', label: 'Lead Topic', cellTemplate: CellTemplate.LINK, hrefField: '/leads/detail/:leadId' },
-    { field: 'firstName', label: 'Name' },
+    { field: 'leadOwner.FirstName', label: 'Name' },
     // { field: 'email', label: 'Email' },
     { field: 'phone', label: 'Phone' },
     {
@@ -60,6 +65,7 @@ export class LeadListing {
   pageSize: number = 10;
   totalRecords: number = 0;
   searchQuery: string = '';
+  eagerFetch: boolean = true;
   leadSourcesOptions: Array<{ label: string; value: string }> = [];
   leadStatusOptions: Array<{ label: string; value: string }> = [];
   filters: Filters[] = [
@@ -86,6 +92,7 @@ export class LeadListing {
   };
   apiReadyFilterData: any[] = [];
 
+  selectedLeadForAction: Lead | null = null;
   tableRowActions = [
     {
       label: 'View',
@@ -107,8 +114,7 @@ export class LeadListing {
       label: 'Update Status',
       actionCallback: (rowData: Lead) => {
         console.log('clicked for:', rowData);
-        this.leadStatusUpdateFormData.leadId = rowData.leadId;
-        this.leadStatusUpdateFormData.newStatus = rowData.leadStatus;
+        this.selectedLeadForAction = rowData;
         this.openLeadStatusChangeDialog();
       },
     },
@@ -129,16 +135,12 @@ export class LeadListing {
     },
   ];
 
-  leadStatusUpdateFormData = {
-    leadId: '',
-    newStatus: '',
-  };
+  leadInteractionTypes: LeadInteractionTypeTypes.LeadInteractionType[] = [];
 
   ngOnInit() {
+    this.loadLeadInteractionTypes();
     this.loadLeads();
   }
-
-
 
   setLeadLookupData() {
     this.getLeadStatuses();
@@ -198,7 +200,7 @@ export class LeadListing {
       order: 'desc',
     };
     this.leadsService
-      .getLeads(this.searchQuery, this.apiReadyFilterData, sort, this.currentPage, this.pageSize)
+      .getLeads(this.searchQuery, this.apiReadyFilterData, sort, this.currentPage, this.pageSize, this.eagerFetch)
       .subscribe({
         next: (response) => {
           let data = response?.data || [];
@@ -212,6 +214,12 @@ export class LeadListing {
           this.loading = false;
         },
       });
+  }
+
+  loadLeadInteractionTypes() {
+    this.leadsInteractionMasterService.getLeadInteractionTypes().subscribe((types) => {
+      this.leadInteractionTypes = types;
+    });
   }
 
   onPageChangeHandler(event: any) {
@@ -264,17 +272,27 @@ export class LeadListing {
   }
   closeLeadStatusChangeDialog() {
     this.leadStatusChangeModal.close();
+    this.selectedLeadForAction = null;
   }
-  handleLeadStatusUpdate() {
+  handleLeadStatusUpdate(status: LeadStatus | null) {
+    if(!this.selectedLeadForAction) {
+      this.toastService.error('No lead selected for status update.');
+      return;
+    }
+    if (!status) {
+      this.toastService.error('Please select a valid status.');
+      return;
+    }
+
     this.leadsService
       .updateLeadStatus(
-        this.leadStatusUpdateFormData.leadId,
-        this.leadStatusUpdateFormData.newStatus
+        this.selectedLeadForAction.leadId,
+        status
       )
       .subscribe({
         next: (response) => {
           if(response && response.leadId){
-            this.leadStatusChangeModal.close();
+            this.closeLeadStatusChangeDialog();
             this.loadLeads(); // refresh the leads list
             return;
           }

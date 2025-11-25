@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AccountStatusEnum } from '../../types';
+import { AccountStatusEnum } from '../../types/account';
 import { getAccountStatusCssClasses } from '../../utils';
 
 @Component({

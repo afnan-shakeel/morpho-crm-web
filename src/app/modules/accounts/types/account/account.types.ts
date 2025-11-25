@@ -1,5 +1,5 @@
-import { Contact } from '../../contacts/types';
-import { User } from '../../user/user.types';
+import { Contact } from '../../../contacts/types';
+import { User } from '../../../user/user.types';
 
 export interface Account {
   accountId: string;
@@ -45,37 +45,5 @@ export interface AccountPrimaryContact {
   phoneNumber: string;
 }
 
-export interface AccountActivityLog {
-  activityId: string;
-  relatedTo: AccountActivityRelatedToEnum;
-  relatedEntityId: string;
 
-  accountId: string;
-  activityType: AccountActivityTypeEnum;
-  activityHeader: string;
 
-  activityLog: string;
-  eventName: string;
-  eventCategory: string;
-  eventDetailNote: string;
-  performedById: number;
-  performedByName?: string;
-  timestamp: string;
-  performedBy: User;
-}
-
-export enum AccountActivityRelatedToEnum {
-  ACCOUNT = 'Account',
-  CONTACT = 'Contact',
-  OPPORTUNITY = 'Opportunity',
-  LEAD = 'Lead',
-}
-
-export enum AccountActivityTypeEnum {
-  EVENT = 'Event',
-  CALL = 'Call',
-  MEETING = 'Meeting',
-  EMAIL = 'Email',
-  TASK = 'Task',
-  NOTE = 'Note',
-}

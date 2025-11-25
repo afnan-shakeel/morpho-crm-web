@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AccountsService } from '../../../accounts/accounts.service';
-import { Account } from '../../../accounts/types';
+import { Account } from '../../../accounts/types/account';
 import { ContactsService } from '../../../contacts/contacts.service';
 import { Contact } from '../../../contacts/types';
 import { LeadsService } from '../../leads.service';

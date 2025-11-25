@@ -23,7 +23,7 @@
                         'Activity'}}</p>
                     <p
                         class="mt-0.5 rounded-md bg-gray-50 px-1.5 py-0.5 text-xs font-medium text-gray-600 inset-ring inset-ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:inset-ring-gray-400/20">
-                        {{getActivityTypeLabel(item.activityType)}}</p>
+                        {{getActivityTypeLabel(item.activityType?.activityTypeName!)}}</p>
                 </div>
                 <div class="mt-1 flex items-center gap-x-2 text-xs/5 text-gray-500 dark:text-gray-400">
                     <span class="font-semibold lowercase">{{item.relatedTo || 'Log'}}</span>
@@ -38,7 +38,7 @@
             <div class="flex flex-none items-center gap-x-1 mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
                 <p class="whitespace-nowrap"><time datetime="2023-03-17T00:00Z">{{ item.timestamp | date: 'short'
                         }}</time></p>
-                <p class="whitespace-nowrap lowercase">{{ `(${item.performedBy.Name})` }}</p>
+                <p class="whitespace-nowrap lowercase">{{ `(${getPerformedByFullName(item)})` }}</p>
             </div>
         </li>
         }

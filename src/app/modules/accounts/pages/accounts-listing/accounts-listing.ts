@@ -7,7 +7,7 @@ import { CellTemplate, DataTableColumn } from '../../../../shared/components/cus
 import { PageHeading } from '../../../../shared/components/page-heading/page-heading';
 import { AccountsService } from '../../accounts.service';
 import { AccountForm } from "../../components/account-form/account-form";
-import { Account, createAccountRequest } from '../../types';
+import { Account, createAccountRequest } from '../../types/account';
 import { ACCOUNT_STATUS_COLOR_MAPPING } from "../../utils";
 
 @Component({

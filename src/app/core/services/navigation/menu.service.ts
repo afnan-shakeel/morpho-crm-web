@@ -14,6 +14,7 @@ export interface SubMenuItem {
   title: string;
   link: string;
   isActive: boolean;
+  subMenu?: SubMenuItem[];
 }
 
 @Injectable({
@@ -21,6 +22,7 @@ export interface SubMenuItem {
 })
 export class MenuService {
   private menuItemsSubject = new BehaviorSubject<MenuItem[]>([
+
     {
       title: 'Dashboard',
       icon: 'home',
@@ -66,32 +68,30 @@ export class MenuService {
         }
       ]
     },
-    {
-      title: 'Sample II',
-      icon: 'sample II',
-      link: '/sample ii',
+        {
+      title: 'Administration',
+      icon: '',
+      link: '/admin',
       isActive: false,
       expanded: false,
       subMenu: [
         {
-          title: 'List',
-          link: '/sample-ii/list',
+          title: 'Accounts Master',
+          link: '/admin/accounts-master/list',
           isActive: false
         },
         {
-          title: 'Create',
-          link: '/sample-ii/create',
+          title: 'Leads Master',
+          link: '/admin/leads-master/list',
+          isActive: false
+        },
+        {
+          title: 'Opportunities Master',
+          link: '/admin/opportunities-master/list',
           isActive: false
         }
       ]
     },
-    {
-      title: 'Settings',
-      icon: 'settings',
-      link: '/settings',
-      isActive: false,
-      expanded: false
-    }
   ]);
 
   constructor() { }
@@ -118,12 +118,12 @@ export class MenuService {
     const updatedMenuItems = menuItems.map(item => {
       // Deactivate all main menu items first
       item.isActive = false;
-      
+
       // Check if this is the item to activate
       if (item.link === link) {
         item.isActive = true;
       }
-      
+
       // Handle submenu items
       if (item.subMenu) {
         item.subMenu = item.subMenu.map(subItem => {
@@ -135,10 +135,10 @@ export class MenuService {
           return subItem;
         });
       }
-      
+
       return item;
     });
-    
+
     this.menuItemsSubject.next(updatedMenuItems);
   }
 
@@ -151,7 +151,7 @@ export class MenuService {
       if (item.link === link) {
         item.isActive = false;
       }
-      
+
       if (item.subMenu) {
         item.subMenu = item.subMenu.map(subItem => {
           if (subItem.link === link) {
@@ -160,10 +160,10 @@ export class MenuService {
           return subItem;
         });
       }
-      
+
       return item;
     });
-    
+
     this.menuItemsSubject.next(updatedMenuItems);
   }
 
@@ -174,17 +174,17 @@ export class MenuService {
     const menuItems = this.getCurrentMenuItems();
     const updatedMenuItems = menuItems.map(item => {
       item.isActive = false;
-      
+
       if (item.subMenu) {
         item.subMenu = item.subMenu.map(subItem => {
           subItem.isActive = false;
           return subItem;
         });
       }
-      
+
       return item;
     });
-    
+
     this.menuItemsSubject.next(updatedMenuItems);
   }
 
@@ -218,12 +218,12 @@ export class MenuService {
    */
   isMenuItemActive(link: string): boolean {
     const menuItems = this.getCurrentMenuItems();
-    
+
     for (const item of menuItems) {
       if (item.link === link && item.isActive) {
         return true;
       }
-      
+
       if (item.subMenu) {
         for (const subItem of item.subMenu) {
           if (subItem.link === link && subItem.isActive) {
@@ -232,7 +232,7 @@ export class MenuService {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -264,40 +264,40 @@ export class MenuService {
     const updatedMenuItems = menuItems.map(item => {
       // Reset all active states first
       item.isActive = false;
-      
+
       // Check if this main menu item matches the current URL
       if (this.isRouteMatch(currentUrl, item.link)) {
         item.isActive = true;
         foundActiveMenu = true;
       }
-      
+
       // Handle submenu items
       if (item.subMenu) {
         let hasActiveSubmenu = false;
-        
+
         item.subMenu = item.subMenu.map(subItem => {
           subItem.isActive = false;
-          
+
           // Check if submenu item matches current URL
           if (this.isRouteMatch(currentUrl, subItem.link)) {
             subItem.isActive = true;
             hasActiveSubmenu = true;
             foundActiveMenu = true;
           }
-          
+
           return subItem;
         });
-        
+
         // If a submenu item is active, also activate and expand the parent
         if (hasActiveSubmenu) {
           item.isActive = true;
           item.expanded = true;
         }
       }
-      
+
       return item;
     });
-    
+
     this.menuItemsSubject.next(updatedMenuItems);
   }
 
@@ -307,22 +307,22 @@ export class MenuService {
   private isRouteMatch(currentUrl: string, menuLink: string): boolean {
     // Remove query parameters and fragments from current URL
     const cleanCurrentUrl = currentUrl.split('?')[0].split('#')[0];
-    
+
     // Handle exact matches
     if (cleanCurrentUrl === menuLink) {
       return true;
     }
-    
+
     // Handle parent route matches (e.g., /accounts should match /accounts/list)
     if (menuLink !== '/' && cleanCurrentUrl.startsWith(menuLink + '/')) {
       return true;
     }
-    
+
     // Handle root/dashboard special case
     if (menuLink === '/dashboard' && (cleanCurrentUrl === '/' || cleanCurrentUrl === '/dashboard')) {
       return true;
     }
-    
+
     return false;
   }
 }

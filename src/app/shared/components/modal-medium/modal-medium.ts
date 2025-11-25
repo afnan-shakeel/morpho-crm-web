@@ -13,7 +13,7 @@ export class ModalMedium implements AfterViewInit {
   @Input() modalId: string = 'dialog';
   @Input() preventAutoClose: boolean = false; // Flag to prevent auto-closing on outside click
   @Output() closeModal: EventEmitter<void> = new EventEmitter();
-  
+
 
   ngAfterViewInit() {
     // const backdropEl = document.getElementById('modal-backdrop');

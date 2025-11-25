@@ -6,6 +6,7 @@ export enum CellTemplate {
     DATE = 'date',
     TIME = 'time',
     DATETIME = 'datetime',
+    BOOLEAN = 'boolean',
 
     // custom cell template for more complex rendering
     CUSTOM = 'custom'
@@ -44,4 +45,9 @@ export interface DataTableColumn {
     colorBadgeMapper?: { [key: string]: ColorBadgeColor };
     // a option to map cell values to a different display value. mainly used for boolean fields. or enum fields. with badges.
     valueMapper?: { [key: string]: string };
+}
+
+export interface DataTableRowAction {
+    label: string;
+    actionCallback: (rowData: any) => void;
 }

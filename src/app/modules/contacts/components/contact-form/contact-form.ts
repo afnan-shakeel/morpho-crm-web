@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output,
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
 import { AccountsService } from '../../../accounts/accounts.service';
-import { Account } from '../../../accounts/types';
+import { Account } from '../../../accounts/types/account';
 import { UsersService } from '../../../user/users.service';
 import { ContactsService } from '../../contacts.service';
 
@@ -35,7 +35,7 @@ export class ContactForm {
     phone: ['', Validators.required],
     jobTitle: [''],
     isPrimary: [false],
-    contactOwnerId: [0, Validators.required],
+    contactOwnerId: ['', Validators.required],
     contactOwnerName: ['', Validators.required],
   });
   formInitialValues = {
@@ -84,8 +84,8 @@ export class ContactForm {
         phone: contact.phone,
         jobTitle: contact.jobTitle,
         isPrimary: contact.isPrimary || false,
-        contactOwnerId: Number(contact.contactOwner?.Id),
-        contactOwnerName: contact.contactOwner?.Name,
+        contactOwnerId: contact.contactOwner?.id || '',
+        contactOwnerName: contact.contactOwner?.fullName || '',
       });
     });
   }
@@ -95,8 +95,8 @@ export class ContactForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe(users => {
-      this.userList = users.map((user: any) => ({
-        name: `${user.name}`,
+      this.userList = users.data.map((user: any) => ({
+        name: user.fullName || user.name || '',
         id: user.id,
         userName: user.userName,
       }));

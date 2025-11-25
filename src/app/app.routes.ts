@@ -18,6 +18,27 @@ export const routes: Routes = [
                         .then(m => m.DASHBOARD_ROUTES)
             },
             {
+                path: 'admin/leads-master',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/admin/leads-master/leads-master.routes')
+                        .then(m => m.LEADS_MASTER_ROUTES)
+            },
+            {
+                path: 'admin/opportunities-master',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/admin/opportunities-master/opportunity-master.routes')
+                        .then(m => m.OPPORTUNITY_MASTER_ROUTES)
+            },
+            {
+                path: 'admin/accounts-master',
+                canActivate: [authGuard],
+                loadChildren: () =>
+                    import('./modules/admin/account-master/account-master.routes')
+                        .then(m => m.ACCOUNT_MASTER_ROUTES)
+            },
+            {
                 path: 'leads',
                 canActivate: [authGuard],
                 loadChildren: () =>

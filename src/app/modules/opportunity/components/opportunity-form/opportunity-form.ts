@@ -1,3 +1,4 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
@@ -10,7 +11,7 @@ import {
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AutocompleteDirective } from '../../../../shared';
 import { AccountsService } from '../../../accounts/accounts.service';
-import { Account } from '../../../accounts/types';
+import { Account } from '../../../accounts/types/account';
 import { ContactsService } from '../../../contacts/contacts.service';
 import { Contact } from '../../../contacts/types';
 import { UsersService } from '../../../user/users.service';
@@ -19,7 +20,7 @@ import { OpportunityStage, OpportunityStatus } from '../../types';
 
 @Component({
   selector: 'app-opportunity-form',
-  imports: [ReactiveFormsModule, AutocompleteDirective],
+  imports: [ReactiveFormsModule, AutocompleteDirective, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './opportunity-form.html',
   styleUrl: './opportunity-form.css',
@@ -54,7 +55,7 @@ export class OpportunityForm {
     closedDate: [''],
     expectedCloseDate: [''],
     notes: [''],
-    opportunityOwnerId: [0],
+    opportunityOwnerId: [''],
     opportunityOwnerName: [''],
   });
 
@@ -64,9 +65,8 @@ export class OpportunityForm {
     this.loadAccountList();
     this.loadOpportunityStages();
 
-    // value changs for account id, to load contacts based on account
+    // value changes for account id, to load contacts based on account
     this.opportunityForm.get('accountId')?.valueChanges.subscribe((accountId) => {
-      console.log('Selected Account ID:', accountId);
       if (accountId) {
         this.loadAccountContacts(accountId);
       } else {
@@ -78,15 +78,11 @@ export class OpportunityForm {
   ngOnChanges(changes: SimpleChanges) {
     // keep reseting for any change in opportunityId input
     if (changes['opportunityId']) {
-      console.log('Opportunity ID changed:', this.opportunityId);
-      // if opportunityId is provided, populate the form for editing
       if (this.opportunityId) {
         this.populateForm(this.opportunityId);
       }
 
-      // load user list for account owner selection
       this.loadUserList();
-      // load account list for account selection
       this.loadAccountList();
     }
 
@@ -112,8 +108,8 @@ export class OpportunityForm {
         closedDate: opportunity.closedDate ? this.formatDateForInput(opportunity.closedDate) : null,
         expectedCloseDate: opportunity.expectedCloseDate ? this.formatDateForInput(opportunity.expectedCloseDate) : null,
         notes: opportunity.notes,
-        opportunityOwnerId: opportunity.opportunityOwnerId ? Number(opportunity.opportunityOwnerId) : 0,
-        opportunityOwnerName: opportunity.opportunityOwner?.Name,
+        opportunityOwnerId: opportunity.opportunityOwnerId || '',
+        opportunityOwnerName: opportunity.opportunityOwner?.fullName || '',
       });
     });
   }
@@ -123,11 +119,7 @@ export class OpportunityForm {
     const maxResults = 20;
     const skipCount = 0;
     this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe((users) => {
-      this.userList = users.map((user: any) => ({
-        name: `${user.name}`,
-        id: user.id,
-        userName: user.userName,
-      }));
+      this.userList = users.data;
     });
   }
   loadAccountList(_searchTerm: string = '') {
@@ -146,7 +138,6 @@ export class OpportunityForm {
   }
   loadAccountContacts(accountId: string, _searchTerm: string = '') {
     this.contactsService.searchContactsForAutocomplete(_searchTerm, 20, accountId).subscribe(contacts => {
-      console.log('Loaded Contacts for Account ID', accountId, contacts);
       this.contactList = contacts;
     });
   }
@@ -162,14 +153,19 @@ export class OpportunityForm {
 
   closeForm() {
     this.formSubmit.emit(null);
-    // destroy component instance if needed
+    this.resetForm();
+  }
+
+  resetForm () {
     this.opportunityForm.reset();
+    this.opportunityId = null;
     this.isEditMode = false;
     this.formTitle = 'Create Opportunity';
   }
+
   private formatDateForInput(isoString: string): string {
     const date = new Date(isoString);
-    // Format to YYYY-MM-DDTHH:mm
+    // to YYYY-MM-DDTHH:mm
     return date.toISOString().slice(0, 16);
   }
 }

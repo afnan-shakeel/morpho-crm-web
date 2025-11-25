@@ -1,4 +1,8 @@
 // Shared Components
+export * from './components/tabs';
+
+// Shared Services
+export * from './services';
 
 // Shared Utils
 export * from './utils/data-mapping';

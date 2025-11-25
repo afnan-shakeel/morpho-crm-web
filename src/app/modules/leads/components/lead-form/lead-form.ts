@@ -1,6 +1,8 @@
+import { UserSelectionInput } from "@/shared/components/user-selection-input/user-selection-input";
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
+import { User } from '../../../user/user.types';
 import { UsersService } from '../../../user/users.service';
 import { LeadsService } from '../../leads.service';
 import {
@@ -12,11 +14,10 @@ import {
   LeadStatus,
   LeadStatusOption
 } from '../../types';
-import { LeadAddressForm } from "../lead-address-form/lead-address-form";
 
 @Component({
   selector: 'app-lead-form',
-  imports: [LeadAddressForm, ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule],
+  imports: [ɵInternalFormsSharedModule, ReactiveFormsModule, CommonModule, UserSelectionInput],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './lead-form.html',
   styleUrl: './lead-form.css'
@@ -30,12 +31,13 @@ export class LeadForm {
   @Input() isEditMode: boolean = false;
   @Input() formTitle: string = 'Create Lead';
   @Input() leadId: string | null = null;
-  @Input() leadSourceOptions: LeadSource[] = [];
-  @Input() leadStatusOptions: LeadStatusOption[] = [];
+  @Input() leadSourceOptions!: LeadSource[];
+  @Input() leadStatusOptions!: LeadStatusOption[];
   @Input() isLoading: boolean = false;
-  @Input() showAddressForm: boolean = false;
   @Input() saveButtonText: string = 'Save';
   @Input() saveAndExitButtonText: string = 'Save and Exit';
+  @Input() showNextButton: boolean = true;
+  @Input() showSaveAndExitButton: boolean = true;
 
   @Output() formSubmit = new EventEmitter<{data: LeadFormData, action: 'next' | 'saveAndExit'}>();
   @Output() formCancel = new EventEmitter<void>();
@@ -44,8 +46,8 @@ export class LeadForm {
   leadInfoForm = this.fb.group({
     leadId: [''],
     leadTopic: ['', Validators.required],
-    leadOwnerId: [0, Validators.required], // is a integer
-    leadOwnerName: ['', Validators.required],
+    leadOwnerId: ['', Validators.required], // is a string UUID
+    leadOwnerName: [''],
     leadSourceId: [''],
     leadStatus: [LeadStatus.NEW, Validators.required],
     leadConversionDate: [new Date().toISOString().slice(0, 16)],
@@ -56,7 +58,7 @@ export class LeadForm {
     companyName: [''],
   });
 
-  userList: LeadOwnerOption[] = []
+  userList: User[] = []
 
   ngOnInit() {
     if (this.isEditMode && this.leadId) {
@@ -74,47 +76,15 @@ export class LeadForm {
       }
     });
   }
+
   ngAfterViewInit() {
-
-    // [custom event] handle input event for lead owner autocomplete
-    const leadOwnerElement = document.getElementById('leadOwner');
-    if (leadOwnerElement) {
-      leadOwnerElement.addEventListener('input', (event: any) => {
-        const optionsContainer = leadOwnerElement.querySelector('el-options');
-        const optionElements = optionsContainer?.getElementsByTagName('el-option');
-        if (optionElements) {
-          // filter elements based on user search
-          for (let i = 0; i < optionElements.length; i++) {
-            const option = optionElements[i];
-            const selectedUserName = this.leadInfoForm.get('leadOwnerName')?.value?.toLowerCase() || '';
-            const optionUserName = option.getAttribute('value')?.toLowerCase() || '';
-            if (optionUserName.includes(selectedUserName)) {
-              const selectedUserId = option.getAttribute('id');
-              this.leadInfoForm.patchValue({ leadOwnerId: isNaN(Number(selectedUserId)) ? 0 : Number(selectedUserId) });
-              break;
-            }
-          }
-        }
-
-        // if the input is cleared, reset leadOwnerId
-        if (!this.leadInfoForm.get('leadOwnerName')?.value) {
-          this.leadInfoForm.patchValue({ leadOwnerId: 0 });
-        }
-
-      });
-    }
   }
 
-  private loadUserList(_searchTerm: string = '') {
+  loadUserList(_searchTerm: string = '') {
     const searchTerm = _searchTerm ? _searchTerm.trim() : '';
     const maxResults = 20;
-    const skipCount = 0;
-    this.userService.getUsers(searchTerm, maxResults, skipCount).subscribe(users => {
-      this.userList = users.map((user: any): LeadOwnerOption => ({
-        fullName: `${user.fullName}`,
-        id: user.id,
-        userName: user.userName,
-      }));
+    this.userService.getUsers(searchTerm, null, null, 1, maxResults).subscribe(res => {
+      this.userList = res.data
     });
   }
 
@@ -125,7 +95,7 @@ export class LeadForm {
         this.leadInfoForm.patchValue({
           leadId: leadData.leadId,
           leadOwnerId: leadData.leadOwnerId,
-          leadOwnerName: leadData.leadOwner?.Name || '',
+          leadOwnerName: leadData.leadOwner?.fullName || '',
           leadSourceId: leadData.leadSourceId,
           leadStatus: leadData.leadStatus,
           leadTopic: leadData.leadTopic,
@@ -149,11 +119,13 @@ export class LeadForm {
   }
 
   onSubmit(action: 'next' | 'saveAndExit' = 'next') {
+    // mark all fields as touched to trigger validation
+    this.leadInfoForm.markAllAsTouched();
     if (this.leadInfoForm.valid) {
       const leadData = this.leadInfoForm.value;
 
       const submissionData: LeadFormData = {
-        leadOwnerId: Number(leadData.leadOwnerId) as number,
+        leadOwnerId: leadData.leadOwnerId || '',
         leadOwnerName: leadData.leadOwnerName || '',
         leadSourceId: leadData.leadSourceId || null,
         leadStatus: leadData.leadStatus || LeadStatus.NEW,
@@ -172,6 +144,13 @@ export class LeadForm {
       // Mark all fields as touched to show validation errors
       this.leadInfoForm.markAllAsTouched();
     }
+  }
+
+  /**
+   * Check if at least one submit button is visible
+   */
+  get hasSubmitButton(): boolean {
+    return this.showNextButton || this.showSaveAndExitButton;
   }
 
   onCancel() {

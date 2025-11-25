@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { Account, AccountAddress } from '../../types';
+import { Account, AccountAddress } from '../../types/account';
 
 @Component({
   selector: 'app-account-info-box',

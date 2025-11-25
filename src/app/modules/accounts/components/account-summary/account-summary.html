@@ -5,6 +5,6 @@
         <app-account-info-box [account]="account || null" [accountAddress]="(account && account.accountAddress && account.accountAddress.length > 0 ? account.accountAddress[0] : null)"></app-account-info-box>
     </div>
     <div class="mt-6 col-span-1">
-        <app-accounts-activity-log [accountId]="account?.accountId || ''"></app-accounts-activity-log>
+        <app-accounts-activity-log [accountId]="account?.accountId || ''" [activityRelatedEntityId]="account?.accountId || ''"></app-accounts-activity-log>
     </div>
 </div>

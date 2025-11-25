@@ -1,0 +1,1 @@
+import{Db as n,Pa as t,kb as s,lb as r}from"./chunk-MI4VSIZJ.js";var o=class a{static \u0275fac=function(e){return new(e||a)};static \u0275cmp=t({type:a,selectors:[["app-dashboard"]],decls:2,vars:0,template:function(e,p){e&1&&(s(0,"p"),n(1,"dashboard works!"),r())},encapsulation:2})};var l=[{path:"",component:o}];export{l as DASHBOARD_ROUTES};

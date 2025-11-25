@@ -1,5 +1,5 @@
 import { ColorBadgeColor } from '../../../shared/components/custom-datatable/types';
-import { AccountStatusEnum } from '../types';
+import { AccountStatusEnum } from '../types/account';
 
 /**
  * Color mapping utility for account status
