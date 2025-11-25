@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://staging-api.morpho-crm.com',
+  apiUrl: 'http://localhost:3000/api',
   appName: 'Morpho CRM (Staging)',
   version: '1.0.0-staging',
   enableLogging: true,
